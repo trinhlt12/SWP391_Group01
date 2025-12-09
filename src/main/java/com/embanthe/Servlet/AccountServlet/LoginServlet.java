@@ -1,4 +1,4 @@
-package com.embanthe.Servlet;
+package com.embanthe.Servlet.AccountServlet;
 
 import com.embanthe.DAO.AuthDAO;
 import com.embanthe.model.User;
