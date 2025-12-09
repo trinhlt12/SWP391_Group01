@@ -26,10 +26,14 @@ public class LoginServlet extends HttpServlet {
             if (user != null) {
                 // Lưu user vào session
                 HttpSession session = request.getSession();
-                session.setAttribute("currentUser", user);
+                session.setAttribute("user", user);
+                if (user.getRoleID() == 1) {
+                    response.sendRedirect("home.jsp");
+                } else if (user.getRoleID() == 2) {
+                    response.sendRedirect("page/admin/dashboard.jsp");
+                }
 
-                // Chuyển hướng sang trang welcome
-                response.sendRedirect("welcome.jsp");
+
             } else {
                 // Sai thông tin đăng nhập
                 request.setAttribute("error", "Email hoặc mật khẩu không đúng!");
