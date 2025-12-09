@@ -11,6 +11,12 @@ import java.sql.SQLException;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        request.getRequestDispatcher("page/system/login.jsp").forward(request, response);
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -27,17 +33,17 @@ public class LoginServlet extends HttpServlet {
                 // Lưu user vào session
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
-                if (user.getRoleID() == 1) {
-                    response.sendRedirect("home.jsp");
-                } else if (user.getRoleID() == 2) {
-                    response.sendRedirect("page/admin/dashboard.jsp");
+                if (user.getRoleID() == 1) { //customer
+                    response.sendRedirect("index.jsp");
+                } else if (user.getRoleID() == 2) { //admin
+                    response.sendRedirect(request.getContextPath() + "/admin");
                 }
 
 
             } else {
                 // Sai thông tin đăng nhập
                 request.setAttribute("error", "Email hoặc mật khẩu không đúng!");
-                request.getRequestDispatcher("login.jsp").forward(request, response);
+                request.getRequestDispatcher("page/system/login.jsp").forward(request, response);
             }
         } catch (SQLException e) {
             throw new ServletException(e);

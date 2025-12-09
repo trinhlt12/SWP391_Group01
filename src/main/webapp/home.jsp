@@ -14,14 +14,14 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Index - eNno Bootstrap Template</title>
+    <title>Em Ban The</title>
 
     <meta name="description" content="">
     <meta name="keywords" content="">
 
     <!-- Favicons -->
-    <link href="assetsHome/img/favicon.png" rel="icon">
-    <link href="assetsHome/img/apple-touch-icon.png" rel="apple-touch-icon">
+    <link href="image/Logo.png" rel="icon">
+
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -29,23 +29,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
           rel="stylesheet">
 
-    <!-- Vendor CSS Files -->
+
     <link href="assetsHome/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="assetsHome/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <link href="assetsHome/vendor/aos/aos.css" rel="stylesheet">
     <link href="assetsHome/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
     <link href="assetsHome/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-
-    <!-- Main CSS File -->
     <link href="assetsHome/css/main.css" rel="stylesheet">
-
-    <!-- =======================================================
-    * Template Name: eNno
-    * Template URL: https://bootstrapmade.com/enno-free-simple-bootstrap-template/
-    * Updated: Aug 07 2024 with Bootstrap v5.3.3
-    * Author: BootstrapMade.com
-    * License: https://bootstrapmade.com/license/
-    ======================================================== -->
+    <base href="${pageContext.request.contextPath}/">
 </head>
 
 <body class="index-page">
@@ -53,60 +44,54 @@
 <header id="header" class="header d-flex align-items-center sticky-top">
     <div class="container-fluid container-xl position-relative d-flex align-items-center">
 
-        <a href="index.html" class="logo d-flex align-items-center me-auto">
-            <!-- Uncomment the line below if you also wish to use an image logo -->
-            <!-- <img src="assets/img/logo.png" alt=""> -->
-            <h1 class="sitename">eNno</h1>
+        <a href="/home" class="logo d-flex align-items-center me-auto">
+
+            <img src="image/Logo.png" alt="Logo">
+            <h1 class="sitename">Em Bán Thẻ</h1>
         </a>
 
         <nav id="navmenu" class="navmenu">
             <ul>
                 <li><a href="#hero" class="active">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#portfolio">Portfolio</a></li>
-                <li><a href="#team">Team</a></li>
-                <li class="dropdown"><a href="#"><span>Dropdown</span> <i
-                        class="bi bi-chevron-down toggle-dropdown"></i></a>
-                    <ul>
-                        <li><a href="#">Dropdown 1</a></li>
-                        <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i
-                                class="bi bi-chevron-down toggle-dropdown"></i></a>
-                            <ul>
-                                <li><a href="#">Deep Dropdown 1</a></li>
-                                <li><a href="#">Deep Dropdown 2</a></li>
-                                <li><a href="#">Deep Dropdown 3</a></li>
-                                <li><a href="#">Deep Dropdown 4</a></li>
-                                <li><a href="#">Deep Dropdown 5</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="#">Dropdown 2</a></li>
-                        <li><a href="#">Dropdown 3</a></li>
-                        <li><a href="#">Dropdown 4</a></li>
-                    </ul>
-                </li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="#about">Dịch Vụ</a></li>
+                <c:if test="${not empty sessionScope.user}">
+                    <li><a href="#services">Ewallet</a></li>
+                    <li><a href="#portfolio">Thống Kê</a></li>
+                    <li><a href="#team">Link Thanh Toán</a></li>
+                    <li><a href="#policy">Chính Sách</a></li>
+
+                    <li class="dropdown">
+
+
+                            <img src="image/icons8-user-male-16.png" alt="User Icon" style="width:20px; height:20px; margin-right:5px;">
+
+                            <span>${sessionScope.user.fullName} - ${sessionScope.user.balance} VND</span>
+                            <i class="bi bi-chevron-down toggle-dropdown"></i>
+
+                        <ul>
+                            <li><a href="#">Thông tin cá nhân</a></li>
+                            <li><a href="#">Đổi Mật Khẩu Đăng nhập</a></li>
+                            <li><a href="#">Email: ${sessionScope.user.email}</a></li>
+                            <li><a href="logout">Đăng xuất</a></li>
+                        </ul>
+                    </li>
+
+
+                </c:if>
+
+                <!-- Nếu chưa đăng nhập -->
+                <c:if test="${empty sessionScope.user}">
+                    <li><a href="login">Đăng nhập</a></li>
+                </c:if>
             </ul>
             <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
-
-        <a class="btn-getstarted" href="index.html#about">Get Started</a>
 
     </div>
 </header>
 
 <main class="main">
-    <c:if test="${not empty sessionScope.user}">
-        <h2>Xin chào, ${sessionScope.user.fullName}!</h2>
-        <p>Email: ${sessionScope.user.email}</p>
-        <p>Số dư: ${sessionScope.user.balance} VND</p>
-    </c:if>
 
-    <c:if test="${empty sessionScope.user}">
-        <h2>Xin chào khách!</h2>
-    </c:if>
-
-    <a href="logout" class="btn btn-danger">Logout</a>
     <!-- Hero Section -->
     <section id="hero" class="hero section">
 
