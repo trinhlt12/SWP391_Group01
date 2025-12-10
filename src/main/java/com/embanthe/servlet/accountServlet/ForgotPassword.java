@@ -47,7 +47,7 @@ ForgotPassword extends HttpServlet {
                 if (isMailExist) {
                     // sending otp
                     Random rand = new Random();
-                    otpvalue = rand.nextInt(1255650);
+                    otpvalue = 100000 + rand.nextInt(900000);
 
                     String to = user.getEmail();
 
