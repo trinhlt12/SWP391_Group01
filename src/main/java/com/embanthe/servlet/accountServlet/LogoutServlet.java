@@ -1,4 +1,4 @@
-package com.embanthe.Servlet.AccountServlet;
+package com.embanthe.servlet.accountServlet;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

@@ -1,4 +1,4 @@
-package com.embanthe.DAO;
+package com.embanthe.dao;
 
 import com.embanthe.model.User;
 import com.embanthe.util.DBContext;
