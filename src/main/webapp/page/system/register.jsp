@@ -6,6 +6,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!doctype html>
 <html lang="en">
 
@@ -34,8 +36,12 @@
                             </a>
 
                             <p class="text-center">Đăng ký tài khoản mới</p>
+                            <c:if test="${not empty message}">
+                                <div style="color:red; font-weight:bold;">
+                                        ${message}
+                                </div>
+                            </c:if>
 
-                            <!-- Hiển thị lỗi/thành công -->
 
 
                             <form action="register" method="post">

@@ -83,7 +83,7 @@ public class ForgotPassword extends HttpServlet {
                     dispatcher.forward(request, response);
                     //request.setAttribute("status", "success");
                 }else{
-                    request.setAttribute("msg", "Thông tin email không tồn tại vui lòng thử lại!");
+                    request.setAttribute("message", "Thông tin email không tồn tại vui lòng thử lại!");
                     request.getRequestDispatcher("page/system/forgotPassword.jsp").forward(request, response);
                 }
             } catch (SQLException e) {

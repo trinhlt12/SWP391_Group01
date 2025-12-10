@@ -6,6 +6,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!doctype html>
 <html lang="en">
 
@@ -33,6 +35,11 @@
                                 <img src="image/Logo.png" style="width: 120px; height: auto;" alt="">
                             </a>
                             <p class="text-center">Quên Mật Khẩu</p>
+                            <c:if test="${not empty message}">
+                                <div style="color:red; font-weight:bold;">
+                                        ${message}
+                                </div>
+                            </c:if>
                             <form action="forgotPassword" method="post">
                                 <div class="mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Email</label>
@@ -42,12 +49,12 @@
 
 
 
-                                <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">Lấy Code
+                                <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">Lấy Code OTP
                                 </button>
 
                                 <div class="d-flex align-items-center justify-content-center">
                                     <p class="fs-4 mb-0 fw-bold">Đã có tài khoản?</p>
-                                    <a class="text-primary fw-bold ms-2" href="login">Login</a>
+                                    <a class="text-primary fw-bold ms-2" href="login">Đăng nhập</a>
                                 </div>
                             </form>
                         </div>

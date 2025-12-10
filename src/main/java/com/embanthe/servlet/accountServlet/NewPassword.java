@@ -33,10 +33,22 @@ public class NewPassword extends HttpServlet {
         HttpSession session = request.getSession();
         String newPassword = request.getParameter("password");
         String confPassword = request.getParameter("confPassword");
+
         String hashed = BCrypt.hashpw(newPassword, BCrypt.gensalt());
         RequestDispatcher dispatcher = null;
-        if (newPassword != null && confPassword != null && newPassword.equals(confPassword)) {
+        if (newPassword == null || confPassword == null) {
+            request.setAttribute("message", "Password hoặc Confirm Password không được để trống");
+            request.getRequestDispatcher("page/system/newPassword.jsp").forward(request, response);
 
+        } else if (!newPassword.equals(confPassword)) {
+            request.setAttribute("message", "Password và Confirm Password không khớp");
+            request.getRequestDispatcher("page/system/newPassword.jsp").forward(request, response);
+
+        } else if (!isValidPassword(newPassword)) {
+            request.setAttribute("message", "Password không hợp lệ. Yêu cầu ít nhất 8 ký tự, có chữ hoa, số và ký tự đặc biệt");
+            request.getRequestDispatcher("page/system/newPassword.jsp").forward(request, response);
+
+        } else {
             try {
                 String url = "jdbc:mysql://127.0.0.1:3306/swp391?useSSL=false&serverTimezone=UTC";
 
@@ -65,13 +77,10 @@ public class NewPassword extends HttpServlet {
                 e.printStackTrace();
             }
         }
-        else {
-            request.setAttribute("message", "password & confPassword not equal");
-
-            request.getRequestDispatcher("page/system/newPassword.jsp").forward(request, response);
-
-        }
     }
-
+    private boolean isValidPassword(String password) {
+        String regex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+        return password != null && password.matches(regex);
+    }
 
 }

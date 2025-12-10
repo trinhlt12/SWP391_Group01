@@ -6,6 +6,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!doctype html>
 <html lang="en">
 
@@ -32,21 +34,22 @@
                             <a href="" class="text-nowrap logo-img text-center d-block py-3 w-100">
                                 <img src="image/Logo.png" style="width: 120px; height: auto;" alt="">
                             </a>
+                            <p class="text-center">Quên Mật Khẩu</p>
                             <c:if test="${not empty message}">
                                 <div style="color:red; font-weight:bold;">
                                         ${message}
                                 </div>
                             </c:if>
-                            <p class="text-center">Quên Mật Khẩu</p>
+
                             <form action="newpassword" method="post">
 
                                 <div class="mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">New Password</label>
+                                    <label for="exampleInputEmail1" class="form-label">Mật khẩu mới</label>
                                     <input type="password" name="password" class="form-control" id="exampleInputEmail1"
                                            aria-describedby="emailHelp">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">New Password</label>
+                                    <label for="exampleInputEmail1" class="form-label">Nhập lại mật khẩu</label>
                                     <input type="password" name="confPassword" class="form-control"
                                            id="exampleInputEmail1"
                                            aria-describedby="emailHelp">

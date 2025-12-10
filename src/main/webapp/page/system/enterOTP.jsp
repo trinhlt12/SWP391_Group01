@@ -6,6 +6,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!doctype html>
 <html lang="en">
 
@@ -33,18 +35,20 @@
                                 <img src="image/Logo.png" style="width: 120px; height: auto;" alt="">
                             </a>
                             <c:if test="${not empty message}">
-                                <div style="color:red; font-weight:bold;">
+                                <p class="text-center">
+                                <div class="text-center" style="color:#1a97f5; font-weight:bold; ">
                                         ${message}
                                 </div>
+                                </p>
                             </c:if>
-                            <p class="text-center">Nhập OTP</p>
+
                             <form action="validateOtp" method="post">
                                 <div class="mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">Enter OTP</label>
+                                    <label for="exampleInputEmail1" class="form-label">Nhập OTP</label>
                                     <input type="text" name="otp" class="form-control" id="exampleInputEmail1"
                                            aria-describedby="emailHelp">
                                 </div>
-                                <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">Enter OTP
+                                <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">Nhập OTP
                                 </button>
                             </form>
                         </div>

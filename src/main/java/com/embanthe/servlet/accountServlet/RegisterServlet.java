@@ -43,15 +43,21 @@ public class RegisterServlet extends HttpServlet {
         // Validate đầu vào
         if (isEmpty(fullName) || isEmpty(email) || isEmpty(password) || isEmpty(confirmPassword)) {
             request.setAttribute("message", "Vui lòng điền đầy đủ thông tin!");
-            request.getRequestDispatcher("/page/system/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
+            return;
+        }
+        if (!password.equals(confirmPassword)) {
+            request.setAttribute("message", "Mật khẩu xác nhận không khớp!");
+            request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
             return;
         }
 
-        if (!password.equals(confirmPassword)) {
-            request.setAttribute("message", "Mật khẩu xác nhận không khớp!");
-            request.getRequestDispatcher("/page/system/login.jsp").forward(request, response);
+        if (!isValidPassword(password)) {
+            request.setAttribute("message", "Mật khẩu phải có ít nhất 1 chữ in hoa, 1 số và 1 ký tự đặc biệt, tối thiểu 8 ký tự!");
+            request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
             return;
         }
+
         try {
             boolean success = authDAO.register(fullName.trim(), email.trim(), password);
             if (success) {
@@ -59,7 +65,7 @@ public class RegisterServlet extends HttpServlet {
                 request.getRequestDispatcher("/page/system/login.jsp").forward(request, response);
             } else {
                 request.setAttribute("message", "Email này đã được sử dụng!");
-                request.getRequestDispatcher("/page/system/login.jsp").forward(request, response);
+                request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
             }
 
         } catch (SQLException e) {
@@ -71,5 +77,9 @@ public class RegisterServlet extends HttpServlet {
 
     private boolean isEmpty(String s) {
         return s == null || s.trim().isEmpty();
+    }
+    private boolean isValidPassword(String password) {
+        String regex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+        return password != null && password.matches(regex);
     }
 }
