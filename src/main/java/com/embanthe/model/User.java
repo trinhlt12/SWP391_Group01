@@ -12,16 +12,20 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Builder
 public class User {
-    private Integer id;
-    private String username;
-    private String password; // BCrypt hashed
-    private String role;     // ADMIN or USER
+    private Integer userID;
+    private Integer roleID;
+    private String fullName;
+    private String email;
+    private String passwordHash; // BCrypt hashed
+    private Double balance;
     private Timestamp createdAt;
 
-    // Constructor without timestamps (for insert)
-    public User(String username, String password, String role) {
-        this.username = username;
-        this.password = password;
-        this.role = role;
+    // Constructor without auto-generated fields (for insert)
+    public User(Integer roleID, String fullName, String email, String passwordHash, Double balance) {
+        this.roleID = roleID;
+        this.fullName = fullName;
+        this.email = email;
+        this.passwordHash = passwordHash;
+        this.balance = balance;
     }
 }
