@@ -36,14 +36,9 @@
                             <p class="text-center">Đăng ký tài khoản mới</p>
 
                             <!-- Hiển thị lỗi/thành công -->
-                            <c:if test="${not empty error}">
-                                <div class="alert alert-danger">${error}</div>
-                            </c:if>
-                            <c:if test="${not empty success}">
-                                <div class="alert alert-success">${success}</div>
-                            </c:if>
-                            <p class="text-center">Your Social Campaigns</p>
-                            <form action="${pageContext.request.contextPath}/register" method="post">
+
+
+                            <form action="register" method="post">
                                 <div class="mb-3">
                                     <label for="exampleInputtext1" class="form-label">Name</label>
                                     <input type="text" name="fullName" class="form-control" id="exampleInputtext1" aria-describedby="textHelp">

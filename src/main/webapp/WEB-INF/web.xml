@@ -5,7 +5,7 @@
          version="4.0">
     <servlet>
         <servlet-name>HomeServlet</servlet-name>
-        <servlet-class>com.embanthe.Servlet.Home.HomeServlet</servlet-class>
+        <servlet-class>com.embanthe.servlet.home.HomeServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>HomeServlet</servlet-name>

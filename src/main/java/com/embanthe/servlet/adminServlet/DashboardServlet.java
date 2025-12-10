@@ -1,4 +1,4 @@
-package com.embanthe.Servlet.AdminServlet;
+package com.embanthe.servlet.adminServlet;
 
 import com.embanthe.model.User;
 import jakarta.servlet.ServletException;
@@ -23,7 +23,7 @@ public class DashboardServlet extends HttpServlet {
 
         User user = (User) session.getAttribute("user");
 
-        
+
         if (user.getRoleID() == 2) { // admin
 
             request.getRequestDispatcher("/page/admin/dashboard.jsp").forward(request, response);

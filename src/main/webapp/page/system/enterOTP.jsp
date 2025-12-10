@@ -1,8 +1,8 @@
-﻿<%--
+<%--
   Created by IntelliJ IDEA.
   User: hoang
-  Date: 09/12/2025
-  Time: 10:52 SA
+  Date: 10/12/2025
+  Time: 9:55 SA
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -13,8 +13,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Em Bán Thẻ</title>
-    <link rel="shortcut icon" type="image/png" href="${pageContext.request.contextPath}/image/Logo.png" />
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/styles.min.css" />
+    <link rel="shortcut icon" type="image/png" href="${pageContext.request.contextPath}/image/Logo.png"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/styles.min.css"/>
     <base href="${pageContext.request.contextPath}/">
 </head>
 
@@ -37,20 +37,15 @@
                                         ${message}
                                 </div>
                             </c:if>
-                            <form action="login" method="post">
+                            <p class="text-center">Nhập OTP</p>
+                            <form action="validateOtp" method="post">
                                 <div class="mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">Email</label>
-                                    <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                                    <label for="exampleInputEmail1" class="form-label">Enter OTP</label>
+                                    <input type="text" name="otp" class="form-control" id="exampleInputEmail1"
+                                           aria-describedby="emailHelp">
                                 </div>
-                                <div class="mb-4">
-                                    <label for="exampleInputPassword1" class="form-label">Password</label>
-                                    <input type="password" name="password" class="form-control" id="exampleInputPassword1">
-                                </div>
-                                <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">Sign In</button>
-                                <div class="d-flex align-items-center justify-content-center">
-                                    <p class="fs-4 mb-0 fw-bold">New Account?</p>
-                                    <a class="text-primary fw-bold ms-2" href="register">Create an account</a>
-                                </div>
+                                <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">Enter OTP
+                                </button>
                             </form>
                         </div>
                     </div>

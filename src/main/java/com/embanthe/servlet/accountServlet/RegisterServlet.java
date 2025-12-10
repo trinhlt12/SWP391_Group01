@@ -1,6 +1,6 @@
-package com.embanthe.Servlet.AccountServlet;
+package com.embanthe.servlet.accountServlet;
 
-import com.embanthe.DAO.AuthDAO;
+import com.embanthe.dao.AuthDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -42,31 +42,29 @@ public class RegisterServlet extends HttpServlet {
 
         // Validate đầu vào
         if (isEmpty(fullName) || isEmpty(email) || isEmpty(password) || isEmpty(confirmPassword)) {
-            request.setAttribute("error", "Vui lòng điền đầy đủ thông tin!");
-            request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
+            request.setAttribute("message", "Vui lòng điền đầy đủ thông tin!");
+            request.getRequestDispatcher("/page/system/login.jsp").forward(request, response);
             return;
         }
 
         if (!password.equals(confirmPassword)) {
-            request.setAttribute("error", "Mật khẩu xác nhận không khớp!");
-            request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
+            request.setAttribute("message", "Mật khẩu xác nhận không khớp!");
+            request.getRequestDispatcher("/page/system/login.jsp").forward(request, response);
             return;
         }
-
         try {
             boolean success = authDAO.register(fullName.trim(), email.trim(), password);
-
             if (success) {
-                request.setAttribute("success", "Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.");
+                request.setAttribute("message", "Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.");
                 request.getRequestDispatcher("/page/system/login.jsp").forward(request, response);
             } else {
-                request.setAttribute("error", "Email này đã được sử dụng!");
-                request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
+                request.setAttribute("message", "Email này đã được sử dụng!");
+                request.getRequestDispatcher("/page/system/login.jsp").forward(request, response);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-            request.setAttribute("error", "Lỗi hệ thống. Vui lòng thử lại sau!");
+            request.setAttribute("message", "Lỗi hệ thống. Vui lòng thử lại sau!");
             request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
         }
     }

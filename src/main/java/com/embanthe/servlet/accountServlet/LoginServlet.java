@@ -1,6 +1,6 @@
-package com.embanthe.Servlet.AccountServlet;
+package com.embanthe.servlet.accountServlet;
 
-import com.embanthe.DAO.AuthDAO;
+import com.embanthe.dao.AuthDAO;
 import com.embanthe.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -42,7 +42,7 @@ public class LoginServlet extends HttpServlet {
 
             } else {
                 // Sai thông tin đăng nhập
-                request.setAttribute("error", "Email hoặc mật khẩu không đúng!");
+                request.setAttribute("message", "Email hoặc mật khẩu không đúng!");
                 request.getRequestDispatcher("page/system/login.jsp").forward(request, response);
             }
         } catch (SQLException e) {
