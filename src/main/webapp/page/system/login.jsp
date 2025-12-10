@@ -6,6 +6,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!doctype html>
 <html lang="en">
 
@@ -43,13 +45,23 @@
                                     <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
                                 </div>
                                 <div class="mb-4">
-                                    <label for="exampleInputPassword1" class="form-label">Password</label>
+                                    <label for="exampleInputPassword1" class="form-label">Mật khẩu</label>
                                     <input type="password" name="password" class="form-control" id="exampleInputPassword1">
                                 </div>
-                                <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">Sign In</button>
+                                <div class="d-flex align-items-center justify-content-between mb-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input primary" type="checkbox" value="" id="flexCheckChecked" checked>
+                                        <label class="form-check-label text-dark" for="flexCheckChecked">
+                                            Remeber this Device
+                                        </label>
+                                    </div>
+                                    <a class="text-primary fw-bold" href="forgotPassword">Forgot Password ?</a>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">Đăng nhập</button>
+
                                 <div class="d-flex align-items-center justify-content-center">
-                                    <p class="fs-4 mb-0 fw-bold">New Account?</p>
-                                    <a class="text-primary fw-bold ms-2" href="register">Create an account</a>
+                                    <p class="fs-4 mb-0 fw-bold">Chưa có tài khoản?</p>
+                                    <a class="text-primary fw-bold ms-2" href="register">Tạo tài khoản mới</a>
                                 </div>
                             </form>
                         </div>
