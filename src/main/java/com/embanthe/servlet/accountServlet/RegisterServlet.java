@@ -35,13 +35,16 @@ public class RegisterServlet extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
+        String username = request.getParameter("username");
         String fullName = request.getParameter("fullName");
         String email = request.getParameter("email");
+        String phone = request.getParameter("phone");
         String password = request.getParameter("password");
         String confirmPassword = request.getParameter("confirmPassword");
 
         // Validate đầu vào
-        if (isEmpty(fullName) || isEmpty(email) || isEmpty(password) || isEmpty(confirmPassword)) {
+        if (isEmpty(username) || isEmpty(fullName) || isEmpty(email) || isEmpty(phone)
+                || isEmpty(password) || isEmpty(confirmPassword)) {
             request.setAttribute("message", "Vui lòng điền đầy đủ thông tin!");
             request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
             return;
@@ -59,7 +62,7 @@ public class RegisterServlet extends HttpServlet {
         }
 
         try {
-            boolean success = authDAO.register(fullName.trim(), email.trim(), password);
+            boolean success = authDAO.register(username.trim(), fullName.trim(), email.trim(), password, phone.trim());
             if (success) {
                 request.setAttribute("message", "Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.");
                 request.getRequestDispatcher("/page/system/login.jsp").forward(request, response);
@@ -78,7 +81,9 @@ public class RegisterServlet extends HttpServlet {
     private boolean isEmpty(String s) {
         return s == null || s.trim().isEmpty();
     }
+
     private boolean isValidPassword(String password) {
+        // Ít nhất 1 chữ in hoa, 1 số, 1 ký tự đặc biệt, tối thiểu 8 ký tự
         String regex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
         return password != null && password.matches(regex);
     }

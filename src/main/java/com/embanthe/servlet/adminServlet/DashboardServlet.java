@@ -1,9 +1,9 @@
 package com.embanthe.servlet.adminServlet;
 
 import com.embanthe.model.User;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
 
 import java.io.IOException;
 

@@ -41,7 +41,8 @@ public class EnterOtpServlet extends HttpServlet {
 
         } else {
             request.setAttribute("message", "Sai otp");
-            dispatcher = request.getRequestDispatcher("page/system/enterOtp.jsp");
+            request.setAttribute("email", session.getAttribute("email"));
+            dispatcher = request.getRequestDispatcher("page/system/enterOTP.jsp");
             dispatcher.forward(request, response);
 
         }
