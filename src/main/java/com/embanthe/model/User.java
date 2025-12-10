@@ -18,6 +18,9 @@ public class User {
     private String role;     // ADMIN or USER
     private Timestamp createdAt;
 
+
+
+
     // Constructor without timestamps (for insert)
     public User(String username, String password, String role) {
         this.username = username;
