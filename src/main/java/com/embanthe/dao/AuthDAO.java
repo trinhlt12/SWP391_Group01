@@ -56,7 +56,7 @@ public class AuthDAO {
         }
     }
 
-    private boolean isEmailExists(String email) throws SQLException {
+    public boolean isEmailExists(String email) throws SQLException {
         String sql = "SELECT 1 FROM Users WHERE Email = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, email);
@@ -78,7 +78,6 @@ public class AuthDAO {
                 .balance(rs.getDouble("balance"))
                 .status(rs.getString("status"))
                 .createdAt(rs.getTimestamp("created_at"))
-                .updatedAt(rs.getTimestamp("updated_at"))
                 .build();
     }
 

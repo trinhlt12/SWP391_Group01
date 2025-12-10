@@ -22,7 +22,6 @@ public class User {
     private Double balance;          // balance
     private String status;           // status (ACTIVE/LOCKED)
     private Timestamp createdAt;     // created_at
-    private Timestamp updatedAt;     // updated_at
 
     // Constructor dùng khi insert (không có auto-generated fields)
     public User(String username, String email, String passwordHash,
