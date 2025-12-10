@@ -2,9 +2,9 @@ package com.embanthe.servlet.accountServlet;
 
 import com.embanthe.dao.AuthDAO;
 import com.embanthe.model.User;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.*;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
 
 import java.io.IOException;
 import java.sql.SQLException;
