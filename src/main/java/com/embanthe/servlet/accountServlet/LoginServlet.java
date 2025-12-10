@@ -33,12 +33,17 @@ public class LoginServlet extends HttpServlet {
                 // Lưu user vào session
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
-                if (user.getRoleID() == 1) { //customer
-                    response.sendRedirect("index.jsp");
-                } else if (user.getRoleID() == 2) { //admin
-                    response.sendRedirect(request.getContextPath() + "/admin");
-                }
 
+                // Kiểm tra role (CUSTOMER/ADMIN)
+                if ("CUSTOMER".equalsIgnoreCase(user.getRole())) {
+                    response.sendRedirect(request.getContextPath() + "/index.jsp");
+                } else if ("ADMIN".equalsIgnoreCase(user.getRole())) {
+                    response.sendRedirect(request.getContextPath() + "/admin");
+                } else {
+                    // Nếu role không xác định, quay về trang login
+                    request.setAttribute("message", "Role không hợp lệ!");
+                    request.getRequestDispatcher("page/system/login.jsp").forward(request, response);
+                }
 
             } else {
                 // Sai thông tin đăng nhập
