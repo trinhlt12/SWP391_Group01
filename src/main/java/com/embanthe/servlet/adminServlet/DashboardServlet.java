@@ -24,7 +24,7 @@ public class DashboardServlet extends HttpServlet {
         User user = (User) session.getAttribute("user");
 
 
-        if (user.getRoleID() == 2) { // admin
+        if ("ADMIN".equalsIgnoreCase(user.getRole())) { // admin
 
             request.getRequestDispatcher("/page/admin/dashboard.jsp").forward(request, response);
         } else {
