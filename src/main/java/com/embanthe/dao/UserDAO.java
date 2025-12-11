@@ -1,6 +1,7 @@
 package com.embanthe.dao;
 
-import com.embanthe.model.User;
+import com.embanthe.model.Users;
+import com.embanthe.model.Users;
 import com.embanthe.util.DBContext;
 
 import java.sql.Connection;
@@ -19,9 +20,9 @@ public class UserDAO {
     }
 
     // Lấy tất cả User
-    public List<User> getAll() throws SQLException {
-        List<User> users = new ArrayList<>();
-        String sql = "SELECT * FROM users";
+    public List<Users> getAll() throws SQLException {
+        List<Users> users = new ArrayList<>();
+        String sql = "SELECT * FROM Users";
         try (Statement st = connection.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
@@ -30,9 +31,10 @@ public class UserDAO {
         }
         return users;
     }
+
     // Lấy User theo Email
-    public User getUserByEmail(String email) throws SQLException {
-        String sql = "SELECT * FROM users WHERE Email = ?";
+    public Users getUserByEmail(String email) throws SQLException {
+        String sql = "SELECT * FROM Users WHERE email = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, email);
             try (ResultSet rs = ps.executeQuery()) {
@@ -44,46 +46,51 @@ public class UserDAO {
         return null;
     }
 
+    // Kiểm tra email đã tồn tại chưa
     public boolean checkEmailExist(String email) throws SQLException {
-        String sql = "SELECT 1 FROM users WHERE Email = ?";
+        String sql = "SELECT 1 FROM Users WHERE email = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, email);
             try (ResultSet rs = ps.executeQuery()) {
-                return rs.next(); // Nếu có kết quả => email tồn tại
+                return rs.next();
             }
         }
     }
-    private User mapRow(ResultSet rs) throws SQLException {
-        return User.builder()
-                .userID(rs.getInt("UserID"))
-                .roleID(rs.getInt("RoleID"))
-                .fullName(rs.getString("FullName"))
-                .email(rs.getString("Email"))
-                .passwordHash(rs.getString("PasswordHash"))
-                .balance(rs.getDouble("Balance"))
-                .createdAt(rs.getTimestamp("CreatedAt"))
+
+    // Map dữ liệu từ ResultSet sang User model mới
+    private Users mapRow(ResultSet rs) throws SQLException {
+        return Users.builder()
+                .userId(rs.getInt("user_id"))
+                .username(rs.getString("username"))
+                .fullName(rs.getString("full_name"))
+                .email(rs.getString("email"))
+                .passwordHash(rs.getString("password_hash")) // map từ cột snake_case sang field camelCase
+                .phone(rs.getString("phone"))
+                .role(rs.getString("role"))
+                .balance(rs.getDouble("balance"))
+                .status(rs.getString("status"))
+                .createdAt(rs.getTimestamp("created_at"))
                 .build();
     }
 
-
     // Test trực tiếp trong DAO
-    public static void main(String[] args) throws SQLException {
-//        try {
-//            UserDAO dao = new UserDAO();
-//            List<User> users = dao.getAll();
-//            System.out.println("✅ Found " + users.size() + " users in DB:");
-//            for (User u : users) {
-//                System.out.println(u);
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        UserDAO dao = new UserDAO();
-//        User user = dao.getUserByEmail("nguyenvana@example.com");
-//        System.out.println(user);
+    public static void main(String[] args) {
+        try {
+            UserDAO dao = new UserDAO();
+            List<Users> users = dao.getAll();
+            System.out.println("✅ Found " + users.size() + " users in DB:");
+            for (Users u : users) {
+                System.out.println(u);
+            }
 
-//        boolean exists = dao.checkEmailExist("tranthib@example.com");
-//        System.out.println("📧 Email exists? " + exists);
+            Users user = dao.getUserByEmail("customer01@example.com");
+            System.out.println("User by email: " + user);
+
+            boolean exists = dao.checkEmailExist("customer02@example.com");
+            System.out.println("📧 Email exists? " + exists);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
-
 }
