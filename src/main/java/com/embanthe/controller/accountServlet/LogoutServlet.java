@@ -1,4 +1,4 @@
-package com.embanthe.servlet.accountServlet;
+package com.embanthe.controller.accountServlet;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
