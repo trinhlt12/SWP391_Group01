@@ -8,9 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * DAO for Products.
- * Giả sử table tên là Products với các cột:
- * product_id, provider_id, category_id, product_name, price, denomination, image_url, created_at
+ * DAO cho bảng Products phù hợp với model com.embanthe.model.Products
+ *
+ * Giả sử cấu trúc cột trong DB:
+ * product_id, provider_id, category_id, product_name, price, denomination, image_url
  */
 public class ProductDAO {
     private final Connection connection;
@@ -47,15 +48,15 @@ public class ProductDAO {
     /**
      * Lấy danh sách sản phẩm có pagination, tìm kiếm và sort cơ bản.
      *
-     * @param page  1-based page index
-     * @param size  số item / page
-     * @param q     từ khoá tìm kiếm tên
+     * @param page       1-based page index
+     * @param size       số item / page
+     * @param q          từ khoá tìm kiếm tên
      * @param categoryId category id (nullable)
-     * @param sort  kiểu sort: newest, name_asc, name_desc, price_asc, price_desc
+     * @param sort       kiểu sort: product_id desc (mặc định), name_asc, name_desc, price_asc, price_desc
      */
     public List<Products> listProducts(int page, int size, String q, Long categoryId, String sort) throws SQLException {
         int offset = (page - 1) * size;
-        StringBuilder sql = new StringBuilder("SELECT * FROM Products WHERE 1=1");
+        StringBuilder sql = new StringBuilder("SELECT product_id, provider_id, category_id, product_name, price, denomination, image_url FROM Products WHERE 1=1");
         List<Object> params = new ArrayList<>();
 
         if (q != null && !q.trim().isEmpty()) {
@@ -76,8 +77,8 @@ public class ProductDAO {
             sql.append(" ORDER BY product_name ASC");
         } else if ("name_desc".equalsIgnoreCase(sort)) {
             sql.append(" ORDER BY product_name DESC");
-        } else { // default newest
-            sql.append(" ORDER BY created_at DESC");
+        } else { // default: newest by product_id descending
+            sql.append(" ORDER BY product_id DESC");
         }
 
         sql.append(" LIMIT ? OFFSET ?");
@@ -107,7 +108,6 @@ public class ProductDAO {
         p.setPrice(rs.getDouble("price"));
         p.setDenomination(rs.getDouble("denomination"));
         p.setImageUrl(rs.getString("image_url"));
-        p.setCreatedAt(rs.getTimestamp("created_at"));
         return p;
     }
 }

@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -23,16 +24,14 @@
 
 <div class="top-bar">
     <form method="get" action="${pageContext.request.contextPath}/products" class="search-box">
-        <input type="text" name="q" placeholder="Tìm theo tên..." value="${fn:escapeXml(param.q)}"/>
+        <input type="text" name="q" placeholder="Tìm theo tên..." value="${fn:escapeXml(q)}"/>
         <select name="sort">
             <option value="">Sắp xếp</option>
-            <option value="newest" ${param.sort == 'newest' ? 'selected' : ''}>Mới nhất</option>
-            <option value="name_asc" ${param.sort == 'name_asc' ? 'selected' : ''}>Tên A-Z</option>
-            <option value="name_desc" ${param.sort == 'name_desc' ? 'selected' : ''}>Tên Z-A</option>
-            <option value="price_asc" ${param.sort == 'price_asc' ? 'selected' : ''}>Giá tăng dần</option>
-            <option value="price_desc" ${param.sort == 'price_desc' ? 'selected' : ''}>Giá giảm dần</option>
+            <option value="name_asc" ${sort == 'name_asc' ? 'selected' : ''}>Tên A-Z</option>
+            <option value="name_desc" ${sort == 'name_desc' ? 'selected' : ''}>Tên Z-A</option>
+            <option value="price_asc" ${sort == 'price_asc' ? 'selected' : ''}>Giá tăng dần</option>
+            <option value="price_desc" ${sort == 'price_desc' ? 'selected' : ''}>Giá giảm dần</option>
         </select>
-        <!-- Nếu có danh mục, có thể render options ở đây bằng loop -->
         <button type="submit">Tìm</button>
     </form>
 
@@ -66,7 +65,7 @@
                         </c:if>
                     </td>
                     <td>${p.productName}</td>
-                    <td>${p.price}</td>
+                    <td><fmt:formatNumber value="${p.price}" type="number" minFractionDigits="0" maxFractionDigits="2"/></td>
                     <td>${p.denomination}</td>
                     <td>${p.categoryId}</td>
                     <td>${p.providerId}</td>
