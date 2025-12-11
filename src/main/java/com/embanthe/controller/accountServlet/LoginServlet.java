@@ -1,7 +1,7 @@
-package com.embanthe.servlet.accountServlet;
+package com.embanthe.controller.accountServlet;
 
 import com.embanthe.dao.AuthDAO;
-import com.embanthe.model.User;
+import com.embanthe.model.Users;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
@@ -27,18 +27,23 @@ public class LoginServlet extends HttpServlet {
 
         try {
             AuthDAO authDAO = new AuthDAO();
-            User user = authDAO.login(email, password);
+            Users user = authDAO.login(email, password);
 
             if (user != null) {
                 // Lưu user vào session
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
-                if (user.getRoleID() == 1) { //customer
-                    response.sendRedirect("index.jsp");
-                } else if (user.getRoleID() == 2) { //admin
-                    response.sendRedirect(request.getContextPath() + "/admin");
-                }
 
+                // Kiểm tra role (CUSTOMER/ADMIN)
+                if ("CUSTOMER".equalsIgnoreCase(user.getRole())) {
+                    response.sendRedirect(request.getContextPath() + "/index.jsp");
+                } else if ("ADMIN".equalsIgnoreCase(user.getRole())) {
+                    response.sendRedirect(request.getContextPath() + "/admin");
+                } else {
+                    // Nếu role không xác định, quay về trang login
+                    request.setAttribute("message", "Role không hợp lệ!");
+                    request.getRequestDispatcher("page/system/login.jsp").forward(request, response);
+                }
 
             } else {
                 // Sai thông tin đăng nhập

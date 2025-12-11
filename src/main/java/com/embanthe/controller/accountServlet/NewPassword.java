@@ -1,4 +1,4 @@
-package com.embanthe.servlet.accountServlet;
+package com.embanthe.controller.accountServlet;
 
 import javax.servlet.RequestDispatcher;
 
@@ -57,7 +57,7 @@ public class NewPassword extends HttpServlet {
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 Connection connection = DriverManager.getConnection(url, username, password);
 
-                String sql = "UPDATE Users SET PasswordHash = ? WHERE Email = ?";
+                String sql = "UPDATE Users SET password_hash = ? WHERE email = ?";
                 PreparedStatement pst = connection.prepareStatement(sql);
                 pst.setString(1, hashed);
                 pst.setString(2, (String) session.getAttribute("email"));

@@ -1,8 +1,8 @@
-package com.embanthe.servlet.accountServlet;
+package com.embanthe.controller.accountServlet;
 import javax.servlet.RequestDispatcher;
 import java.io.IOException;
 import com.embanthe.dao.UserDAO;
-import com.embanthe.model.User;
+import com.embanthe.model.Users;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,7 +20,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 @WebServlet(name="ForgotPassword", urlPatterns={"/forgotPassword"})
-public class ForgotPassword extends HttpServlet {
+public class
+ForgotPassword extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -41,12 +42,12 @@ public class ForgotPassword extends HttpServlet {
         if (email != null && !email.equals("")) {
             try {
                 UserDAO userDAO = new UserDAO();
-                User user = userDAO.getUserByEmail(email);
+                Users user = userDAO.getUserByEmail(email);
                 boolean isMailExist = userDAO.checkEmailExist(email);
                 if (isMailExist) {
                     // sending otp
                     Random rand = new Random();
-                    otpvalue = rand.nextInt(1255650);
+                    otpvalue = 100000 + rand.nextInt(900000);
 
                     String to = user.getEmail();
 
@@ -70,7 +71,7 @@ public class ForgotPassword extends HttpServlet {
                         message.setText("Your OTP is: " + otpvalue + "\nThe OTP will expire in 30 minutes! Enter this OTP to reset password!\nRegrad!");
                         // send message
                         Transport.send(message);
-                        System.out.println("message sent successfully");
+
                     } catch (MessagingException e) {
                         throw new RuntimeException(e);
                     }

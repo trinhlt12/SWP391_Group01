@@ -34,6 +34,19 @@
                             <a href="" class="text-nowrap logo-img text-center d-block py-3 w-100">
                                 <img src="image/Logo.png" style="width: 120px; height: auto;" alt="">
                             </a>
+                            <c:choose>
+                                <c:when test="${sessionScope.actionType eq 'forgotPassword'}">
+                                    <h4 class="text-center mb-3" style="color:#1a97f5; font-weight:bold;">
+                                        Xác nhận mật khẩu
+                                    </h4>
+                                </c:when>
+                                <c:when test="${sessionScope.actionType eq 'register'}">
+                                    <h4 class="text-center mb-3" style="color:#1a97f5; font-weight:bold;">
+                                        Xác nhận đăng ký
+                                    </h4>
+                                </c:when>
+                            </c:choose>
+
                             <c:if test="${not empty message}">
                                 <p class="text-center">
                                 <div class="text-center" style="color:#1a97f5; font-weight:bold; ">
@@ -48,7 +61,18 @@
                                     <input type="text" name="otp" class="form-control" id="exampleInputEmail1"
                                            aria-describedby="emailHelp">
                                 </div>
-                                <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">Nhập OTP
+                                <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">
+                                    <c:choose>
+                                        <c:when test="${sessionScope.actionType eq 'forgotPassword'}">
+                                            Xác nhận mật khẩu
+                                        </c:when>
+                                        <c:when test="${sessionScope.actionType eq 'register'}">
+                                            Xác nhận đăng ký
+                                        </c:when>
+                                        <c:otherwise>
+                                            Nhập OTP
+                                        </c:otherwise>
+                                    </c:choose>
                                 </button>
                             </form>
                         </div>

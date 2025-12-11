@@ -1,6 +1,6 @@
 package com.embanthe.dao;
 
-import com.embanthe.model.User;
+import com.embanthe.model.Users;
 import com.embanthe.util.DBContext;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -17,15 +17,13 @@ public class AuthDAO {
         this.connection = DBContext.getInstance().getConnection();
     }
 
-
-    public User login(String email, String password) throws SQLException {
-        String sql = "SELECT * FROM Users WHERE Email = ?";
+    public Users login(String email, String password) throws SQLException {
+        String sql = "SELECT * FROM Users WHERE email = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, email);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    String hashed = rs.getString("PasswordHash");
-                    // So sánh password plaintext với hash trong DB
+                    String hashed = rs.getString("password_hash");
                     if (BCrypt.checkpw(password, hashed)) {
                         return mapRow(rs);
                     }
@@ -35,115 +33,123 @@ public class AuthDAO {
         return null;
     }
 
-    public boolean register(String fullName, String email, String rawPassword) throws SQLException {
-        // 1. Kiểm tra email đã tồn tại chưa
+    public boolean register(String username, String fullName, String email, String rawPassword, String phone) throws SQLException {
         if (isEmailExists(email)) {
-            return false; // Email đã được dùng
+            return false;
         }
 
-        // 2. Hash mật khẩu bằng BCrypt
-        String passwordHash = BCrypt.hashpw(rawPassword, BCrypt.gensalt(12));
+        String passwordHash= BCrypt.hashpw(rawPassword, BCrypt.gensalt(12));
 
-        String sql = "INSERT INTO Users (RoleID, FullName, Email, PasswordHash, Balance, CreatedAt) " +
-                "VALUES (1, ?, ?, ?, 0.0, NOW())";
+        String sql = "INSERT INTO Users (username, full_name, email, password_hash, phone, role, balance, status, created_at) " +
+                "VALUES (?, ?, ?, ?, ?, 'CUSTOMER', 0.0, 'ACTIVE', NOW())";
+
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, fullName);
-            ps.setString(2, email);
-            ps.setString(3, passwordHash);
+            ps.setString(1, username);
+            ps.setString(2, fullName);
+            ps.setString(3, email);
+            ps.setString(4, passwordHash);
+            ps.setString(5, phone);
 
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
         }
     }
 
-    /**
-     * Kiểm tra email đã tồn tại trong DB chưa
-     */
-    private boolean isEmailExists(String email) throws SQLException {
+    public boolean isEmailExists(String email) throws SQLException {
         String sql = "SELECT 1 FROM Users WHERE Email = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, email);
             try (ResultSet rs = ps.executeQuery()) {
-                return rs.next(); // có dòng → email đã tồn tại
+                return rs.next();
             }
         }
     }
 
-    // Map dữ liệu từ ResultSet sang User
-    private User mapRow(ResultSet rs) throws SQLException {
-        return User.builder()
-                .userID(rs.getInt("UserID"))
-                .roleID(rs.getInt("RoleID"))
-                .fullName(rs.getString("FullName"))
-                .email(rs.getString("Email"))
-                .passwordHash(rs.getString("PasswordHash"))
-                .balance(rs.getDouble("Balance"))
-                .createdAt(rs.getTimestamp("CreatedAt"))
+    private Users mapRow(ResultSet rs) throws SQLException {
+        return Users.builder()
+                .userId(rs.getInt("user_id"))
+                .username(rs.getString("username"))
+                .fullName(rs.getString("full_name"))
+                .email(rs.getString("email"))
+                .passwordHash(rs.getString("password_hash")) // map từ cột snake_case sang field camelCase
+                .phone(rs.getString("phone"))
+                .role(rs.getString("role"))
+                .balance(rs.getDouble("balance"))
+                .status(rs.getString("status"))
+                .createdAt(rs.getTimestamp("created_at"))
                 .build();
     }
 
-
-    // Test nhanh
     public static void main(String[] args) {
-//        try {
-//            AuthDAO authDAO = new AuthDAO();
-//            Scanner sc = new Scanner(System.in);
-//
-//            System.out.print("Nhập email: ");
-//            String email = sc.nextLine();
-//
-//            System.out.print("Nhập mật khẩu: ");
-//            String password = sc.nextLine();
-//
-//            User user = authDAO.login(email, password);
-//            if (user != null) {
-//                System.out.println("✅ Login thành công: " + user.getFullName());
-//            } else {
-//                System.out.println("❌ Login thất bại!");
-//            }
-//
-//            sc.close();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
+
         try {
             AuthDAO authDAO = new AuthDAO();
             Scanner sc = new Scanner(System.in);
 
-            System.out.println("=== TEST ĐĂNG KÝ TÀI KHOẢN ===");
-            System.out.print("Nhập họ tên: ");
-            String fullName = sc.nextLine();
-
+            System.out.println("=== TEST ĐĂNG NHẬP TÀI KHOẢN ===");
             System.out.print("Nhập email: ");
             String email = sc.nextLine();
 
             System.out.print("Nhập mật khẩu: ");
             String password = sc.nextLine();
 
-            System.out.print("Nhập lại mật khẩu: ");
-            String confirm = sc.nextLine();
-
-            if (!password.equals(confirm)) {
-                System.out.println("Mật khẩu không khớp!");
+            Users user = authDAO.login(email, password);
+            if (user != null) {
+                System.out.println("✅ Đăng nhập thành công!");
+                System.out.println("Xin chào, " + user.getFullName());
+                System.out.println("Role: " + user.getRole());
+                System.out.println("Balance: " + user.getBalance());
             } else {
-                boolean success = authDAO.register(fullName, email, password);
-                if (success) {
-                    System.out.println("ĐĂNG KÝ THÀNH CÔNG!");
-                    System.out.println("→ Tài khoản Customer (RoleID = 1) đã được tạo.");
-                    System.out.println("→ Bạn có thể đăng nhập bằng email và mật khẩu vừa nhập.");
-                } else {
-                    System.out.println("ĐĂNG KÝ THẤT BẠI! Email này đã tồn tại.");
-                }
+                System.out.println("❌ Đăng nhập thất bại! Sai email hoặc mật khẩu.");
             }
 
             sc.close();
-
         } catch (SQLException e) {
             System.out.println("Lỗi kết nối CSDL:");
             e.printStackTrace();
         }
 
-
+//        try {
+//            AuthDAO authDAO = new AuthDAO();
+//            Scanner sc = new Scanner(System.in);
+//
+//            System.out.println("=== TEST ĐĂNG KÝ TÀI KHOẢN ===");
+//            System.out.print("Nhập username: ");
+//            String username = sc.nextLine();
+//
+//            System.out.print("Nhập họ tên: ");
+//            String fullName = sc.nextLine();
+//
+//            System.out.print("Nhập email: ");
+//            String email = sc.nextLine();
+//
+//            System.out.print("Nhập số điện thoại: ");
+//            String phone = sc.nextLine();
+//
+//            System.out.print("Nhập mật khẩu: ");
+//            String password = sc.nextLine();
+//
+//            System.out.print("Nhập lại mật khẩu: ");
+//            String confirm = sc.nextLine();
+//
+//            if (!password.equals(confirm)) {
+//                System.out.println("Mật khẩu không khớp!");
+//            } else {
+//                boolean success = authDAO.register(username, fullName, email, password, phone);
+//                if (success) {
+//                    System.out.println("ĐĂNG KÝ THÀNH CÔNG!");
+//                    System.out.println("→ Tài khoản Customer đã được tạo.");
+//                } else {
+//                    System.out.println("ĐĂNG KÝ THẤT BẠI! Email này đã tồn tại.");
+//                }
+//            }
+//
+//            sc.close();
+//
+//        } catch (SQLException e) {
+//            System.out.println("Lỗi kết nối CSDL:");
+//            e.printStackTrace();
+//        }
     }
 }
