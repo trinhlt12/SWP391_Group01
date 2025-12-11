@@ -20,4 +20,12 @@
         <servlet-name>UserListServlet</servlet-name>
         <url-pattern>/admin/user-list</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>UserEditServlet</servlet-name>
+        <servlet-class>com.embanthe.controller.adminController.UserEditController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UserEditServlet</servlet-name>
+        <url-pattern>/admin/user-edit</url-pattern>
+    </servlet-mapping>
 </web-app>

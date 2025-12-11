@@ -16,20 +16,29 @@ public class UserController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Cần set UTF-8 để không lỗi font tiếng Việt khi truyền dữ liệu
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
 
         try {
+            String keyword = request.getParameter("keyword");
+            String role = request.getParameter("role");
+            String username = request.getParameter("username");
+            String status = request.getParameter("status");
             // 1. Gọi DAO để lấy danh sách từ Database
             UserDAO userDAO = new UserDAO();
-            List<User> userList = userDAO.getAll();
+            List<User> userList;
 
+            if ((keyword != null && !keyword.trim().isEmpty()) ||
+                    (role != null && !role.trim().isEmpty()) ||
+                    (status != null && !status.trim().isEmpty())) {
+
+                userList = userDAO.searchUsers(keyword, role, status);
+
+            } else {
+                userList = userDAO.getAll();
+            }
 
             request.setAttribute("listUser", userList);
-
-            // 3. Chuyển hướng sang file giao diện JSP
-            // Lưu ý: Đổi tên file 'table-basic.jsp' nếu bạn đặt tên khác
             request.getRequestDispatcher("/page/admin/ManagerUser.jsp").forward(request, response);
 
         } catch (Exception e) {

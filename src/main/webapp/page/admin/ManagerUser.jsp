@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title> Quản lý User | Admin System </title>
+    <title> Em Ban The | Admin System </title>
 
     <link rel="apple-touch-icon" sizes="144x144" href="${pageContext.request.contextPath}/assetAdmin/apple-touch-icon.png">
     <link rel="shortcut icon" href="${pageContext.request.contextPath}/assetAdmin/favicon.ico">
@@ -105,6 +105,49 @@
                     <div class="page-section">
                         <div class="card card-fluid">
                             <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-12">
+                                        <form action="${pageContext.request.contextPath}/admin/user-list" method="get">
+                                            <div class="form-row">
+
+                                                <div class="col-md-5 mb-3">
+                                                    <div class="input-group input-group-alt">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text"><span class="oi oi-magnifying-glass"></span></span>
+                                                        </div>
+                                                        <input type="text" class="form-control" name="keyword"
+                                                               value="${param.keyword}"
+                                                               placeholder="Nhập tên hoặc email...">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3 mb-3">
+                                                    <select class="custom-select" name="role" onchange="this.form.submit()">
+                                                        <option value="">-- Tất cả Role --</option>
+
+                                                        <option value="Admin" ${param.role == 'Admin' ? 'selected' : ''}>Admin</option>
+                                                        <option value="User" ${param.role == 'User' ? 'selected' : ''}>User</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-md-3 mb-3">
+                                                    <select class="custom-select" name="status" onchange="this.form.submit()">
+                                                        <option value="">-- Tất cả Trạng thái --</option>
+                                                        <option value="Active" ${param.status == 'Active' ? 'selected' : ''}>Active</option>
+                                                        <option value="Inactive" ${param.status == 'Inactive' ? 'selected' : ''}>Inactive</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-md-1 mb-3">
+                                                    <button type="submit" class="btn btn-secondary w-100" title="Lọc">
+                                                        <i class="fas fa-filter"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
                                 <div class="table-responsive">
                                     <table class="table table-hover">
                                         <thead class="thead-light">
@@ -134,8 +177,16 @@
                                                 <td class="align-middle">${u.role}</td>
                                                 <td class="align-middle">${u.status}</td>
                                                 <td class="align-middle text-right">
-                                                    <a href="${pageContext.request.contextPath}/user/edit?id=${u.userId}" class="btn btn-sm btn-icon btn-secondary" title="Sửa"><i class="fa fa-pencil-alt"></i></a>
-                                                    <a href="${pageContext.request.contextPath}/user/delete?id=${u.userId}" class="btn btn-sm btn-icon btn-secondary" title="Xóa" onclick="return confirm('Bạn có chắc muốn xóa?');"><i class="far fa-trash-alt"></i></a>
+                                                    <button type="button" class="btn btn-sm btn-icon btn-secondary"
+                                                            data-toggle="modal"
+                                                            data-target="#editUserModal"
+                                                            onclick="fillDataToModal('${u.userId}', '${u.username}', '${u.fullName}', '${u.email}', '${u.phone}', '${u.role}', '${u.status}')">
+                                                        <i class="fa fa-pencil-alt"></i>
+                                                    </button>
+
+                                                    <a href="${pageContext.request.contextPath}/admin/user-delete?id=${u.userId}" class="btn btn-sm btn-icon btn-secondary" onclick="return confirm('Xóa user này?');">
+                                                        <i class="far fa-trash-alt"></i>
+                                                    </a>
                                                 </td>
                                             </tr>
                                         </c:forEach>
@@ -146,7 +197,86 @@
                         </div>
                     </div></div></div></div></main>
 
-</div><script src="${pageContext.request.contextPath}/assetAdmin/assets/vendor/jquery/jquery.min.js"></script>
+</div>
+// modal edit user
+<div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editUserModalLabel">Cập nhật thông tin</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form action="${pageContext.request.contextPath}/admin/user-edit" method="post">
+                <div class="modal-body">
+                    <input type="hidden" class="form-control " name="id" id="modalUserId">
+
+                    <div class="form-group">
+                        <label>Tài khoản</label>
+                        <input type="text" class="form-control " id="modalUsername" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Họ và tên</label>
+                        <input type="text" class="form-control text-muted" name="fullname" id="modalFullName" maxlength="60" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-control text-muted" name="email" id="modalEmail" maxlength="30" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Số điện thoại</label>
+                        <input type="text" class="form-control text-muted" name="phone" id="modalPhone" maxlength="10">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Vai trò</label>
+                            <select class="form-control" name="role" id="modalRole">
+                                <option value="CUSTOMER" ${user.role == 'CUSTOMER' ? 'selected' : ''}>Customer</option>
+                                <option value="ADMIN" ${user.role == 'ADMIN' ? 'selected' : ''}>Admin</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Trạng thái</label>
+                            <select class="form-control" name="status" id="modalStatus">
+                                <option value="ACTIVE" ${user.status == 'ACTIVE' ? 'selected' : ''}>Active</option>
+                                <option value="INACTIVE" ${user.status == 'INACTIVE' ? 'selected' : ''}>Inactive</option>
+                                <option value="BANNED" ${user.status == 'BANNED' ? 'selected' : ''}>Banned</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+
+    function fillDataToModal(id, username, fullname, email, phone, role, status) {
+        // Gán giá trị vào các ô input trong Modal
+        document.getElementById('modalUserId').value = id;
+        document.getElementById('modalUsername').value = username;
+        document.getElementById('modalFullName').value = fullname;
+        document.getElementById('modalEmail').value = email;
+        document.getElementById('modalPhone').value = phone;
+
+        // Gán giá trị cho Select Box (jQuery cho nhanh vì giao diện có sẵn jQuery)
+        $('#modalRole').val(role);
+        $('#modalStatus').val(status);
+    }
+</script>
+<script src="${pageContext.request.contextPath}/assetAdmin/assets/vendor/jquery/jquery.min.js"></script>
 <script src="${pageContext.request.contextPath}/assetAdmin/assets/vendor/bootstrap/js/popper.min.js"></script>
 <script src="${pageContext.request.contextPath}/assetAdmin/assets/vendor/bootstrap/js/bootstrap.min.js"></script>
 <script src="${pageContext.request.contextPath}/assetAdmin/assets/vendor/pace/pace.min.js"></script>

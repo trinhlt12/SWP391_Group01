@@ -12,7 +12,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Flexy Free Bootstrap Admin Template by WrapPixel</title>
+    <title>Em Ban The</title>
     <link rel="shortcut icon" type="image/png" href="${pageContext.request.contextPath}/assets/images/logos/favicon.png" />
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/styles.min.css" />
     <base href="${pageContext.request.contextPath}/">
@@ -32,7 +32,7 @@
         </div>
 
         <div class="d-lg-flex align-items-center gap-2">
-            <h3 class="text-white mb-2 mb-lg-0 fs-5 text-center">Check Flexy Premium Version</h3>
+            <h3 class="text-white mb-2 mb-lg-0 fs-5 text-center">Check Now</h3>
             <div class="d-flex align-items-center justify-content-center gap-2">
 
                 <div class="dropdown d-flex">
@@ -67,7 +67,7 @@
                         <span class="hide-menu">Home</span>
                     </li>
                     <li class="sidebar-item">
-                        <a class="sidebar-link" href="../index.html" aria-expanded="false">
+                        <a class="sidebar-link" href="${pageContext.request.contextPath}/admin/user-list" aria-expanded="false">
                             <i class="ti ti-atom"></i>
                             <span class="hide-menu">User</span>
                         </a>
