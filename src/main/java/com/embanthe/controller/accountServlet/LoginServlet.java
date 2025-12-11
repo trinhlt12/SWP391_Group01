@@ -1,7 +1,7 @@
 package com.embanthe.controller.accountServlet;
 
 import com.embanthe.dao.AuthDAO;
-import com.embanthe.model.User;
+import com.embanthe.model.Users;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
@@ -27,7 +27,7 @@ public class LoginServlet extends HttpServlet {
 
         try {
             AuthDAO authDAO = new AuthDAO();
-            User user = authDAO.login(email, password);
+            Users user = authDAO.login(email, password);
 
             if (user != null) {
                 // Lưu user vào session

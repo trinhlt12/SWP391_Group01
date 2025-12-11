@@ -1,6 +1,7 @@
 package com.embanthe.dao;
 
-import com.embanthe.model.User;
+import com.embanthe.model.Users;
+import com.embanthe.model.Users;
 import com.embanthe.util.DBContext;
 
 import java.sql.Connection;
@@ -19,8 +20,8 @@ public class UserDAO {
     }
 
     // Lấy tất cả User
-    public List<User> getAll() throws SQLException {
-        List<User> users = new ArrayList<>();
+    public List<Users> getAll() throws SQLException {
+        List<Users> users = new ArrayList<>();
         String sql = "SELECT * FROM Users";
         try (Statement st = connection.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
@@ -32,7 +33,7 @@ public class UserDAO {
     }
 
     // Lấy User theo Email
-    public User getUserByEmail(String email) throws SQLException {
+    public Users getUserByEmail(String email) throws SQLException {
         String sql = "SELECT * FROM Users WHERE email = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, email);
@@ -57,8 +58,8 @@ public class UserDAO {
     }
 
     // Map dữ liệu từ ResultSet sang User model mới
-    private User mapRow(ResultSet rs) throws SQLException {
-        return User.builder()
+    private Users mapRow(ResultSet rs) throws SQLException {
+        return Users.builder()
                 .userId(rs.getInt("user_id"))
                 .username(rs.getString("username"))
                 .fullName(rs.getString("full_name"))
@@ -76,13 +77,13 @@ public class UserDAO {
     public static void main(String[] args) {
         try {
             UserDAO dao = new UserDAO();
-            List<User> users = dao.getAll();
+            List<Users> users = dao.getAll();
             System.out.println("✅ Found " + users.size() + " users in DB:");
-            for (User u : users) {
+            for (Users u : users) {
                 System.out.println(u);
             }
 
-            User user = dao.getUserByEmail("customer01@example.com");
+            Users user = dao.getUserByEmail("customer01@example.com");
             System.out.println("User by email: " + user);
 
             boolean exists = dao.checkEmailExist("customer02@example.com");

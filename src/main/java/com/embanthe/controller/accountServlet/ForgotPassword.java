@@ -2,7 +2,7 @@ package com.embanthe.controller.accountServlet;
 import javax.servlet.RequestDispatcher;
 import java.io.IOException;
 import com.embanthe.dao.UserDAO;
-import com.embanthe.model.User;
+import com.embanthe.model.Users;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -42,7 +42,7 @@ ForgotPassword extends HttpServlet {
         if (email != null && !email.equals("")) {
             try {
                 UserDAO userDAO = new UserDAO();
-                User user = userDAO.getUserByEmail(email);
+                Users user = userDAO.getUserByEmail(email);
                 boolean isMailExist = userDAO.checkEmailExist(email);
                 if (isMailExist) {
                     // sending otp
