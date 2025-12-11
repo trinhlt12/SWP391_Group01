@@ -78,7 +78,6 @@ public class AuthDAO {
                 .balance(rs.getDouble("balance"))
                 .status(rs.getString("status"))
                 .createdAt(rs.getTimestamp("created_at"))
-                .updatedAt(rs.getTimestamp("updated_at"))
                 .build();
     }
 

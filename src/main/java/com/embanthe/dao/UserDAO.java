@@ -13,6 +13,8 @@ import java.util.List;
 
 public class UserDAO {
     private final Connection connection;
+    PreparedStatement ps = null;
+    ResultSet rs = null;
 
     public UserDAO() throws SQLException {
         this.connection = DBContext.getInstance().getConnection();
@@ -30,6 +32,7 @@ public class UserDAO {
         }
         return users;
     }
+
 
     // Lấy User theo Email
     public User getUserByEmail(String email) throws SQLException {
@@ -69,7 +72,7 @@ public class UserDAO {
                 .balance(rs.getDouble("balance"))
                 .status(rs.getString("status"))
                 .createdAt(rs.getTimestamp("created_at"))
-                .updatedAt(rs.getTimestamp("updated_at"))
+//                .updatedAt(rs.getTimestamp("updated_at"))
                 .build();
     }
 
