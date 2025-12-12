@@ -141,6 +141,150 @@
             font-size: 1.1rem;
         }
 
+        /* Deposit Form Section*/
+        .deposit-form-container {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, margin 0.5s ease, opacity 0.5s ease;
+            opacity: 0;
+            margin-bottom: 0;
+        }
+
+        .deposit-form-container.active {
+            max-height: 1000px;
+            opacity: 1;
+            margin-bottom: 30px;
+        }
+
+        .deposit-form {
+            background: white;
+            border: 2px solid #10B981;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(16, 185, 129, 0.15);
+        }
+
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .form-header h3 {
+            color: #059669;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .close-btn {
+            background: #fee2e2;
+            color: #dc2626;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #dc2626;
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #374151;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .amount-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .amount-input:focus {
+            outline: none;
+            border-color: #10B981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        /* Quick Amount Buttons */
+        .quick-amounts {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .quick-amount-btn {
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #374151;
+            transition: all 0.3s ease;
+        }
+
+        .quick-amount-btn:hover {
+            border-color: #10B981;
+            color: #10B981;
+            background: #f0fdf4;
+        }
+
+        .quick-amount-btn.selected {
+            background: #10B981;
+            color: white;
+            border-color: #10B981;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Responsive cho form */
+        @media (max-width: 768px) {
+            .quick-amounts {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
         /* Transaction Section */
         .transaction-section {
             background: white;
@@ -338,7 +482,7 @@
 %>
 
 <div class="container">
-    <jsp:include page="/header.jsp" />
+    <jsp:include page="/header.jsp"/>
     <!-- Page Header -->
     <div class="page-header">
         <h1>💳 Ví Điện Tử</h1>
@@ -357,7 +501,7 @@
 
     <!-- Quick Actions -->
     <div class="quick-actions">
-        <a href="<%= request.getContextPath() %>/deposit" class="action-btn">
+        <a href="javascript:void(0)" class="action-btn" onclick="toggleDepositForm()">
             <div class="icon">💰</div>
             <div class="label">Nạp Tiền</div>
         </a>
@@ -373,6 +517,59 @@
             <div class="icon">📊</div>
             <div class="label">Lịch Sử</div>
         </a>
+    </div>
+    <!-- Deposit Form - Hidden by default -->
+    <div class="deposit-form-container" id="depositFormContainer">
+        <div class="deposit-form">
+            <div class="form-header">
+                <h3>💰 Nạp Tiền Vào Ví</h3>
+                <button class="close-btn" onclick="toggleDepositForm()">×</button>
+            </div>
+
+            <form action="<%= request.getContextPath() %>/deposit" method="POST" onsubmit="return validateAmount()">
+                <div class="form-group">
+                    <label for="amount">Số tiền muốn nạp (VNĐ)</label>
+                    <input
+                            type="text"
+                            id="amount"
+                            name="amount"
+                            class="amount-input"
+                            placeholder="Nhập số tiền..."
+                            oninput="formatCurrency(this)"
+                            required
+                    />
+                </div>
+
+                <!-- Quick Amount Selection -->
+                <div class="form-group">
+                    <label>Hoặc chọn nhanh:</label>
+                    <div class="quick-amounts">
+                        <button type="button" class="quick-amount-btn" onclick="selectAmount(50000)">
+                            50.000₫
+                        </button>
+                        <button type="button" class="quick-amount-btn" onclick="selectAmount(100000)">
+                            100.000₫
+                        </button>
+                        <button type="button" class="quick-amount-btn" onclick="selectAmount(200000)">
+                            200.000₫
+                        </button>
+                        <button type="button" class="quick-amount-btn" onclick="selectAmount(500000)">
+                            500.000₫
+                        </button>
+                        <button type="button" class="quick-amount-btn" onclick="selectAmount(1000000)">
+                            1.000.000₫
+                        </button>
+                        <button type="button" class="quick-amount-btn" onclick="selectAmount(2000000)">
+                            2.000.000₫
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    Tiếp Tục Thanh Toán →
+                </button>
+            </form>
+        </div>
     </div>
 
     <!-- Transaction History -->
@@ -466,6 +663,7 @@
     </div>
 </div>
 
+
 <script>
     // Filter transactions
     function filterTransactions(type) {
@@ -499,6 +697,64 @@
             }, index * 100);
         });
     });
+
+    // Toggle Deposit Form
+    function toggleDepositForm() {
+        const container = document.getElementById('depositFormContainer');
+        container.classList.toggle('active');
+
+        // Scroll to form nếu đang mở
+        if (container.classList.contains('active')) {
+            setTimeout(() => {
+                container.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+            }, 100);
+        }
+    }
+
+    // Select quick amount
+    function selectAmount(amount) {
+        const input = document.getElementById('amount');
+        input.value = amount.toLocaleString('vi-VN');
+
+        // Highlight selected button
+        document.querySelectorAll('.quick-amount-btn').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+        event.target.classList.add('selected');
+    }
+
+    // Format currency as user types
+    function formatCurrency(input) {
+        // Remove non-numeric characters
+        let value = input.value.replace(/\D/g, '');
+
+        // Format with thousand separators
+        if (value) {
+            value = parseInt(value).toLocaleString('vi-VN');
+        }
+
+        input.value = value;
+    }
+
+    // Validate amount before submit
+    function validateAmount() {
+        const input = document.getElementById('amount');
+        const value = parseInt(input.value.replace(/\D/g, ''));
+
+        if (!value || value < 10000) {
+            alert('Số tiền nạp tối thiểu là 10.000đ');
+            return false;
+        }
+
+        if (value > 50000000) {
+            alert('Số tiền nạp tối đa là 50.000.000đ');
+            return false;
+        }
+
+        // Store raw number for backend
+        input.value = value;
+        return true;
+    }
 </script>
 </body>
 </html>
