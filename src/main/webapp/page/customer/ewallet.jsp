@@ -505,14 +505,7 @@
             <div class="icon">💰</div>
             <div class="label">Nạp Tiền</div>
         </a>
-        <a href="<%= request.getContextPath() %>/withdraw" class="action-btn">
-            <div class="icon">💸</div>
-            <div class="label">Rút Tiền</div>
-        </a>
-        <a href="<%= request.getContextPath() %>/transfer" class="action-btn">
-            <div class="icon">🔄</div>
-            <div class="label">Chuyển Tiền</div>
-        </a>
+
         <a href="<%= request.getContextPath() %>/history" class="action-btn">
             <div class="icon">📊</div>
             <div class="label">Lịch Sử</div>
@@ -579,7 +572,6 @@
             <div class="filter-group">
                 <button class="filter-btn active" onclick="filterTransactions('all')">Tất cả</button>
                 <button class="filter-btn" onclick="filterTransactions('deposit')">Nạp tiền</button>
-                <button class="filter-btn" onclick="filterTransactions('withdraw')">Rút tiền</button>
                 <button class="filter-btn" onclick="filterTransactions('purchase')">Mua hàng</button>
             </div>
         </div>
