@@ -158,6 +158,8 @@
                                             <th>Email</th>
                                             <th>Role</th>
                                             <th>Status</th>
+                                            <th>Password</th>
+                                            <th>Xem chi tiết</th>
                                             <th style="width: 100px;" class="text-right">Hành động</th>
                                         </tr>
                                         </thead>
@@ -176,6 +178,19 @@
                                                 <td class="align-middle">${u.email}</td>
                                                 <td class="align-middle">${u.role}</td>
                                                 <td class="align-middle">${u.status}</td>
+                                                <td class="align-middle">
+                                                    <button type="button" class="btn btn-sm btn-icon btn-warning"
+                                                            data-toggle="modal" data-target="#resetPassModal"
+                                                            onclick="passIdToModal('${u.userId}', '${u.username}')" title="Đổi mật khẩu">
+                                                        <i class="fas fa-key"></i>
+                                                    </button>
+                                                </td>
+                                                <td class="align-middle">
+                                                    <a href="${pageContext.request.contextPath}/admin/user-detail?id=${u.userId}"
+                                                       class="btn btn-sm btn-icon btn-info" title="Xem chi tiết">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                </td>
                                                 <td class="align-middle text-right">
                                                     <button type="button" class="btn btn-sm btn-icon btn-secondary"
                                                             data-toggle="modal"
@@ -262,6 +277,34 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="resetPassModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"> <i class="fas fa-key"></i> Đổi mật khẩu</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="${pageContext.request.contextPath}/admin/user-reset-pass" method="post">
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="resetPassId">
+
+                    <p>Đang đổi mật khẩu cho tài khoản: <strong id="resetPassUsername" class="text-primary"></strong></p>
+
+                    <div class="form-group">
+                        <label>Mật khẩu mới</label>
+                        <input type="password" class="form-control" name="newPass" required placeholder="Nhập mật khẩu mới...">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-warning">Lưu mật khẩu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <script>
 
     function fillDataToModal(id, username, fullname, email, phone, role, status) {
@@ -275,6 +318,11 @@
         // Gán giá trị cho Select Box (jQuery cho nhanh vì giao diện có sẵn jQuery)
         $('#modalRole').val(role);
         $('#modalStatus').val(status);
+    }
+    // Hàm này để truyền ID và Username vào Modal Đổi mật khẩu
+    function passIdToModal(id, username) {
+        document.getElementById('resetPassId').value = id;
+        document.getElementById('resetPassUsername').innerText = username;
     }
 </script>
 <script src="${pageContext.request.contextPath}/assetAdmin/assets/vendor/jquery/jquery.min.js"></script>

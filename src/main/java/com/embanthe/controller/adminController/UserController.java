@@ -32,7 +32,7 @@ public class UserController extends HttpServlet {
                     (role != null && !role.trim().isEmpty()) ||
                     (status != null && !status.trim().isEmpty())) {
 
-                userList = userDAO.searchUsers(keyword, role, status);
+                userList = userDAO.searchUsers(keyword, role, status,null, null, null);
 
             } else {
                 userList = userDAO.getAll();
