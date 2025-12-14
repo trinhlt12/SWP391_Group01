@@ -1,6 +1,6 @@
 package com.embanthe.controller.admin;
 
-import com.embanthe.model.User;
+import com.embanthe.model.Users;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
@@ -21,7 +21,7 @@ public class DashboardServlet extends HttpServlet {
             return;
         }
 
-        User user = (User) session.getAttribute("user");
+        Users user = (Users) session.getAttribute("user");
 
 
         if ("ADMIN".equalsIgnoreCase(user.getRole())) {  // admin
