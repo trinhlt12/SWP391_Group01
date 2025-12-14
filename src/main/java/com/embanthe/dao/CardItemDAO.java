@@ -91,4 +91,25 @@ public class CardItemDAO {
         } catch (Exception ex) { ex.printStackTrace(); }
         return cnt;
     }
+    public int addCardItems(List<CardItems> cards) {
+        String sql = "INSERT INTO card_items (product_id, serial_number, card_code, expiration_date, status, created_at) VALUES (?, ?, ?, ?, ?, NOW())";
+        int count = 0;
+        try (Connection con = DBContext.getInstance().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            for (CardItems card : cards) {
+                ps.setInt(1, card.getProductId());
+                ps.setString(2, card.getSerialNumber());
+                ps.setString(3, card.getCardCode());
+                ps.setDate(4, card.getExpirationDate());
+                ps.setString(5, card.getStatus() == null ? "AVAILABLE" : card.getStatus());
+                ps.addBatch();
+            }
+            int[] rs = ps.executeBatch();
+            // Ghi đè: luôn trả về cards.size(), giả sử không lỗi; nếu muốn bắt lỗi từng dòng, kiểm tra và xử lý riêng
+            count = cards.size();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return count;
+    }
 }

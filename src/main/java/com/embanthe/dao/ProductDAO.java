@@ -222,4 +222,16 @@ public class ProductDAO {
             e.printStackTrace();
         }
     }
+    // Tăng quantity sản phẩm lên delta (thường là +1 khi thêm thẻ)
+    public void incrementQuantity(int productId, int delta) {
+        String sql = "UPDATE products SET quantity = quantity + ? WHERE product_id = ?";
+        try (Connection con = DBContext.getInstance().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, delta);
+            ps.setInt(2, productId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
