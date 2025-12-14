@@ -55,7 +55,15 @@ public class AuthDAO {
             return rowsAffected > 0;
         }
     }
-
+    public boolean isPhoneExists(String phone) throws SQLException {
+        String sql = "SELECT 1 FROM Users WHERE phone = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, phone);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
     public boolean isEmailExists(String email) throws SQLException {
         String sql = "SELECT 1 FROM Users WHERE Email = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -66,6 +74,15 @@ public class AuthDAO {
         }
     }
 
+    public boolean isUsernameExists(String username) throws SQLException {
+        String sql = "SELECT 1 FROM Users WHERE username  = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, username);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
     private Users mapRow(ResultSet rs) throws SQLException {
         return Users.builder()
                 .userId(rs.getInt("user_id"))
