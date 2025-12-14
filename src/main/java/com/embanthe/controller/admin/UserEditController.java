@@ -1,7 +1,7 @@
 package com.embanthe.controller.admin;
 
 import com.embanthe.dao.UserDAO;
-import com.embanthe.model.User;
+import com.embanthe.model.Users;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -33,7 +33,7 @@ public class UserEditController extends HttpServlet {
             String status = request.getParameter("status");
 
             // Tạo User object
-            User user = User.builder()
+            Users user = Users.builder()
                     .userId(id)
                     .fullName(fullName)
                     .email(email)

@@ -1,6 +1,6 @@
     package com.embanthe.dao;
 
-    import com.embanthe.model.User;
+    import com.embanthe.model.Users;
     import com.embanthe.util.DBContext;
 
     import java.sql.Connection;
@@ -21,8 +21,8 @@
     //    }
 
         // Lấy tất cả User
-        public List<User> getAll() throws SQLException {
-            List<User> users = new ArrayList<>();
+        public List<Users> getAll() throws SQLException {
+            List<Users> users = new ArrayList<>();
             String sql = "SELECT * FROM Users";
             try (Connection connection = DBContext.getInstance().getConnection();
                  Statement st = connection.createStatement();
@@ -33,7 +33,7 @@
             }
             return users;
         }
-        public User getUserById(int id) {
+        public Users getUserById(int id) {
             String sql = "SELECT * FROM Users WHERE user_id = ?";
             try (Connection conn = DBContext.getInstance().getConnection();
                  PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -52,7 +52,7 @@
 
 
         // Lấy User theo Email
-        public User getUserByEmail(String email) throws SQLException {
+        public Users getUserByEmail(String email) throws SQLException {
             String sql = "SELECT * FROM Users WHERE email = ?";
             try (Connection connection = DBContext.getInstance().getConnection();
                  PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -79,8 +79,8 @@
         }
 
         // Map dữ liệu từ ResultSet sang User model mới
-        private User mapRow(ResultSet rs) throws SQLException {
-            return User.builder()
+        private Users mapRow(ResultSet rs) throws SQLException {
+            return Users.builder()
                     .userId(rs.getInt("user_id"))
                     .username(rs.getString("username"))
                     .fullName(rs.getString("full_name"))
@@ -95,7 +95,7 @@
                     .build();
         }
         // search by name or email
-            public User getUserByNameOrEmail(String username, String email) throws SQLException {
+            public Users getUserByNameOrEmail(String username, String email) throws SQLException {
                 String sql = "SELECT * FROM Users WHERE username = ? and email = ?";
                 try ( Connection connection = DBContext.getInstance().getConnection();
                         PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -111,8 +111,8 @@
             }
 
             // search by role
-            public List<User> searchUsers(String keyword, String role, String status, String fromDate, String toDate, String sort) {
-                List<User> list = new ArrayList<>();
+            public List<Users> searchUsers(String keyword, String role, String status, String fromDate, String toDate, String sort) {
+                List<Users> list = new ArrayList<>();
                 StringBuilder sql = new StringBuilder("SELECT * FROM Users WHERE 1=1 ");
                 List<Object> params = new ArrayList<>();
 
@@ -168,7 +168,7 @@
                 return list;
             }
             // update User
-        public boolean updateUser(User user) {
+        public boolean updateUser(Users user) {
 
             String sql = "UPDATE Users SET full_name=?, email=?, role=?, phone=?, status=? WHERE user_id=?";
 
@@ -225,5 +225,19 @@
         // Test trực tiếp trong DAO
         public static void main(String[] args) {
 
+        }
+
+        //DEPOSIT:
+        public boolean updateBalance(int userId, double amountToAdd) {
+            String sql = "UPDATE users SET balance = balance + ? WHERE user_id = ?";
+            try (Connection conn = DBContext.getInstance().getConnection();
+                 PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setDouble(1, amountToAdd);
+                ps.setInt(2, userId);
+                return ps.executeUpdate() > 0;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return false;
+            }
         }
     }

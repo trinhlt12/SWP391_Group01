@@ -26,11 +26,7 @@ public class PaymentReturnServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        try {
-            userDAO = new UserDAO();
-        } catch (SQLException e) {
-            throw new ServletException("Cannot init UserDAO", e);
-        }
+        userDAO = new UserDAO();
     }
 
     @Override

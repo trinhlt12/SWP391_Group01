@@ -1,7 +1,7 @@
 package com.embanthe.controller.admin;
 
 import com.embanthe.dao.UserDAO;
-import com.embanthe.model.User;
+import com.embanthe.model.Users;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,7 +26,7 @@ public class UserController extends HttpServlet {
             String status = request.getParameter("status");
             // 1. Gọi DAO để lấy danh sách từ Database
             UserDAO userDAO = new UserDAO();
-            List<User> userList;
+            List<Users> userList;
 
             if ((keyword != null && !keyword.trim().isEmpty()) ||
                     (role != null && !role.trim().isEmpty()) ||

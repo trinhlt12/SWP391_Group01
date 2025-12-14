@@ -29,11 +29,7 @@ public class DepositServlet extends HttpServlet {
     private static String walletPath = "/page/customer/ewallet.jsp";
 
     public DepositServlet() {
-        try {
-            userDAO = new UserDAO();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        userDAO = new UserDAO();
     }
 
     @Override

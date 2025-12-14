@@ -3,7 +3,7 @@ package com.embanthe.controller.admin;
 import com.embanthe.dao.TransactionsDAO;
 import com.embanthe.dao.UserDAO;
 import com.embanthe.model.Transactions;
-import com.embanthe.model.User;
+import com.embanthe.model.Users;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -37,7 +37,7 @@ public class UserDetailController extends HttpServlet {
             int userId = Integer.parseInt(idStr);
 
             // 2. Lấy thông tin User
-            User user = userDAO.getUserById(userId);
+            Users user = userDAO.getUserById(userId);
 
             if (user == null) {
 
