@@ -1,4 +1,4 @@
-package com.embanthe.controller.adminController;
+package com.embanthe.controller.admin;
 
 import com.embanthe.dao.UserDAO;
 import com.embanthe.util.PasswordUtil;
