@@ -8,7 +8,7 @@ import javax.servlet.http.*;
 import java.io.IOException;
 
 @WebServlet("/admin")
-public class DashboardController extends HttpServlet {
+public class DashboardServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

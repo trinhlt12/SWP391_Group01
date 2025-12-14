@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet(name = "UserEditServlet", urlPatterns = {"/admin/user-edit"})
-public class UserEditController extends HttpServlet {
+public class UserEditServlet extends HttpServlet {
 
 
     @Override

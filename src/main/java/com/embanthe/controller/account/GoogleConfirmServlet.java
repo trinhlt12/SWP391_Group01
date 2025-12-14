@@ -1,7 +1,7 @@
 package com.embanthe.controller.account;
 
 import com.embanthe.dao.UserDAO;
-import com.embanthe.model.User;
+import com.embanthe.model.Users;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 @WebServlet("/googleConfirm")
-public class GoogleConfirmController extends HttpServlet {
+public class GoogleConfirmServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -43,7 +43,7 @@ public class GoogleConfirmController extends HttpServlet {
             }
         try {
             UserDAO userDAO = new UserDAO();
-            User user = userDAO.getUserByEmail(email);
+            Users user = userDAO.getUserByEmail(email);
             if (user != null) {
                 // Hash mật khẩu mới
                 String hashed = org.mindrot.jbcrypt.BCrypt.hashpw(password, org.mindrot.jbcrypt.BCrypt.gensalt());

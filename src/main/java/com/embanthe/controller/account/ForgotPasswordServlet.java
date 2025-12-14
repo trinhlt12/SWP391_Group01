@@ -1,6 +1,8 @@
 package com.embanthe.controller.account;
+
 import javax.servlet.RequestDispatcher;
 import java.io.IOException;
+
 import com.embanthe.dao.UserDAO;
 import com.embanthe.model.Users;
 
@@ -19,9 +21,8 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-@WebServlet(name="ForgotPassword", urlPatterns={"/forgotPassword"})
-public class
-ForgotPasswordController extends HttpServlet {
+@WebServlet(name = "ForgotPassword", urlPatterns = {"/forgotPassword"})
+public class ForgotPasswordServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -31,6 +32,7 @@ ForgotPasswordController extends HttpServlet {
             throws ServletException, IOException {
         request.getRequestDispatcher("page/system/forgotPassword.jsp").forward(request, response);
     }
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String email = request.getParameter("email");
@@ -83,7 +85,7 @@ ForgotPasswordController extends HttpServlet {
                     mySession.setAttribute("email", email);
                     dispatcher.forward(request, response);
                     //request.setAttribute("status", "success");
-                }else{
+                } else {
                     request.setAttribute("message", "Thông tin email không tồn tại vui lòng thử lại!");
                     request.getRequestDispatcher("page/system/forgotPassword.jsp").forward(request, response);
                 }

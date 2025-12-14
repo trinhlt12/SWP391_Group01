@@ -2,7 +2,7 @@ package com.embanthe.controller.userProfile;
 
 import com.embanthe.dao.AuthDAO;
 import com.embanthe.dao.UserDAO;
-import com.embanthe.model.User;
+import com.embanthe.model.Users;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 @WebServlet("/userprofile")
-public class ProfileController extends HttpServlet {
+public class ProfileServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -27,7 +27,7 @@ public class ProfileController extends HttpServlet {
         }
         try {
             UserDAO userDAO = new UserDAO();
-            User user = userDAO.getUserByEmail(email);
+            Users user = userDAO.getUserByEmail(email);
             if (user == null) {
                 request.getRequestDispatcher("home").forward(request, response);
                 return;
@@ -67,7 +67,7 @@ public class ProfileController extends HttpServlet {
         try {
             UserDAO userDAO = new UserDAO();
             AuthDAO authDAO = new AuthDAO();
-            User user = userDAO.getUserByEmail(email);
+            Users user = userDAO.getUserByEmail(email);
             if (user == null) {
                 response.sendRedirect("home");
                 return;

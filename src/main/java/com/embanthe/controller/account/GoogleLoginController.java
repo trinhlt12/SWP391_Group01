@@ -1,6 +1,5 @@
 package com.embanthe.controller.account;
-import com.embanthe.model.User;
-
+import com.embanthe.model.Users;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.apache.http.client.ClientProtocolException;
@@ -30,7 +29,7 @@ public class GoogleLoginController {
     return accessToken;
 }
 
-    public static User getUserInfo(final String accessToken) throws ClientProtocolException, IOException, SQLException {
+    public static Users getUserInfo(final String accessToken) throws ClientProtocolException, IOException, SQLException {
         String link = Iconstant.GOOGLE_LINK_GET_USER_INFO + accessToken;
         String response = Request.Get(link)
                 .addHeader("Authorization", "Bearer " + accessToken)
@@ -44,7 +43,7 @@ public class GoogleLoginController {
         boolean verified = json.get("verified_email").getAsBoolean();
 
             // Tạo mới user từ Google
-        return User.builder()
+        return Users.builder()
                 .email(email)
                 .fullName(name)
                 .username(email.split("@")[0])

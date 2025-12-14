@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet(name = "UserResetPasswordNowServlet", urlPatterns = {"/admin/user-reset-pass"})
-public class UserResetPassController extends HttpServlet {
+public class UserResetPassServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -38,7 +38,7 @@ public class UserResetPassController extends HttpServlet {
 
             UserDAO userDAO = new UserDAO();
 
-            boolean isSuccess = userDAO.updatePassword(userId, passwordToSave);
+            boolean isSuccess = userDAO.changePassword(userId, passwordToSave);
 
             if (isSuccess) {
                 session.setAttribute("message", "Đã đổi mật khẩu thành công cho user #" + userId);

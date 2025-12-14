@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.List;
 
 @WebServlet(name = "UserListServlet", urlPatterns = {"/admin/user-list"})
-public class UserController extends HttpServlet {
+public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

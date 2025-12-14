@@ -21,12 +21,12 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 @WebServlet(name = "RegisterServlet", urlPatterns = "/register")
-public class RegisterController extends HttpServlet {
+public class RegisterServlet extends HttpServlet {
 
     private final AuthDAO authDAO;
 
 
-    public RegisterController() {
+    public RegisterServlet() {
         try {
             this.authDAO = new AuthDAO();
 
@@ -43,7 +43,7 @@ public class RegisterController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException{
 
         request.setCharacterEncoding("UTF-8");
 
@@ -53,7 +53,6 @@ public class RegisterController extends HttpServlet {
         String phone = request.getParameter("phone");
         String password = request.getParameter("password");
         String confirmPassword = request.getParameter("confirmPassword");
-
 
 
         if (isEmpty(username) || isEmpty(fullName) || isEmpty(email) || isEmpty(phone)
@@ -151,4 +150,6 @@ public class RegisterController extends HttpServlet {
         String regex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
         return password != null && password.matches(regex);
     }
+
+
 }

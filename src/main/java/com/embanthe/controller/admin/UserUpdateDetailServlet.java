@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet(name = "UserUpdateDetailController", urlPatterns = {"/admin/user-update"})
-public class UserUpdateDetailController extends HttpServlet {
+public class UserUpdateDetailServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
