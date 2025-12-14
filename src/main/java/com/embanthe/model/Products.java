@@ -2,41 +2,42 @@ package com.embanthe.model;
 
 public class Products {
 
-    private long productId;
-    private long providerId;
-    private long categoryId;
+    private int productId;
+    private int providerId;
+    private int categoryId;
     private String productName;
-    private double price;
-    private double denomination;
+
+    private double price;     // Giá bán
+    private int quantity;     // Số lượng tồn kho (logic)
+
     private String imageUrl;
 
+    public Products() {
+    }
 
-    public long getProductId() {
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductId(long productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 
-
-    public long getProviderId() {
+    public int getProviderId() {
         return providerId;
     }
 
-    public void setProviderId(long providerId) {
+    public void setProviderId(int providerId) {
         this.providerId = providerId;
     }
 
-
-    public long getCategoryId() {
+    public int getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(long categoryId) {
+    public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
-
 
     public String getProductName() {
         return productName;
@@ -46,7 +47,6 @@ public class Products {
         this.productName = productName;
     }
 
-
     public double getPrice() {
         return price;
     }
@@ -55,15 +55,13 @@ public class Products {
         this.price = price;
     }
 
-
-    public double getDenomination() {
-        return denomination;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setDenomination(double denomination) {
-        this.denomination = denomination;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
-
 
     public String getImageUrl() {
         return imageUrl;
@@ -72,5 +70,4 @@ public class Products {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
-
 }
