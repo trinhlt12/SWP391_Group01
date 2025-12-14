@@ -2,6 +2,7 @@ package com.embanthe.service;
 
 import com.embanthe.util.VNPayConfig;
 import com.embanthe.util.VNPayUtils;
+
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -70,7 +71,7 @@ public class PaymentService {
 
                 if ("00".equals(vnp_ResponseCode)) {
                     return 1;
-                }else{
+                } else {
                     return 0;
                 }
             } else {
@@ -79,6 +80,41 @@ public class PaymentService {
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
+        }
+    }
+
+    public int verifyPaymentUrl(Map<String, String[]> requestParams) {
+        try {
+            Map<String, String> fields = new HashMap<>();
+            for (Map.Entry<String, String[]> entry : requestParams.entrySet()) {
+                String fieldName = URLEncoder.encode(entry.getKey(), StandardCharsets.US_ASCII.toString());
+                String fieldValue = URLEncoder.encode(entry.getValue()[0], StandardCharsets.US_ASCII.toString());
+                if ((fieldValue != null) && (fieldValue.length() > 0)) {
+                    fields.put(fieldName, fieldValue);
+                }
+            }
+
+            String vnp_SecureHash = fields.get("vnp_SecureHash");
+
+            if (fields.containsKey("vnp_SecureHashType")) {
+                fields.remove("vnp_SecureHashType");
+            }
+            fields.remove("vnp_SecureHash");
+
+            String signValue = VNPayUtils.hashAllFields(fields, VNPayConfig.vnp_HashSecret);
+
+            if (signValue.equals(vnp_SecureHash)) {
+                if ("00".equals(fields.get("vnp_ResponseCode"))) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            } else {
+                return -1;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
         }
     }
 }

@@ -2,47 +2,47 @@ package com.embanthe.model;
 
 public class Orders {
 
-  private long orderId;
-  private long userId;
-  private long productId;
-  private long quantity;
+  private int orderId;
+  private int userId;
+  private int productId;
+  private int quantity;
   private double totalAmount;
   private String status;
   private java.sql.Timestamp createdAt;
 
 
-  public long getOrderId() {
+  public int getOrderId() {
     return orderId;
   }
 
-  public void setOrderId(long orderId) {
+  public void setOrderId(int orderId) {
     this.orderId = orderId;
   }
 
 
-  public long getUserId() {
+  public int getUserId() {
     return userId;
   }
 
-  public void setUserId(long userId) {
+  public void setUserId(int userId) {
     this.userId = userId;
   }
 
 
-  public long getProductId() {
+  public int getProductId() {
     return productId;
   }
 
-  public void setProductId(long productId) {
+  public void setProductId(int productId) {
     this.productId = productId;
   }
 
 
-  public long getQuantity() {
+  public int getQuantity() {
     return quantity;
   }
 
-  public void setQuantity(long quantity) {
+  public void setQuantity(int quantity) {
     this.quantity = quantity;
   }
 

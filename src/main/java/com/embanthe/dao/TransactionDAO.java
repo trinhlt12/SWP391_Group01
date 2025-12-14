@@ -46,8 +46,9 @@ public class TransactionDAO {
                     trans.setTransactionId(rs.getInt("transaction_id"));
                     trans.setUserId(rs.getInt("user_id"));
                     trans.setAmount(rs.getDouble("amount"));
+                    trans.setType(rs.getString("type"));
                     trans.setStatus(rs.getString("status"));
-                    //
+                    trans.setMessage(rs.getString("message"));
                     return trans;
                 }
             }
