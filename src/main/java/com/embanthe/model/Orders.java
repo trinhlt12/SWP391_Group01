@@ -1,76 +1,97 @@
 package com.embanthe.model;
 
+import java.sql.Timestamp;
+
 public class Orders {
 
-  private int orderId;
-  private int userId;
-  private int productId;
-  private int quantity;
-  private double totalAmount;
-  private String status;
-  private java.sql.Timestamp createdAt;
+    private int orderId;
+    private int userId;
+    private int productId;
 
+    private int quantity;          // Số thẻ mua
+    private double totalAmount;    // Tổng tiền = price * quantity
+    private String status;         // PENDING | COMPLETED | FAILED | CANCELLED
 
-  public int getOrderId() {
-    return orderId;
-  }
+    private Timestamp createdAt;
 
-  public void setOrderId(int orderId) {
-    this.orderId = orderId;
-  }
+    /* ====== Fields dùng để JOIN hiển thị (không map DB) ====== */
+    private String productName;
+    private double productPrice;
 
+    public Orders() {
+    }
 
-  public int getUserId() {
-    return userId;
-  }
+    public int getOrderId() {
+        return orderId;
+    }
 
-  public void setUserId(int userId) {
-    this.userId = userId;
-  }
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
 
+    public int getUserId() {
+        return userId;
+    }
 
-  public int getProductId() {
-    return productId;
-  }
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
-  public void setProductId(int productId) {
-    this.productId = productId;
-  }
+    public int getProductId() {
+        return productId;
+    }
 
+    public void setProductId(int productId) {
+        this.productId = productId;
+    }
 
-  public int getQuantity() {
-    return quantity;
-  }
+    public int getQuantity() {
+        return quantity;
+    }
 
-  public void setQuantity(int quantity) {
-    this.quantity = quantity;
-  }
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
+    public double getTotalAmount() {
+        return totalAmount;
+    }
 
-  public double getTotalAmount() {
-    return totalAmount;
-  }
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
 
-  public void setTotalAmount(double totalAmount) {
-    this.totalAmount = totalAmount;
-  }
+    public String getStatus() {
+        return status;
+    }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-  public String getStatus() {
-    return status;
-  }
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
 
-  public void setStatus(String status) {
-    this.status = status;
-  }
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
 
+    /* ====== JOIN fields ====== */
 
-  public java.sql.Timestamp getCreatedAt() {
-    return createdAt;
-  }
+    public String getProductName() {
+        return productName;
+    }
 
-  public void setCreatedAt(java.sql.Timestamp createdAt) {
-    this.createdAt = createdAt;
-  }
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
 
+    public double getProductPrice() {
+        return productPrice;
+    }
+
+    public void setProductPrice(double productPrice) {
+        this.productPrice = productPrice;
+    }
 }
