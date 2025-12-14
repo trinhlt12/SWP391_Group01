@@ -1,10 +1,11 @@
 package com.embanthe.model;
 
+
 public class Transactions {
 
     private int transactionId;
     private int userId;
-    private long orderId;
+    private int orderId;
     private double amount;
     private String type;
     private String status;
@@ -12,7 +13,7 @@ public class Transactions {
     private java.sql.Timestamp createdAt;
 
 
-    public long getTransactionId() {
+    public int getTransactionId() {
         return transactionId;
     }
 
@@ -21,7 +22,7 @@ public class Transactions {
     }
 
 
-    public long getUserId() {
+    public int getUserId() {
         return userId;
     }
 
@@ -30,11 +31,11 @@ public class Transactions {
     }
 
 
-    public long getOrderId() {
+    public int getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(long orderId) {
+    public void setOrderId(int orderId) {
         this.orderId = orderId;
     }
 
