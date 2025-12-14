@@ -32,6 +32,22 @@ public class UserDAO {
         return users;
     }
 
+    public Users getUserById(int userId) {
+        String sql = "SELECT * FROM Users WHERE user_id = ?";
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapRow(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     // Lấy User theo Email
     public Users getUserByEmail(String email) throws SQLException {
         String sql = "SELECT * FROM Users WHERE email = ?";
@@ -91,6 +107,20 @@ public class UserDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    //DEPOSIT:
+    public boolean updateBalance(int userId, double amountToAdd) {
+        String sql = "UPDATE users SET balance = balance + ? WHERE user_id = ?";
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setDouble(1, amountToAdd);
+            ps.setInt(2, userId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

@@ -55,7 +55,7 @@
                 <li><a href="#hero" class="active">Home</a></li>
                 <li><a href="#about">Dịch Vụ</a></li>
                 <c:if test="${not empty sessionScope.user}">
-                    <li><a href="#services">Ewallet</a></li>
+                    <li><a href="${pageContext.request.contextPath}/ewallet">Ewallet</a></li>
                     <li><a href="#portfolio">Thống Kê</a></li>
                     <li><a href="#team">Link Thanh Toán</a></li>
                     <li><a href="#policy">Chính Sách</a></li>
