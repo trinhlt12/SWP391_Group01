@@ -27,9 +27,10 @@ public class CreateNewUserController extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession();
-        UserDAO userDAO = new UserDAO();
+
 
         try {
+            UserDAO userDAO = new UserDAO();
             String username = request.getParameter("username");
             String passwordRaw = request.getParameter("password");
             String fullname = request.getParameter("fullname");
@@ -52,6 +53,7 @@ public class CreateNewUserController extends HttpServlet {
 
             if (error != null) {
                 session.setAttribute("error", error);
+                session.setAttribute("showCreateModal", true);
                 response.sendRedirect(request.getContextPath() + "/admin/user-list");
                 return;
             }

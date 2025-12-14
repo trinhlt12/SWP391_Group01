@@ -38,6 +38,11 @@
             <artifactId>jstl</artifactId>
             <version>1.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
         <!-- MySQL Connector -->
         <dependency>
             <groupId>com.mysql</groupId>
@@ -72,12 +77,33 @@
             <artifactId>javax.mail</artifactId>
             <version>1.6.2</version>
         </dependency>
+        <!-- Gson -->
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.2</version>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
         </dependency>
 
+        <!-- Apache HttpClient 4.5.14 (đã tự động kéo theo httpcore 4.4.16) -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.14</version>
+        </dependency>
+
+        <!-- Fluent-HC: cú pháp ngắn gọn, dễ dùng cho Google OAuth -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>fluent-hc</artifactId>
+            <version>4.5.14</version>
+        </dependency>
+
+        <!-- Commons Logging - bắt buộc cho HttpClient 4.5.x -->
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
+        </dependency>
     </dependencies>
 
     <build>

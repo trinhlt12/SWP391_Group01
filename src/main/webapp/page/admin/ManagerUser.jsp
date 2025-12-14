@@ -339,8 +339,16 @@
             </button>
         </div>
 
+
+
         <form action="${pageContext.request.contextPath}/admin/user-create" method="post">
             <div class="modal-body">
+                <c:if test="${not empty sessionScope.error}">
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle mr-1"></i>
+                            ${sessionScope.error}
+                    </div>
+                </c:if>
                 <div class="row">
                     <div class="col-md-6">
                         <h6 class="text-muted border-bottom pb-2">Thông tin tài khoản</h6>
@@ -421,7 +429,15 @@
 <script src="${pageContext.request.contextPath}/assetAdmin/assets/vendor/stacked-menu/stacked-menu.min.js"></script>
 <script src="${pageContext.request.contextPath}/assetAdmin/assets/vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="${pageContext.request.contextPath}/assetAdmin/assets/javascript/theme.min.js"></script>
+<c:if test="${not empty sessionScope.error}">
+    <script>
+        $(document).ready(function () {
+            $('#createUserModal').modal('show');
+        });
+    </script>
 
+    <%-- Xóa lỗi sau khi hiển thị để tránh lặp --%>
+    <c:remove var="error" scope="session"/>
+</c:if>
 </body>
 </html>
-http://localhost:8080/SWP391_Group01_war_exploded/page/admin/user/list

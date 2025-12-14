@@ -1,6 +1,6 @@
-package com.embanthe.controller.adminController;
+package com.embanthe.controller.admin;
 import com.embanthe.dao.UserDAO;
-import com.embanthe.util.PasswordUtil; // Import class mã hóa BCrypt của bạn
+import com.embanthe.util.PasswordUtil;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -44,7 +44,7 @@ public class UserDetailPasswordController extends HttpServlet {
 
             // 4. Gọi DAO
             UserDAO userDAO = new UserDAO();
-            boolean isSuccess = userDAO.updatePassword(userId, hashedPassword);
+            boolean isSuccess = userDAO.changePassword(userId, hashedPassword);
 
             if (isSuccess) {
                 session.setAttribute("message", "Đổi mật khẩu thành công!");
