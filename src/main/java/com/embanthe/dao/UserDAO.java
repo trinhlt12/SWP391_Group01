@@ -56,6 +56,20 @@ public class UserDAO {
             }
         }
     }
+    public String checkStatus(String username) {
+        String sql = "SELECT status FROM users WHERE username = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, username);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("status"); // trả về ACTIVE, INACTIVE...
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null; // không tìm thấy user
+    }
     // Cập nhật thông tin cơ bản của User theo user_id
     public boolean updateUser(User user) throws SQLException {
         String sql = "UPDATE Users SET " +

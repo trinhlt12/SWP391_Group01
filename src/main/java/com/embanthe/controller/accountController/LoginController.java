@@ -82,6 +82,17 @@ public class LoginController extends HttpServlet {
 
             if (user != null) {
                 // Lưu user vào session
+                UserDAO userDAO = new UserDAO();
+                String status = userDAO.checkStatus(user.getUsername());
+                if ("INACTIVE".equalsIgnoreCase(status)) {
+                    request.setAttribute("message", "Tài khoản của bạn đang bị khóa. Vui lòng liên hệ hỗ trợ.");
+                    request.getRequestDispatcher("page/system/login.jsp").forward(request, response);
+                    return;
+                } else if ("BANNED".equalsIgnoreCase(status)) {
+                    request.setAttribute("message", "Tài khoản của bạn đã bị cấm.");
+                    request.getRequestDispatcher("page/system/login.jsp").forward(request, response);
+                    return;
+                }
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
                 session.setAttribute("email", user.getEmail());
