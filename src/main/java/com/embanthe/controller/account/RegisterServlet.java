@@ -43,7 +43,7 @@ public class RegisterServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException{
 
         request.setCharacterEncoding("UTF-8");
 
@@ -53,6 +53,7 @@ public class RegisterServlet extends HttpServlet {
         String phone = request.getParameter("phone");
         String password = request.getParameter("password");
         String confirmPassword = request.getParameter("confirmPassword");
+
 
         if (isEmpty(username) || isEmpty(fullName) || isEmpty(email) || isEmpty(phone)
                 || isEmpty(password) || isEmpty(confirmPassword)) {
@@ -72,12 +73,21 @@ public class RegisterServlet extends HttpServlet {
         }
 
         try {
+            boolean usernameExist = authDAO.isUsernameExists(username);
+            boolean phoneExist = authDAO.isPhoneExists(phone);
             boolean emailExist = authDAO.isEmailExists(email);
-            if (emailExist) {
-                request.setAttribute("message", "Email này đã được sử dụng!");
+            if (emailExist || usernameExist || phoneExist) {
+                if (emailExist) {
+                    request.setAttribute("message", "Email này đã được sử dụng!");
+                } else if (usernameExist) {
+                    request.setAttribute("message", "Tên đăng nhập đã tồn tại!");
+                } else if (phoneExist) {
+                    request.setAttribute("message", "Số điện thoại này đã được sử dụng!");
+                }
                 request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
                 return;
             }
+
 
             // Sinh OTP
             int otpValue = 100000 + new Random().nextInt(900000);
@@ -140,4 +150,6 @@ public class RegisterServlet extends HttpServlet {
         String regex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
         return password != null && password.matches(regex);
     }
+
+
 }

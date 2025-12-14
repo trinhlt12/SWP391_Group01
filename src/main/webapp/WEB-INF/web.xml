@@ -14,7 +14,7 @@
 
     <servlet>
         <servlet-name>UserListServlet</servlet-name>
-        <servlet-class>com.embanthe.controller.admin.UserController</servlet-class>
+        <servlet-class>com.embanthe.controller.admin.UserServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>UserListServlet</servlet-name>
@@ -22,7 +22,7 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>UserEditServlet</servlet-name>
-        <servlet-class>com.embanthe.controller.admin.UserEditController</servlet-class>
+        <servlet-class>com.embanthe.controller.admin.UserEditServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>UserEditServlet</servlet-name>
@@ -30,7 +30,7 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>UserDetailController</servlet-name>
-        <servlet-class>com.embanthe.controller.admin.UserDetailController</servlet-class>
+        <servlet-class>com.embanthe.controller.admin.UserDetailServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>UserDetailController</servlet-name>
