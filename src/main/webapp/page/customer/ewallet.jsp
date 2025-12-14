@@ -519,6 +519,12 @@
                 <button class="close-btn" onclick="toggleDepositForm()">×</button>
             </div>
 
+            <c:if test="${not empty errorMessage}">
+                <div style="background-color: #fee2e2; color: #dc2626; padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #fca5a5;">
+                    ⚠️ ${errorMessage}
+                </div>
+            </c:if>
+
             <form action="<%= request.getContextPath() %>/deposit" method="POST" onsubmit="return validateAmount()">
                 <div class="form-group">
                     <label for="amount">Số tiền muốn nạp (VNĐ)</label>
