@@ -66,7 +66,7 @@
                     <div class="text-start px-4">
                         <p><strong><i class="fas fa-wallet"></i> Số dư:</strong>
                             <span class="text-success fw-bold">
-                               <fmt:formatNumber value="${user.balance}" type="currency" currencySymbol="VND"/>
+                              <fmt:formatNumber value="${user.balance}" pattern="#,##0"/> đ
                            </span>
                         </p>
                         <p><strong><i class="fas fa-calendar"></i> Ngày tạo:</strong> ${user.createdAt}</p>
@@ -115,7 +115,7 @@
                                     <div class="col-md-6">
                                         <label class="small mb-1">Vai trò</label>
                                         <select class="form-select" name="role">
-                                            <option value="User" ${user.role == 'User' ? 'selected' : ''}>User</option>
+                                            <option value="CUSTOMER" ${user.role == 'Customer' ? 'selected' : ''}>User</option>
                                             <option value="Admin" ${user.role == 'Admin' ? 'selected' : ''}>Admin</option>
                                         </select>
                                     </div>
@@ -124,7 +124,7 @@
                                         <select class="form-select" name="status">
                                             <option value="Active" ${user.status == 'Active' ? 'selected' : ''}>Active</option>
                                             <option value="Banned" ${user.status == 'Banned' ? 'selected' : ''}>Banned</option>
-                                            <option value="Banned" ${user.status == 'Inactive' ? 'selected' : ''}>Inactive</option>
+                                            <option value="Inactive" ${user.status == 'Inactive' ? 'selected' : ''}>Inactive</option>
                                         </select>
                                     </div>
                                 </div>

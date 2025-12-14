@@ -20,7 +20,6 @@
     //        this.connection = DBContext.getInstance().getConnection();
     //    }
 
-
         // Lấy tất cả User
         public List<User> getAll() throws SQLException {
             List<User> users = new ArrayList<>();
@@ -182,7 +181,7 @@
                 ps.setString(3, user.getRole());
                 ps.setString(4, user.getPhone());
                 ps.setString(5, user.getStatus());
-                ps.setInt(6, user.getUserId()); // WHERE user_id = ?
+                ps.setInt(6, user.getUserId());
 
                 return ps.executeUpdate() > 0;
             } catch (SQLException e) {
@@ -198,6 +197,24 @@
                  PreparedStatement ps = conn.prepareStatement(sql)) {
                 ps.setString(1, newPasswordHash);
                 ps.setInt(2, userId);
+                return ps.executeUpdate() > 0;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+        public boolean updateUserInfo(int userId, String fullName, String email, String phone, String role, String status) {
+            String sql = "UPDATE Users SET full_name=?, email=?, phone=?, role=?, status=? WHERE user_id=?";
+            try (Connection conn = DBContext.getInstance().getConnection();
+                 PreparedStatement ps = conn.prepareStatement(sql)) {
+
+                ps.setString(1, fullName);
+                ps.setString(2, email);
+                ps.setString(3, phone);
+                ps.setString(4, role);
+                ps.setString(5, status);
+                ps.setInt(6, userId);
+
                 return ps.executeUpdate() > 0;
             } catch (SQLException e) {
                 e.printStackTrace();
