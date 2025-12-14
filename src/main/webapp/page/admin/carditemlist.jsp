@@ -57,7 +57,7 @@
     <!-- SEARCH BAR -->
     <form class="search-bar" method="get" action="${pageContext.request.contextPath}/admin/carditems">
         <input type="text" name="searchSerial" placeholder="Tìm Serial" value="${searchSerial}">
-        <input type="text" name="searchCode" placeholder="Tìm mã nạp" value="${searchCode}">
+        
         <select name="productId">
             <option value="">-- Tất cả sản phẩm --</option>
             <c:forEach var="prd" items="${products}">
