@@ -443,84 +443,102 @@
 
 
 </main>
-
 <footer id="footer" class="footer">
 
+    <!-- Newsletter -->
     <div class="footer-newsletter">
         <div class="container">
             <div class="row justify-content-center text-center">
                 <div class="col-lg-6">
-                    <h4>Join Our Newsletter</h4>
-                    <p>Subscribe to our newsletter and receive the latest news about our products and services!</p>
-                    <form action="forms/newsletter.php" method="post" class="php-email-form">
-                        <div class="newsletter-form"><input type="email" name="email"><input type="submit"
-                                                                                             value="Subscribe"></div>
-                        <div class="loading">Loading</div>
+                    <h4>Đăng ký nhận tin</h4>
+                    <p>
+                        Nhận thông báo khuyến mãi, thẻ mới và ưu đãi độc quyền từ EmBanThe.
+                    </p>
+                    <form action="#" method="post" class="php-email-form">
+                        <div class="newsletter-form">
+                            <input type="email" name="email" placeholder="Nhập email của bạn" required>
+                            <input type="submit" value="Đăng ký">
+                        </div>
+                        <div class="loading">Đang gửi...</div>
                         <div class="error-message"></div>
-                        <div class="sent-message">Your subscription request has been sent. Thank you!</div>
+                        <div class="sent-message">
+                            Đăng ký thành công. Cảm ơn bạn!
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Footer Top -->
     <div class="container footer-top">
         <div class="row gy-4">
+
+            <!-- About -->
             <div class="col-lg-4 col-md-6 footer-about">
                 <a href="index.html" class="d-flex align-items-center">
-                    <span class="sitename">eNno</span>
+                    <span class="sitename">EmBanThe</span>
                 </a>
                 <div class="footer-contact pt-3">
-                    <p>A108 Adam Street</p>
-                    <p>New York, NY 535022</p>
-                    <p class="mt-3"><strong>Phone:</strong> <span>+1 5589 55488 55</span></p>
-                    <p><strong>Email:</strong> <span>info@example.com</span></p>
+                    <p>Nền tảng mua thẻ điện thoại & thẻ game online</p>
+                    <p>Uy tín – Nhanh chóng – An toàn</p>
+                    <p class="mt-3">
+                        <strong>Hotline:</strong> <span>0900 123 456</span>
+                    </p>
+                    <p>
+                        <strong>Email:</strong> <span>support@embanthe.vn</span>
+                    </p>
                 </div>
             </div>
 
+            <!-- Useful Links -->
             <div class="col-lg-2 col-md-3 footer-links">
-                <h4>Useful Links</h4>
+                <h4>Liên kết</h4>
                 <ul>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Home</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">About us</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Services</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Terms of service</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="/">Trang chủ</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="/about">Giới thiệu</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="/cards">Mua thẻ</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="/contact">Liên hệ</a></li>
                 </ul>
             </div>
 
+            <!-- Services -->
             <div class="col-lg-2 col-md-3 footer-links">
-                <h4>Our Services</h4>
+                <h4>Dịch vụ</h4>
                 <ul>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Web Design</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Web Development</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Product Management</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Marketing</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="#">Thẻ điện thoại</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="#">Thẻ game</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="#">Nạp điện thoại</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="#">Ví điện tử</a></li>
                 </ul>
             </div>
 
+            <!-- Social -->
             <div class="col-lg-4 col-md-12">
-                <h4>Follow Us</h4>
-                <p>Cras fermentum odio eu feugiat lide par naso tierra videa magna derita valies</p>
+                <h4>Kết nối với chúng tôi</h4>
+                <p>
+                    Theo dõi EmBanThe để cập nhật khuyến mãi và tin tức mới nhất.
+                </p>
                 <div class="social-links d-flex">
-                    <a href=""><i class="bi bi-twitter-x"></i></a>
-                    <a href=""><i class="bi bi-facebook"></i></a>
-                    <a href=""><i class="bi bi-instagram"></i></a>
-                    <a href=""><i class="bi bi-linkedin"></i></a>
+                    <a href="#"><i class="bi bi-facebook"></i></a>
+                    <a href="#"><i class="bi bi-instagram"></i></a>
+                    <a href="#"><i class="bi bi-twitter-x"></i></a>
+                    <a href="#"><i class="bi bi-linkedin"></i></a>
                 </div>
             </div>
 
         </div>
     </div>
 
+    <!-- Copyright -->
     <div class="container copyright text-center mt-4">
-        <p>© <span>Copyright</span> <strong class="px-1 sitename">eNno</strong> <span>All Rights Reserved</span></p>
+        <p>
+            © <span>2025</span>
+            <strong class="px-1 sitename">EmBanThe</strong>
+            <span>– All Rights Reserved</span>
+        </p>
         <div class="credits">
-            <!-- All the links in the footer should remain intact. -->
-            <!-- You can delete the links only if you've purchased the pro version. -->
-            <!-- Licensing information: https://bootstrapmade.com/license/ -->
-            <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
-            Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> Distributed by <a
-                href=“https://themewagon.com>ThemeWagon
+            Thiết kế & phát triển bởi <strong>EmBanThe Team</strong>
         </div>
     </div>
 

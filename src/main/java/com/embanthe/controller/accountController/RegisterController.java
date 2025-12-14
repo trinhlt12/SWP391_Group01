@@ -54,6 +54,8 @@ public class RegisterController extends HttpServlet {
         String password = request.getParameter("password");
         String confirmPassword = request.getParameter("confirmPassword");
 
+
+
         if (isEmpty(username) || isEmpty(fullName) || isEmpty(email) || isEmpty(phone)
                 || isEmpty(password) || isEmpty(confirmPassword)) {
             request.setAttribute("message", "Vui lòng điền đầy đủ thông tin!");
@@ -72,12 +74,21 @@ public class RegisterController extends HttpServlet {
         }
 
         try {
+            boolean usernameExist = authDAO.isUsernameExists(username);
+            boolean phoneExist = authDAO.isPhoneExists(phone);
             boolean emailExist = authDAO.isEmailExists(email);
-            if (emailExist) {
-                request.setAttribute("message", "Email này đã được sử dụng!");
+            if (emailExist || usernameExist || phoneExist) {
+                if (emailExist) {
+                    request.setAttribute("message", "Email này đã được sử dụng!");
+                } else if (usernameExist) {
+                    request.setAttribute("message", "Tên đăng nhập đã tồn tại!");
+                } else if (phoneExist) {
+                    request.setAttribute("message", "Số điện thoại này đã được sử dụng!");
+                }
                 request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
                 return;
             }
+
 
             // Sinh OTP
             int otpValue = 100000 + new Random().nextInt(900000);

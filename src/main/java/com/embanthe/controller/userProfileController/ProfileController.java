@@ -1,5 +1,6 @@
 package com.embanthe.controller.userProfileController;
 
+import com.embanthe.dao.AuthDAO;
 import com.embanthe.dao.UserDAO;
 import com.embanthe.model.User;
 
@@ -62,11 +63,24 @@ public class ProfileController extends HttpServlet {
             request.getRequestDispatcher("page/userProfile/userProfile.jsp").forward(request, response);
             return;
         }
+
         try {
             UserDAO userDAO = new UserDAO();
+            AuthDAO authDAO = new AuthDAO();
             User user = userDAO.getUserByEmail(email);
             if (user == null) {
                 response.sendRedirect("home");
+                return;
+            }    if (!username.equals(user.getUsername()) && authDAO.isUsernameExists(username)) {
+                request.setAttribute("error", "Username đã tồn tại!");
+                request.getRequestDispatcher("page/userProfile/userProfile.jsp").forward(request, response);
+                return;
+            }
+
+            // Kiểm tra trùng phone
+            if (!phone.equals(user.getPhone()) && authDAO.isPhoneExists(phone)) {
+                request.setAttribute("error", "Số điện thoại đã tồn tại!");
+                request.getRequestDispatcher("page/userProfile/userProfile.jsp").forward(request, response);
                 return;
             }
             // Cập nhật thông tin

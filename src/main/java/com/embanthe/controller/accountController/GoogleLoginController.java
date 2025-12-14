@@ -44,27 +44,12 @@ public class GoogleLoginController {
         String googleId = json.get("id").getAsString();
         boolean verified = json.get("verified_email").getAsBoolean();
 
-        // Bước cuối: tìm hoặc tạo User trong DB
-        UserDAO userDAO = new UserDAO();
-        User user = userDAO.getUserByEmail(email);
-
-        if (user == null) {
             // Tạo mới user từ Google
-            user = User.builder()
-                    .email(email)
-                    .fullName(name)
-                    .username(email.split("@")[0]) // tránh trùng username
-                    .passwordHash("" ) // đánh dấu login bằng Google
-                    .role("CUSTOMER")
-                    .balance(0.0)
-                    .status("ACTIVE")
-                    .phone("")
-                    .build();
-
-            userDAO.insertGoogleUser(user);
-        }
-
-        return user; // trả về User để lưu session
+        return User.builder()
+                .email(email)
+                .fullName(name)
+                .username(email.split("@")[0])
+                .build();
     }
 
 }

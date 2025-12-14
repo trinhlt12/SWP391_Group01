@@ -45,7 +45,7 @@
 <header id="header" class="header d-flex align-items-center sticky-top">
     <div class="container-fluid container-xl position-relative d-flex align-items-center">
 
-        <a href="/home" class="logo d-flex align-items-center me-auto">
+        <a href="home" class="logo d-flex align-items-center me-auto">
 
             <img src="image/Logo.png" alt="Logo">
             <h1 class="sitename">Em Bán Thẻ</h1>
@@ -186,7 +186,109 @@
             </div>
         </div>
     </div>
+
 </div>
+<footer id="footer" class="footer">
+
+    <!-- Newsletter -->
+    <div class="footer-newsletter">
+        <div class="container">
+            <div class="row justify-content-center text-center">
+                <div class="col-lg-6">
+                    <h4>Đăng ký nhận tin</h4>
+                    <p>
+                        Nhận thông báo khuyến mãi, thẻ mới và ưu đãi độc quyền từ EmBanThe.
+                    </p>
+                    <form action="#" method="post" class="php-email-form">
+                        <div class="newsletter-form">
+                            <input type="email" name="email" placeholder="Nhập email của bạn" required>
+                            <input type="submit" value="Đăng ký">
+                        </div>
+                        <div class="loading">Đang gửi...</div>
+                        <div class="error-message"></div>
+                        <div class="sent-message">
+                            Đăng ký thành công. Cảm ơn bạn!
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Top -->
+    <div class="container footer-top">
+        <div class="row gy-4">
+
+            <!-- About -->
+            <div class="col-lg-4 col-md-6 footer-about">
+                <a href="index.html" class="d-flex align-items-center">
+                    <span class="sitename">EmBanThe</span>
+                </a>
+                <div class="footer-contact pt-3">
+                    <p>Nền tảng mua thẻ điện thoại & thẻ game online</p>
+                    <p>Uy tín – Nhanh chóng – An toàn</p>
+                    <p class="mt-3">
+                        <strong>Hotline:</strong> <span>0900 123 456</span>
+                    </p>
+                    <p>
+                        <strong>Email:</strong> <span>support@embanthe.vn</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Useful Links -->
+            <div class="col-lg-2 col-md-3 footer-links">
+                <h4>Liên kết</h4>
+                <ul>
+                    <li><i class="bi bi-chevron-right"></i> <a href="/">Trang chủ</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="/about">Giới thiệu</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="/cards">Mua thẻ</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="/contact">Liên hệ</a></li>
+                </ul>
+            </div>
+
+            <!-- Services -->
+            <div class="col-lg-2 col-md-3 footer-links">
+                <h4>Dịch vụ</h4>
+                <ul>
+                    <li><i class="bi bi-chevron-right"></i> <a href="#">Thẻ điện thoại</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="#">Thẻ game</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="#">Nạp điện thoại</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="#">Ví điện tử</a></li>
+                </ul>
+            </div>
+
+            <!-- Social -->
+            <div class="col-lg-4 col-md-12">
+                <h4>Kết nối với chúng tôi</h4>
+                <p>
+                    Theo dõi EmBanThe để cập nhật khuyến mãi và tin tức mới nhất.
+                </p>
+                <div class="social-links d-flex">
+                    <a href="#"><i class="bi bi-facebook"></i></a>
+                    <a href="#"><i class="bi bi-instagram"></i></a>
+                    <a href="#"><i class="bi bi-twitter-x"></i></a>
+                    <a href="#"><i class="bi bi-linkedin"></i></a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Copyright -->
+    <div class="container copyright text-center mt-4">
+        <p>
+            © <span>2025</span>
+            <strong class="px-1 sitename">EmBanThe</strong>
+            <span>– All Rights Reserved</span>
+        </p>
+        <div class="credits">
+            Thiết kế & phát triển bởi <strong>EmBanThe Team</strong>
+        </div>
+    </div>
+
+</footer>
+
 <script>
     const editBtn = document.getElementById("editBtn");
     const saveBtn = document.getElementById("saveBtn");
