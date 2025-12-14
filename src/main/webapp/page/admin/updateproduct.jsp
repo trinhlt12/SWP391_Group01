@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
   User: tn030
-  Date: 12/13/2025
-  Time: 10:35 PM
+  Date: 12/14/2025
+  Time: 3:20 PM
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" %>
@@ -11,7 +11,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Add Product</title>
+    <title>Update Product</title>
     <style>
         body { font-family: Arial,sans-serif; background: #f6f8fa;}
         .container { max-width: 600px; margin: 40px auto; background: white; padding: 32px; border-radius: 12px; box-shadow: 0 8px 30px #cfd8dc;}
@@ -25,11 +25,12 @@
 </head>
 <body>
 <div class="container">
-    <h2>Add New Product</h2>
-    <form action="${pageContext.request.contextPath}/admin/products/add" method="post" enctype="multipart/form-data">
+    <h2>Update Product</h2>
+    <form action="${pageContext.request.contextPath}/admin/products/update" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="productId" value="${product.productId}">
 
         <label>Product Name *</label>
-        <input type="text" name="productName" value="${inputProductName != null ? inputProductName : ''}">
+        <input type="text" name="productName" value="${product.productName}">
         <c:if test="${not empty validateErrors['productName']}">
             <div class="err-msg">${validateErrors['productName']}</div>
         </c:if>
@@ -38,7 +39,7 @@
         <select name="categoryId">
             <option value="">-- Select Category --</option>
             <c:forEach var="c" items="${listCategory}">
-                <option value="${c.categoryId}" ${inputCategoryId == c.categoryId ? 'selected' : ''}>${c.categoryName}</option>
+                <option value="${c.categoryId}" ${product.categoryId == c.categoryId ? 'selected' : ''}>${c.categoryName}</option>
             </c:forEach>
         </select>
         <c:if test="${not empty validateErrors['categoryId']}">
@@ -49,7 +50,7 @@
         <select name="providerId">
             <option value="">-- Select Provider --</option>
             <c:forEach var="p" items="${listProvider}">
-                <option value="${p.providerId}" ${inputProviderId == p.providerId ? 'selected' : ''}>${p.providerName}</option>
+                <option value="${p.providerId}" ${product.providerId == p.providerId ? 'selected' : ''}>${p.providerName}</option>
             </c:forEach>
         </select>
         <c:if test="${not empty validateErrors['providerId']}">
@@ -57,18 +58,26 @@
         </c:if>
 
         <label>Price *</label>
-        <input type="number" step="1000" name="price" min="0" value="${inputPrice != null ? inputPrice : ''}">
+        <input type="number" step="1000" name="price" min="0" value="${product.price}">
         <c:if test="${not empty validateErrors['price']}">
             <div class="err-msg">${validateErrors['price']}</div>
         </c:if>
 
-        <label>Image</label>
+        <label>Current Image</label>
+        <c:choose>
+            <c:when test="${not empty product.imageUrl}">
+                <img src="${pageContext.request.contextPath}/image/${product.imageUrl}" style="max-width:120px; border-radius:8px; margin:10px 0;">
+            </c:when>
+            <c:otherwise>
+                <span style="color:#a0aec0; font-size:28px;display:inline-block;margin:10px 0;">🖼️</span>
+            </c:otherwise>
+        </c:choose>
         <input type="file" name="image" accept=".jpg,.jpeg,.png">
         <c:if test="${not empty validateErrors['image']}">
             <div class="err-msg">${validateErrors['image']}</div>
         </c:if>
 
-        <button type="submit">Add Product</button>
+        <button type="submit">Update Product</button>
     </form>
 </div>
 </body>

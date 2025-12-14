@@ -12,6 +12,10 @@ public class Products {
 
     private String imageUrl;
 
+    // Thêm 2 trường để hiển thị tên liên quan đến provider và category
+    private String providerName;
+    private String categoryName;
+
     public Products() {
     }
 
@@ -69,5 +73,22 @@ public class Products {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    // Getter và Setter cho providerName và categoryName
+    public String getProviderName() {
+        return providerName;
+    }
+
+    public void setProviderName(String providerName) {
+        this.providerName = providerName;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }

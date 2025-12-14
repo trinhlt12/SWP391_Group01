@@ -1,7 +1,7 @@
 package com.embanthe.controller.admin;
 
-import com.embanthe.dao.CategoryDAO;
 import com.embanthe.dao.ProductDAO;
+import com.embanthe.dao.CategoryDAO;
 import com.embanthe.dao.ProviderDAO;
 import com.embanthe.model.Products;
 
@@ -14,25 +14,33 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@WebServlet("/admin/products/add")
+@WebServlet("/admin/products/update")
 @MultipartConfig
-public class AddProductServlet extends HttpServlet {
-    private ProviderDAO providerDao = new ProviderDAO();
-    private CategoryDAO categoryDao = new CategoryDAO();
+public class UpdateProductServlet extends HttpServlet {
     private ProductDAO productDAO = new ProductDAO();
+    private CategoryDAO categoryDAO = new CategoryDAO();
+    private ProviderDAO providerDAO = new ProviderDAO();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("listProvider", providerDao.getAll());
-        request.setAttribute("listCategory", categoryDao.getAll());
-        request.getRequestDispatcher("/page/admin/addproduct.jsp").forward(request, response);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String idStr = request.getParameter("id");
+        int id = Integer.parseInt(idStr);
+
+        Products product = productDAO.getById(id);
+        request.setAttribute("product", product);
+        request.setAttribute("listCategory", categoryDAO.getAll());
+        request.setAttribute("listProvider", providerDAO.getAll());
+        request.getRequestDispatcher("/page/admin/updateproduct.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
+
         Map<String, String> errors = new HashMap<>();
+        int id = Integer.parseInt(request.getParameter("productId"));
         String productName = request.getParameter("productName");
         String categoryIdStr = request.getParameter("categoryId");
         String providerIdStr = request.getParameter("providerId");
@@ -70,9 +78,12 @@ public class AddProductServlet extends HttpServlet {
             errors.put("price", "Invalid price value.");
         }
 
-        // Validate image (optional: chỉ cho phép jpg, jpeg, png)
+        // Retrieve old product to get current image and quantity
+        Products oldProduct = productDAO.getById(id);
+        String fileName = oldProduct.getImageUrl();
+
+        // Validate image (if new file uploaded)
         Part filePart = request.getPart("image");
-        String fileName = null;
         if (filePart != null && filePart.getSize() > 0) {
             String originalName = filePart.getSubmittedFileName();
             if (!originalName.matches(".*\\.(jpg|jpeg|png)$")) {
@@ -81,18 +92,25 @@ public class AddProductServlet extends HttpServlet {
         }
 
         if (!errors.isEmpty()) {
+            // GIỮ DỮ LIỆU & LỖI TRẢ VỀ FORM
+            Products product = new Products();
+            product.setProductId(id);
+            product.setProductName(productName);
+            product.setCategoryId(categoryId);
+            product.setProviderId(providerId);
+            product.setPrice(price);
+            product.setQuantity(oldProduct != null ? oldProduct.getQuantity() : 0);
+            product.setImageUrl(fileName);
+
             request.setAttribute("validateErrors", errors);
-            request.setAttribute("inputProductName", productName);
-            request.setAttribute("inputCategoryId", categoryIdStr);
-            request.setAttribute("inputProviderId", providerIdStr);
-            request.setAttribute("inputPrice", priceStr);
-            request.setAttribute("listProvider", providerDao.getAll());
-            request.setAttribute("listCategory", categoryDao.getAll());
-            request.getRequestDispatcher("/page/admin/addproduct.jsp").forward(request, response);
+            request.setAttribute("product", product);
+            request.setAttribute("listCategory", categoryDAO.getAll());
+            request.setAttribute("listProvider", providerDAO.getAll());
+            request.getRequestDispatcher("/page/admin/updateproduct.jsp").forward(request, response);
             return;
         }
 
-        // Xử lý upload ảnh (nếu hợp lệ)
+        // Nếu không lỗi: xử lý cập nhật/ghi file ảnh nếu có
         if (filePart != null && filePart.getSize() > 0) {
             String originalName = filePart.getSubmittedFileName();
             String ext = "";
@@ -105,16 +123,16 @@ public class AddProductServlet extends HttpServlet {
             filePart.write(uploadDir + File.separator + fileName);
         }
 
-        // Tạo Products
         Products product = new Products();
+        product.setProductId(id);
         product.setProductName(productName);
         product.setCategoryId(categoryId);
         product.setProviderId(providerId);
         product.setPrice(price);
-        product.setQuantity(0);
+        product.setQuantity(oldProduct.getQuantity());
         product.setImageUrl(fileName);
 
-        productDAO.insert(product);
+        productDAO.update(product);
 
         response.sendRedirect(request.getContextPath() + "/admin/products");
     }
