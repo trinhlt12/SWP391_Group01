@@ -99,7 +99,8 @@
                 String sql = "SELECT * FROM Users WHERE username = ? and email = ?";
                 try ( Connection connection = DBContext.getInstance().getConnection();
                         PreparedStatement ps = connection.prepareStatement(sql)) {
-                    ps.setString(1, email);
+                    ps.setString(1, username);
+                    ps.setString(2, email);
                     try (ResultSet rs = ps.executeQuery()) {
                         if (rs.next()) {
                             return mapRow(rs);
@@ -221,8 +222,86 @@
             }
             return false;
         }
+        // to set password follow form: username +@123
+        public String getUsernameById(int userId) {
+            String sql = "SELECT username FROM Users WHERE user_id = ?";
+            try (Connection conn = DBContext.getInstance().getConnection();
+                 PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        // Test trực tiếp trong DAO
+                ps.setInt(1, userId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getString("username");
+                    }
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        //Add new user
+
+        public boolean insertUser(User u) {
+            String sql = """
+            INSERT INTO users
+            (username, email, password_hash, full_name, phone, role, balance, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?) """;
+
+            try (Connection con = DBContext.getInstance().getConnection();
+                 PreparedStatement ps = con.prepareStatement(sql)) {
+
+                ps.setString(1, u.getUsername());
+                ps.setString(2, u.getEmail());
+                ps.setString(3, u.getPasswordHash());
+                ps.setString(4, u.getFullName());
+                ps.setString(5, u.getPhone());
+                ps.setString(6, u.getRole());
+                if (u.getBalance() != null) {
+                    ps.setDouble(7, u.getBalance());
+                } else {
+                    ps.setDouble(7, 0.0);
+                }
+                ps.setString(8, u.getStatus());
+
+                return ps.executeUpdate() > 0;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        // 2. Hàm check trùng Username (để tránh lỗi DB)
+        public boolean checkUsernameExists(String username) {
+            String sql = "SELECT 1 FROM Users WHERE username = ?";
+            try (Connection conn = DBContext.getInstance().getConnection();
+                 PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, username);
+                try (ResultSet rs = ps.executeQuery()) {
+                    return rs.next();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+        // 3. Hàm check trùng Email
+        public boolean checkEmailExists(String email) {
+            String sql = "SELECT 1 FROM Users WHERE email = ?";
+            try (Connection conn = DBContext.getInstance().getConnection();
+                 PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, email);
+                try (ResultSet rs = ps.executeQuery()) {
+                    return rs.next();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+
         public static void main(String[] args) {
 
         }

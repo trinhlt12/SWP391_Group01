@@ -115,7 +115,7 @@
                                     <div class="col-md-6">
                                         <label class="small mb-1">Vai trò</label>
                                         <select class="form-select" name="role">
-                                            <option value="CUSTOMER" ${user.role == 'Customer' ? 'selected' : ''}>User</option>
+                                            <option value="CUSTOMER" ${user.role == 'Customer' ? 'selected' : ''}>Customer</option>
                                             <option value="Admin" ${user.role == 'Admin' ? 'selected' : ''}>Admin</option>
                                         </select>
                                     </div>
