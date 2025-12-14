@@ -12,7 +12,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Flexy Free Bootstrap Admin Template by WrapPixel</title>
+    <title>Em Ban The</title>
     <link rel="shortcut icon" type="image/png" href="${pageContext.request.contextPath}/assets/images/logos/favicon.png" />
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/styles.min.css" />
     <base href="${pageContext.request.contextPath}/">
@@ -27,14 +27,12 @@
     <div class="app-topstrip bg-dark py-6 px-3 w-100 d-lg-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center justify-content-center gap-5 mb-2 mb-lg-0">
             <a class="d-flex justify-content-center" href="#">
-                <img src="assets/images/logos/logo-wrappixel.svg" alt="" width="150">
+                <img src="assets/images/logos/logo-wrappixel.svg" alt="" width="150">EmbanThe
             </a>
-
-
         </div>
 
         <div class="d-lg-flex align-items-center gap-2">
-            <h3 class="text-white mb-2 mb-lg-0 fs-5 text-center">Check Flexy Premium Version</h3>
+            <h3 class="text-white mb-2 mb-lg-0 fs-5 text-center">Check Now</h3>
             <div class="d-flex align-items-center justify-content-center gap-2">
 
                 <div class="dropdown d-flex">
@@ -69,9 +67,12 @@
                         <span class="hide-menu">Home</span>
                     </li>
                     <li class="sidebar-item">
-                        <a class="sidebar-link" href="../index.html" aria-expanded="false">
+                        <a class="sidebar-link" href="${pageContext.request.contextPath}/admin/products" aria-expanded="false">
                             <i class="ti ti-atom"></i>
-                            <span class="hide-menu">Dashboard</span>
+                            <span class="hide-menu">Manage Product</span>
+                        <a class="sidebar-link" href="${pageContext.request.contextPath}/admin/user-list" aria-expanded="false">
+                            <i class="ti ti-atom"></i>
+                            <span class="hide-menu">User</span>
                         </a>
                     </li>
                     <!-- ---------------------------------- -->
@@ -2357,7 +2358,7 @@
                 </div>
                 <div class="py-6 px-6 text-center">
                     <p class="mb-0 fs-4">Design and Developed by <a href="#"
-                                                                    class="pe-1 text-primary text-decoration-underline">Wrappixel.com</a> Distributed by <a href="https://themewagon.com" target="_blank" >ThemeWagon</a></p>
+                                                                    class="pe-1 text-primary text-decoration-underline">Group 1</a> Distributed by <a href="https://themewagon.com" target="_blank" >ThemeWagon</a></p>
                 </div>
             </div>
         </div>

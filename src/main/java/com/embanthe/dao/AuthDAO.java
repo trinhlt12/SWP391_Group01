@@ -1,6 +1,6 @@
 package com.embanthe.dao;
 
-import com.embanthe.model.User;
+import com.embanthe.model.Users;
 import com.embanthe.util.DBContext;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -17,7 +17,7 @@ public class AuthDAO {
         this.connection = DBContext.getInstance().getConnection();
     }
 
-    public User login(String email, String password) throws SQLException {
+    public Users login(String email, String password) throws SQLException {
         String sql = "SELECT * FROM Users WHERE email = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, email);
@@ -55,16 +55,6 @@ public class AuthDAO {
             return rowsAffected > 0;
         }
     }
-
-    public boolean isEmailExists(String email) throws SQLException {
-        String sql = "SELECT 1 FROM Users WHERE email = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, email);
-            try (ResultSet rs = ps.executeQuery()) {
-                return rs.next();
-            }
-        }
-    }
     public boolean isPhoneExists(String phone) throws SQLException {
         String sql = "SELECT 1 FROM Users WHERE phone = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -74,6 +64,16 @@ public class AuthDAO {
             }
         }
     }
+    public boolean isEmailExists(String email) throws SQLException {
+        String sql = "SELECT 1 FROM Users WHERE Email = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+
     public boolean isUsernameExists(String username) throws SQLException {
         String sql = "SELECT 1 FROM Users WHERE username  = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -83,9 +83,8 @@ public class AuthDAO {
             }
         }
     }
-
-    private User mapRow(ResultSet rs) throws SQLException {
-        return User.builder()
+    private Users mapRow(ResultSet rs) throws SQLException {
+        return Users.builder()
                 .userId(rs.getInt("user_id"))
                 .username(rs.getString("username"))
                 .fullName(rs.getString("full_name"))
@@ -103,28 +102,26 @@ public class AuthDAO {
 
         try {
             AuthDAO authDAO = new AuthDAO();
+            Scanner sc = new Scanner(System.in);
 
-            boolean phoneExit = authDAO.isPhoneExists("0123456789");
-            System.out.println(phoneExit);
-//            Scanner sc = new Scanner(System.in);
-//            System.out.println("=== TEST ĐĂNG NHẬP TÀI KHOẢN ===");
-//            System.out.print("Nhập email: ");
-//            String email = sc.nextLine();
-//
-//            System.out.print("Nhập mật khẩu: ");
-//            String password = sc.nextLine();
-//
-//            User user = authDAO.login(email, password);
-//            if (user != null) {
-//                System.out.println("✅ Đăng nhập thành công!");
-//                System.out.println("Xin chào, " + user.getFullName());
-//                System.out.println("Role: " + user.getRole());
-//                System.out.println("Balance: " + user.getBalance());
-//            } else {
-//                System.out.println("❌ Đăng nhập thất bại! Sai email hoặc mật khẩu.");
-//            }
-//
-//            sc.close();
+            System.out.println("=== TEST ĐĂNG NHẬP TÀI KHOẢN ===");
+            System.out.print("Nhập email: ");
+            String email = sc.nextLine();
+
+            System.out.print("Nhập mật khẩu: ");
+            String password = sc.nextLine();
+
+            Users user = authDAO.login(email, password);
+            if (user != null) {
+                System.out.println("✅ Đăng nhập thành công!");
+                System.out.println("Xin chào, " + user.getFullName());
+                System.out.println("Role: " + user.getRole());
+                System.out.println("Balance: " + user.getBalance());
+            } else {
+                System.out.println("❌ Đăng nhập thất bại! Sai email hoặc mật khẩu.");
+            }
+
+            sc.close();
         } catch (SQLException e) {
             System.out.println("Lỗi kết nối CSDL:");
             e.printStackTrace();
