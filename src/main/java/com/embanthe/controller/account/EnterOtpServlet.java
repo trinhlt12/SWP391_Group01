@@ -1,65 +1,51 @@
 package com.embanthe.controller.account;
 
-import com.embanthe.dao.AuthDAO;
-
 import javax.servlet.RequestDispatcher;
+
+import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
-import java.io.IOException;
-import java.sql.SQLException;
 
 @WebServlet(name = "ValidateOtp", urlPatterns = {"/validateOtp"})
-public class EnterOtpServlet extends HttpServlet {
 
-    @Override
+
+public class EnterOtpServlet extends HttpServlet {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int enteredOtp = Integer.parseInt(request.getParameter("otp"));
+        int value = Integer.parseInt(request.getParameter("otp"));
+        String username = request.getParameter("username");
         HttpSession session = request.getSession();
         int otp = (int) session.getAttribute("otp");
-        String actionType = (String) session.getAttribute("actionType");
 
-        RequestDispatcher dispatcher;
+        RequestDispatcher dispatcher = null;
 
-        if (enteredOtp == otp) {
-            if ("forgotPassword".equals(actionType)) {
-                // OTP đúng cho quên mật khẩu
-                request.setAttribute("email", session.getAttribute("email"));
-                request.setAttribute("status", "success");
-                dispatcher = request.getRequestDispatcher("page/system/newPassword.jsp");
-                dispatcher.forward(request, response);
+        if (value == otp) {
 
-            } else if ("register".equals(actionType)) {
-                // OTP đúng cho đăng ký
-                String username = (String) session.getAttribute("username");
-                String fullName = (String) session.getAttribute("fullName");
-                String email = (String) session.getAttribute("email");
-                String password = (String) session.getAttribute("password");
-                String phone = (String) session.getAttribute("phone");
+            request.setAttribute("email", request.getParameter("email"));
+            request.setAttribute("status", "success");
 
-                try {
-                    AuthDAO authDAO = new AuthDAO();
-                    boolean success = authDAO.register(username, fullName, email, password, phone);
-                    if (success) {
-                        request.setAttribute("message", "Đăng ký thành công! Bạn có thể đăng nhập.");
-                        dispatcher = request.getRequestDispatcher("page/system/login.jsp");
-                    } else {
-                        request.setAttribute("message", "Email đã tồn tại!");
-                        dispatcher = request.getRequestDispatcher("page/system/register.jsp");
-                    }
-                    dispatcher.forward(request, response);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    request.setAttribute("message", "Lỗi hệ thống!");
-                    request.getRequestDispatcher("page/system/register.jsp").forward(request, response);
-                }
-            }
+            dispatcher = request.getRequestDispatcher("page/system/newPassword.jsp");
+            dispatcher.forward(request, response);
+
         } else {
-            request.setAttribute("message", "Sai OTP!");
+            request.setAttribute("message", "Sai otp");
             request.setAttribute("email", session.getAttribute("email"));
             dispatcher = request.getRequestDispatcher("page/system/enterOTP.jsp");
             dispatcher.forward(request, response);
+
         }
     }
+
 }
