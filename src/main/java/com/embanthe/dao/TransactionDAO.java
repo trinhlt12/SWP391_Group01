@@ -34,4 +34,40 @@ public class TransactionDAO {
         }
         return -1;
     }
+
+    public Transactions getTransactionById(int id) {
+        String sql = "SELECT * FROM transactions WHERE transaction_id = ?";
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Transactions trans = new Transactions();
+                    trans.setTransactionId(rs.getInt("transaction_id"));
+                    trans.setUserId(rs.getInt("user_id"));
+                    trans.setAmount(rs.getDouble("amount"));
+                    trans.setStatus(rs.getString("status"));
+                    //
+                    return trans;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean updateTransactionStatus(int transactionId, String status, String message) {
+        String sql = "UPDATE transactions SET status = ?, message = ? WHERE transaction_id = ?";
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, status);
+            ps.setString(2, message);
+            ps.setInt(3, transactionId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

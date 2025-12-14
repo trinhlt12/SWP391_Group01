@@ -93,4 +93,18 @@ public class UserDAO {
             e.printStackTrace();
         }
     }
+
+    //DEPOSIT:
+    public boolean updateBalance(int userId, double amountToAdd) {
+        String sql = "UPDATE users SET balance = balance + ? WHERE user_id = ?";
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setDouble(1, amountToAdd);
+            ps.setInt(2, userId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
