@@ -16,8 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
-@WebServlet(name = "DepositServlet", urlPatterns = {"/deposit"})
+@WebServlet(name = "DepositServlet", urlPatterns = {"/ewallet"})
 public class DepositServlet extends HttpServlet {
 
     private final PaymentService paymentService = new PaymentService();
@@ -43,10 +44,15 @@ public class DepositServlet extends HttpServlet {
 
         if (currentUser != null) {
             Users updatedUser = userDAO.getUserById((int) currentUser.getUserId());
-
             if (updatedUser != null) {
                 session.setAttribute("user", updatedUser);
+                currentUser = updatedUser;
             }
+
+            List<Transactions> transactionList = transactionDAO.getRecentTransactions((int) currentUser.getUserId(), 10);
+
+            req.setAttribute("transactionList", transactionList);
+
         } else {
             resp.sendRedirect(req.getContextPath() + "/login");
             return;
@@ -54,7 +60,6 @@ public class DepositServlet extends HttpServlet {
 
         req.getRequestDispatcher(walletPath).forward(req, resp);
     }
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");

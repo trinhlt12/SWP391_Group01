@@ -3,7 +3,7 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Locale" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -493,10 +493,9 @@
     <div class="balance-card">
         <div class="balance-label">Số dư hiện tại</div>
         <div class="balance-amount">
-            <%= currencyFormat.format(balance) %>
-        </div>
-        <div class="wallet-id">ID Ví: <strong><%= walletId %>
-        </strong></div>
+            <fmt:formatNumber value="${sessionScope.user.balance}" type="currency" currencySymbol="₫"/></div>
+        <div class="wallet-id">ID Ví: <strong>EBT-${sessionScope.user.userId}</strong></div>
+
     </div>
 
     <!-- Quick Actions -->
@@ -525,7 +524,7 @@
                 </div>
             </c:if>
 
-            <form action="<%= request.getContextPath() %>/deposit" method="POST" onsubmit="return validateAmount()">
+            <form action="<%= request.getContextPath() %>/ewallet" method="POST" onsubmit="return validateAmount()">
                 <div class="form-group">
                     <label for="amount">Số tiền muốn nạp (VNĐ)</label>
                     <input
@@ -583,80 +582,61 @@
         </div>
 
         <div class="transaction-list">
-            <!-- Sample Transaction 1: Nạp tiền -->
-            <div class="transaction-item" data-type="deposit">
-                <div class="transaction-info">
-                    <div class="transaction-icon deposit">⬇️</div>
-                    <div class="transaction-details">
-                        <h4>Nạp tiền vào ví qua VNPay</h4>
-                        <div class="transaction-date">10/12/2024 14:35</div>
-                    </div>
-                </div>
-                <div class="transaction-amount">
-                    <div class="amount-value positive">+500.000₫</div>
-                    <span class="transaction-status status-success">Thành công</span>
-                </div>
-            </div>
 
-            <!-- Sample Transaction 2: Mua thẻ -->
-            <div class="transaction-item" data-type="purchase">
-                <div class="transaction-info">
-                    <div class="transaction-icon purchase">🛒</div>
-                    <div class="transaction-details">
-                        <h4>Mua thẻ Viettel 100.000đ</h4>
-                        <div class="transaction-date">09/12/2024 18:22</div>
-                    </div>
+            <!-- Kiểm tra nếu list rỗng -->
+            <c:if test="${empty transactionList}">
+                <div class="empty-state">
+                    <div class="icon">📭</div>
+                    <p>Chưa có giao dịch nào.</p>
                 </div>
-                <div class="transaction-amount">
-                    <div class="amount-value negative">-100.000₫</div>
-                    <span class="transaction-status status-success">Thành công</span>
-                </div>
-            </div>
+            </c:if>
 
-            <!-- Sample Transaction 3: Rút tiền -->
-            <div class="transaction-item" data-type="withdraw">
-                <div class="transaction-info">
-                    <div class="transaction-icon withdraw">⬆️</div>
-                    <div class="transaction-details">
-                        <h4>Rút tiền về tài khoản ngân hàng</h4>
-                        <div class="transaction-date">08/12/2024 10:15</div>
-                    </div>
-                </div>
-                <div class="transaction-amount">
-                    <div class="amount-value negative">-200.000₫</div>
-                    <span class="transaction-status status-pending">Đang xử lý</span>
-                </div>
-            </div>
+            <!-- Vòng lặp duyệt danh sách -->
+            <c:forEach var="trans" items="${transactionList}">
 
-            <!-- Sample Transaction 4: Mua thẻ -->
-            <div class="transaction-item" data-type="purchase">
-                <div class="transaction-info">
-                    <div class="transaction-icon purchase">🛒</div>
-                    <div class="transaction-details">
-                        <h4>Mua thẻ Mobifone 50.000đ</h4>
-                        <div class="transaction-date">07/12/2024 21:45</div>
-                    </div>
-                </div>
-                <div class="transaction-amount">
-                    <div class="amount-value negative">-50.000₫</div>
-                    <span class="transaction-status status-success">Thành công</span>
-                </div>
-            </div>
+                <!-- Logic xác định loại giao dịch để hiển thị màu sắc/icon -->
+                <c:set var="isDeposit" value="${trans.type == 'DEPOSIT'}"/>
+                <c:set var="iconClass" value="${isDeposit ? 'deposit' : 'purchase'}"/>
+                <c:set var="iconSymbol" value="${isDeposit ? '⬇️' : '🛒'}"/>
+                <c:set var="amountSign" value="${isDeposit ? '+' : '-'}"/>
+                <c:set var="amountClass" value="${isDeposit ? 'positive' : 'negative'}"/>
 
-            <!-- Sample Transaction 5: Nạp tiền -->
-            <div class="transaction-item" data-type="deposit">
-                <div class="transaction-info">
-                    <div class="transaction-icon deposit">⬇️</div>
-                    <div class="transaction-details">
-                        <h4>Nạp tiền vào ví qua MoMo</h4>
-                        <div class="transaction-date">06/12/2024 16:00</div>
+                <!-- data-type dùng cho bộ lọc JS (deposit/purchase) -->
+                <div class="transaction-item" data-type="${isDeposit ? 'deposit' : 'purchase'}">
+                    <div class="transaction-info">
+                        <div class="transaction-icon ${iconClass}">
+                                ${iconSymbol}
+                        </div>
+                        <div class="transaction-details">
+                            <h4>${trans.message}</h4>
+                            <div class="transaction-date">
+                                <!-- Format ngày tháng -->
+                                <fmt:formatDate value="${trans.createdAt}" pattern="dd/MM/yyyy HH:mm"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="transaction-amount">
+                        <div class="amount-value ${amountClass}">
+                                ${amountSign}
+                                <fmt:formatNumber value="${trans.amount}" type="currency" currencySymbol="₫"/>
+                        </div>
+
+                        <!-- Hiển thị trạng thái (Badge) -->
+                        <c:choose>
+                            <c:when test="${trans.status == 'SUCCESS'}">
+                                <span class="transaction-status status-success">Thành công</span>
+                            </c:when>
+                            <c:when test="${trans.status == 'PENDING'}">
+                                <span class="transaction-status status-pending">Đang xử lý</span>
+                            </c:when>
+                            <c:otherwise>
+                                <span class="transaction-status status-failed">Thất bại</span>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </div>
-                <div class="transaction-amount">
-                    <div class="amount-value positive">+1.000.000₫</div>
-                    <span class="transaction-status status-success">Thành công</span>
-                </div>
-            </div>
+            </c:forEach>
+
         </div>
     </div>
 </div>

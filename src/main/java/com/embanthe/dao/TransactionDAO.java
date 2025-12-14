@@ -4,6 +4,8 @@ import com.embanthe.model.Transactions;
 import com.embanthe.util.DBContext;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TransactionDAO {
 
@@ -70,5 +72,36 @@ public class TransactionDAO {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public List<Transactions> getRecentTransactions(int userId, int limit) {
+        List<Transactions> list = new ArrayList<>();
+        String sql = "SELECT * FROM transactions WHERE user_id = ? ORDER BY created_at DESC LIMIT ?";
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+            ps.setInt(2, limit);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Transactions t = new Transactions();
+                    t.setTransactionId(rs.getInt("transaction_id"));
+                    t.setUserId(rs.getInt("user_id"));
+                    t.setAmount(rs.getDouble("amount"));
+                    t.setType(rs.getString("type"));     // DEPOSIT, PURCHASE...
+                    t.setStatus(rs.getString("status")); // SUCCESS, PENDING...
+                    t.setMessage(rs.getString("message"));
+                    t.setCreatedAt(rs.getTimestamp("created_at"));
+                    t.setOrderId(rs.getInt("order_id"));
+
+                    list.add(t);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }
