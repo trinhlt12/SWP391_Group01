@@ -1,7 +1,9 @@
 package com.embanthe.controller.customer;
 
 import com.embanthe.dao.TransactionDAO;
+import com.embanthe.dao.PaymentGatewayLogDAO;
 import com.embanthe.dao.UserDAO;
+import com.embanthe.model.PaymentGatewayLogs;
 import com.embanthe.model.Transactions;
 import com.embanthe.service.PaymentService;
 
@@ -18,7 +20,8 @@ public class PaymentReturnServlet extends HttpServlet {
 
     private final PaymentService paymentService = new PaymentService();
     private final TransactionDAO transactionDAO = new TransactionDAO();
-    // UserDAO của bạn ném SQLException ở constructor nên cần try-catch hoặc init
+    private final PaymentGatewayLogDAO logDAO = new PaymentGatewayLogDAO();
+
     private UserDAO userDAO;
 
     @Override
@@ -36,6 +39,23 @@ public class PaymentReturnServlet extends HttpServlet {
         String vnp_TxnRef = request.getParameter("vnp_TxnRef");
         String vnp_ResponseCode = request.getParameter("vnp_ResponseCode");
         String vnp_Amount = request.getParameter("vnp_Amount");
+        String vnp_BankCode = request.getParameter("vnp_BankCode");
+
+        try {
+            PaymentGatewayLogs log = new PaymentGatewayLogs();
+            log.setTransactionId(Long.parseLong(vnp_TxnRef));
+            log.setGatewayName("VNPAY");
+            log.setRequestCode(request.getRequestURI()); // /payment-return
+            log.setResponseCode(vnp_ResponseCode);
+            log.setBankCode(vnp_BankCode);
+            // (vnp_Amount=...&vnp_SecureHash=...)
+            log.setRawData(request.getQueryString());
+
+            logDAO.save(log);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         double amount = Double.parseDouble(vnp_Amount) / 100;
         int transactionId = Integer.parseInt(vnp_TxnRef);
@@ -80,6 +100,6 @@ public class PaymentReturnServlet extends HttpServlet {
         request.setAttribute("statusAlert", statusAlert);
         request.setAttribute("amount", amount);
 
-        request.getRequestDispatcher("page/user/payment_result.jsp").forward(request, response);
+        request.getRequestDispatcher("/page/customer/payment_result.jsp").forward(request, response);
     }
 }
