@@ -32,6 +32,22 @@ public class UserDAO {
         return users;
     }
 
+    public Users getUserById(int userId) {
+        String sql = "SELECT * FROM Users WHERE user_id = ?";
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapRow(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     // Lấy User theo Email
     public Users getUserByEmail(String email) throws SQLException {
         String sql = "SELECT * FROM Users WHERE email = ?";

@@ -5,6 +5,8 @@ import com.embanthe.model.Transactions;
 import com.embanthe.model.Users;
 import com.embanthe.service.PaymentService;
 import com.embanthe.util.VNPayUtils;
+import com.embanthe.dao.UserDAO;
+
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.SQLException;
 
 @WebServlet(name = "DepositServlet", urlPatterns = {"/deposit"})
 public class DepositServlet extends HttpServlet {
@@ -20,9 +23,36 @@ public class DepositServlet extends HttpServlet {
     private final PaymentService paymentService = new PaymentService();
     private final TransactionDAO transactionDAO = new TransactionDAO();
 
+    private final UserDAO userDAO;
+
+    private static String walletPath = "/page/customer/ewallet.jsp";
+
+    public DepositServlet() {
+        try {
+            userDAO = new UserDAO();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("page/user/deposit.jsp").forward(req, resp);
+
+        HttpSession session = req.getSession();
+        Users currentUser = (Users) session.getAttribute("user");
+
+        if (currentUser != null) {
+            Users updatedUser = userDAO.getUserById((int) currentUser.getUserId());
+
+            if (updatedUser != null) {
+                session.setAttribute("user", updatedUser);
+            }
+        } else {
+            resp.sendRedirect(req.getContextPath() + "/login");
+            return;
+        }
+
+        req.getRequestDispatcher(walletPath).forward(req, resp);
     }
 
     @Override
@@ -41,7 +71,7 @@ public class DepositServlet extends HttpServlet {
             String amountStr = request.getParameter("amount");
             if (amountStr == null || amountStr.isEmpty()) {
                 request.setAttribute("errorMessage", "Vui lòng nhập số tiền.");
-                request.getRequestDispatcher("src/main/webapp/page/customer/ewallet.jsp").forward(request, response);
+                request.getRequestDispatcher(walletPath).forward(request, response);
                 return;
             }
 
@@ -49,7 +79,7 @@ public class DepositServlet extends HttpServlet {
 
             if (amount < 10000 || amount > 50000000) {
                 request.setAttribute("errorMessage", "Số tiền nạp phải từ 10.000đ đến 50.000.000đ");
-                request.getRequestDispatcher("src/main/webapp/page/customer/ewallet.jsp").forward(request, response);
+                request.getRequestDispatcher(walletPath).forward(request, response);
                 return;
             }
 
@@ -67,7 +97,7 @@ public class DepositServlet extends HttpServlet {
 
             if (transactionId == -1) {
                 request.setAttribute("errorMessage", "Lỗi hệ thống: Không thể tạo giao dịch.");
-                request.getRequestDispatcher("page/user/deposit.jsp").forward(request, response);
+                request.getRequestDispatcher(walletPath).forward(request, response);
                 return;
             }
             String paymentUrl = paymentService.createDepositUrl((int) user.getUserId(), amount, ipAddr, String.valueOf(transactionId));
@@ -76,11 +106,11 @@ public class DepositServlet extends HttpServlet {
 
         } catch (NumberFormatException e) {
             request.setAttribute("errorMessage", "Số tiền không hợp lệ.");
-            request.getRequestDispatcher("page/user/deposit.jsp").forward(request, response);
+            request.getRequestDispatcher(walletPath).forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("errorMessage", "Lỗi: " + e.getMessage());
-            request.getRequestDispatcher("page/user/deposit.jsp").forward(request, response);
+            request.getRequestDispatcher(walletPath).forward(request, response);
         }
     }
 }

@@ -46,7 +46,7 @@
         </c:if>
 
         <div class="mt-4">
-            <a href="${pageContext.request.contextPath}/deposit" class="btn btn-primary">Về ví của tôi</a>
+            <a href="${pageContext.request.contextPath}/ewallet" class="btn btn-primary">Về ví của tôi</a>
         </div>
     </div>
 </div>
