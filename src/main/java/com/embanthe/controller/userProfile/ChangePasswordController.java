@@ -1,4 +1,4 @@
-package com.embanthe.controller.userProfileController;
+package com.embanthe.controller.userProfile;
 
 import com.embanthe.dao.UserDAO;
 import com.embanthe.model.User;

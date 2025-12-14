@@ -1,4 +1,4 @@
-package com.embanthe.controller.adminController;
+package com.embanthe.controller.admin;
 
 import com.embanthe.model.User;
 import javax.servlet.ServletException;

@@ -1,4 +1,4 @@
-package com.embanthe.controller.accountController;
+package com.embanthe.controller.account;
 
 import com.embanthe.dao.AuthDAO;
 

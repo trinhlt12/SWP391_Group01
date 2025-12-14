@@ -1,5 +1,4 @@
-package com.embanthe.controller.accountController;
-import com.embanthe.dao.UserDAO;
+package com.embanthe.controller.account;
 import com.embanthe.model.User;
 
 import com.google.gson.Gson;

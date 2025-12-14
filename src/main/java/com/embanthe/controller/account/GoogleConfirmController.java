@@ -1,6 +1,5 @@
-package com.embanthe.controller.accountController;
+package com.embanthe.controller.account;
 
-import com.embanthe.dao.AuthDAO;
 import com.embanthe.dao.UserDAO;
 import com.embanthe.model.User;
 
