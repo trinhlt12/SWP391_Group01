@@ -96,7 +96,7 @@
                     <h1>Dịch Vụ Bán Thẻ</h1>
                     <p>Trang thẻ uy tín</p>
                     <div class="d-flex">
-                        <a href="#about" class="btn-get-started">Dịch Vụ</a>
+                        <a href="${pageContext.request.contextPath}/service" class="btn-get-started">Dịch Vụ</a>
                     </div>
                 </div>
                 <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-out" data-aos-delay="100">
@@ -356,10 +356,10 @@
             <div class="col-lg-2 col-md-3 footer-links">
                 <h4>Dịch vụ</h4>
                 <ul>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Thẻ điện thoại</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Thẻ game</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Nạp điện thoại</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Ví điện tử</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="${pageContext.request.contextPath}/service">Thẻ điện thoại</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="${pageContext.request.contextPath}/service">Thẻ game</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="${pageContext.request.contextPath}/service">Nạp điện thoại</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="${pageContext.request.contextPath}/ewallet">Ví điện tử</a></li>
                 </ul>
             </div>
 
