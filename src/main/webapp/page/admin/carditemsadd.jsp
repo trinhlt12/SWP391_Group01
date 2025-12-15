@@ -28,9 +28,9 @@
             const row = table.insertRow();
             const idx = table.rows.length;
             row.innerHTML = `
-                <td><input type="text" name="serialNumber" required minlength="5" /></td>
-                <td><input type="text" name="cardCode" required minlength="6" /></td>
-                <td><input type="date" name="expirationDate" /></td>
+                <td><input type="text" name="serialNumber[]" required minlength="5" /></td>
+                <td><input type="text" name="cardCode[]" required minlength="6" /></td>
+                <td><input type="date" name="expirationDate[]" /></td>
                 <td><button type="button" class="btn btn-del" onclick="removeRow(this)">Xóa</button></td>
             `;
         }
