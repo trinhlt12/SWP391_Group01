@@ -1,6 +1,7 @@
 package com.embanthe.controller.admin;
 
 import com.embanthe.dao.UserDAO;
+import com.embanthe.model.Users;
 import com.embanthe.util.PasswordUtil;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,39 +22,39 @@ public class UserResetPassServlet extends HttpServlet {
         HttpSession session = request.getSession();
 
         try {
-            // 1. Lấy dữ liệu từ form
-            String idStr = request.getParameter("id");
-            String newPass = request.getParameter("newPass");
+            int userId = Integer.parseInt(request.getParameter("id"));
 
-            // Validate cơ bản
-            if (newPass == null || newPass.trim().isEmpty()) {
-                session.setAttribute("error", "Mật khẩu không được để trống!");
+            UserDAO userDAO = new UserDAO();
+
+            Users username = userDAO.getUserById(userId);
+
+            if (username == null) {
+                session.setAttribute("error", "Không tìm thấy user.");
                 response.sendRedirect(request.getContextPath() + "/admin/user-list");
                 return;
             }
 
-            int userId = Integer.parseInt(idStr);
+            String defaultPassword = username + "@123";
+            String hashedPassword = PasswordUtil.hash(defaultPassword);
 
-            String passwordToSave = PasswordUtil.hash(newPass);
-
-            UserDAO userDAO = new UserDAO();
-
-            boolean isSuccess = userDAO.changePassword(userId, passwordToSave);
+            boolean isSuccess = userDAO.changePassword(userId, hashedPassword);
 
             if (isSuccess) {
-                session.setAttribute("message", "Đã đổi mật khẩu thành công cho user #" + userId);
+                session.setAttribute(
+                        "message",
+                        "Đã reset mật khẩu về mặc định cho user '" +username + "'"
+                );
             } else {
-                session.setAttribute("error", "Lỗi: Không tìm thấy User hoặc lỗi Database.");
+                session.setAttribute("error", "Reset mật khẩu thất bại.");
             }
 
         } catch (NumberFormatException e) {
-            session.setAttribute("error", "ID người dùng không hợp lệ.");
+            session.setAttribute("error", "ID không hợp lệ.");
         } catch (Exception e) {
             e.printStackTrace();
-            session.setAttribute("error", "Lỗi xử lý hệ thống.");
+            session.setAttribute("error", "Lỗi hệ thống.");
         }
 
-        // 5. Quay về trang danh sách
         response.sendRedirect(request.getContextPath() + "/admin/user-list");
     }
 }

@@ -55,7 +55,7 @@
             <ul>
 
                 <li><a href="#hero" class="active">Home</a></li>
-                <li><a href="#about">Dịch Vụ</a></li>
+                <li><a href="${pageContext.request.contextPath}/service">Dịch Vụ</a></li>
                 <c:if test="${not empty sessionScope.user}">
                     <li><a href="${pageContext.request.contextPath}/ewallet">Ewallet</a></li>
                     <li><a href="#portfolio">Thống Kê</a></li>
