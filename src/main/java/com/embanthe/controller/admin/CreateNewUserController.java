@@ -52,7 +52,7 @@ public class CreateNewUserController extends HttpServlet {
             );
 
             if (error != null) {
-                session.setAttribute("error", error);
+                session.setAttribute("createError", error);
                 session.setAttribute("showCreateModal", true);
                 response.sendRedirect(request.getContextPath() + "/admin/user-list");
                 return;
@@ -77,12 +77,12 @@ public class CreateNewUserController extends HttpServlet {
             if (isSuccess) {
                 session.setAttribute("message", "Thêm mới thành công user: " + username);
             } else {
-                session.setAttribute("error", "Lỗi database: Không thể thêm mới user.");
+                session.setAttribute("createError", "Lỗi database: Không thể thêm mới user.");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            session.setAttribute("error", "Lỗi hệ thống: " + e.getMessage());
+            session.setAttribute("createError", "Lỗi hệ thống: " + e.getMessage());
             session.setAttribute("openCreateModal", "true");
         }
 
