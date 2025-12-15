@@ -213,14 +213,28 @@ public class ProductDAO {
         }
     }
 
-    public void delete(int id) {
-        String sql = "DELETE FROM products WHERE product_id=?";
+    public boolean delete(int productId) {
+        String checkSql = "SELECT COUNT(*) FROM card_items WHERE product_id = ?";
+        String deleteSql = "DELETE FROM products WHERE product_id = ?";
         try (Connection con = DBContext.getInstance().getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
+             PreparedStatement psCheck = con.prepareStatement(checkSql)) {
+            // Kiểm tra xem còn card_items tham chiếu không
+            psCheck.setInt(1, productId);
+            try (ResultSet rs = psCheck.executeQuery()) {
+                if (rs.next() && rs.getInt(1) > 0) {
+                    // Có card items tham chiếu -> không xóa
+                    return false;
+                }
+            }
+
+            // Không có bản ghi con -> tiến hành xóa product
+            try (PreparedStatement psDel = con.prepareStatement(deleteSql)) {
+                psDel.setInt(1, productId);
+                return psDel.executeUpdate() > 0;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
         }
     }
 
@@ -265,5 +279,71 @@ public class ProductDAO {
             e.printStackTrace();
             return false;
         }
+    }
+    /**
+     * Đếm số thẻ (card_items) đang tham chiếu tới product này.
+     */
+    public int countCardItems(int productId) {
+        String sql = "SELECT COUNT(*) FROM card_items WHERE product_id = ?";
+        try (Connection con = DBContext.getInstance().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, productId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
+
+    /**
+     * Đếm tổng số orders tham chiếu tới product.
+     */
+    public int countOrders(int productId) {
+        String sql = "SELECT COUNT(*) FROM orders WHERE product_id = ?";
+        try (Connection con = DBContext.getInstance().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, productId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
+
+    /**
+     * Đếm orders theo status (ví dụ 'COMPLETED', 'PENDING', 'CANCELLED').
+     */
+    public int countOrdersByStatus(int productId, String status) {
+        String sql = "SELECT COUNT(*) FROM orders WHERE product_id = ? AND status = ?";
+        try (Connection con = DBContext.getInstance().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, productId);
+            ps.setString(2, status);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int countCardItemsByStatus(int productId, String status) {
+        String sql = "SELECT COUNT(*) FROM card_items WHERE product_id = ? AND status = ?";
+        try (Connection con = DBContext.getInstance().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, productId);
+            ps.setString(2, status);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return 0;
     }
 }

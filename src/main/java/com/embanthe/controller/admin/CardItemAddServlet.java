@@ -23,38 +23,45 @@ public class CardItemAddServlet extends HttpServlet {
     private ProductDAO productDAO = new ProductDAO();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         List<Products> products = productDAO.getAll();
         request.setAttribute("products", products);
         request.getRequestDispatcher("/page/admin/carditemsadd.jsp").forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
 
         String productIdStr = request.getParameter("productId");
         Integer productId = null;
         try {
-            if (productIdStr != null && !productIdStr.isEmpty()) productId = Integer.parseInt(productIdStr);
+            if (productIdStr != null && !productIdStr.isEmpty()) {
+                productId = Integer.parseInt(productIdStr);
+            }
         } catch (Exception ignored) {}
 
         String[] serialArr = request.getParameterValues("serialNumber[]");
         if (serialArr == null) serialArr = request.getParameterValues("serialNumber");
+
         String[] codeArr = request.getParameterValues("cardCode[]");
         if (codeArr == null) codeArr = request.getParameterValues("cardCode");
+
         String[] expArr = request.getParameterValues("expirationDate[]");
         if (expArr == null) expArr = request.getParameterValues("expirationDate");
 
-        List<String> messages = new ArrayList<>();
+        List<String> successMessages = new ArrayList<>();
+        List<String> warningMessages = new ArrayList<>();
+        List<String> errorMessages = new ArrayList<>();
 
         if (productId == null) {
-            messages.add("Vui lòng chọn sản phẩm.");
+            errorMessages.add("❌ Please select a product.");
         } else if (serialArr == null || codeArr == null || serialArr.length == 0) {
-            messages.add("Danh sách thẻ rỗng.");
+            errorMessages.add("❌ Card list is empty. Please add at least one card.");
         } else if (serialArr.length != codeArr.length) {
-            messages.add("Số lượng serial và mã nạp không khớp.");
+            errorMessages.add("❌ Number of serial numbers and card codes do not match.");
         } else {
             int n = serialArr.length;
             List<CardItems> toInsert = new ArrayList<>(n);
@@ -64,26 +71,30 @@ public class CardItemAddServlet extends HttpServlet {
             for (int i = 0; i < n; ++i) {
                 String s = serialArr[i] == null ? "" : serialArr[i].trim();
                 String c = codeArr[i] == null ? "" : codeArr[i].trim();
-                String e = (expArr != null && i < expArr.length) ? (expArr[i] == null ? "" : expArr[i].trim()) : "";
+                String e = (expArr != null && i < expArr.length) ?
+                        (expArr[i] == null ? "" : expArr[i].trim()) : "";
 
                 if (s.isEmpty() || c.isEmpty()) {
-                    messages.add(String.format("Dòng %d bỏ qua: serial hoặc mã nạp rỗng.", i + 1));
+                    warningMessages.add(String.format(
+                            "⚠️ Row %d skipped: Serial number or card code is empty.", i + 1));
                     continue;
                 }
 
                 CardItems item = new CardItems();
                 item.setProductId(productId);
-                item.setOrderId(null); // chưa bán
+                item.setOrderId(null);
                 item.setSerialNumber(s);
                 item.setCardCode(c);
+
                 if (!e.isEmpty()) {
                     try {
-                        item.setExpirationDate(Date.valueOf(e)); // format yyyy-MM-dd
+                        item.setExpirationDate(Date.valueOf(e));
                     } catch (Exception ex) {
-                        // invalid date -> keep null and add message
-                        messages.add(String.format("Dòng %d: định dạng ngày không hợp lệ, bỏ qua ngày.", i + 1));
+                        warningMessages.add(String.format(
+                                "⚠️ Row %d: Invalid date format, expiration date ignored.", i + 1));
                     }
                 }
+
                 item.setStatus("AVAILABLE");
                 item.setCreatedAt(new Timestamp(System.currentTimeMillis()));
 
@@ -93,21 +104,23 @@ public class CardItemAddServlet extends HttpServlet {
             }
 
             if (!toInsert.isEmpty()) {
-                // kiểm tra serial/cardCode đã tồn tại trong DB
                 Set<String> existingSerials = cardItemDAO.findExistingSerials(serials);
                 Set<String> existingCodes = cardItemDAO.findExistingCodes(codes);
 
                 List<CardItems> finalInsert = new ArrayList<>();
                 int skipped = 0;
+
                 for (CardItems ci : toInsert) {
                     if (existingSerials.contains(ci.getSerialNumber())) {
                         skipped++;
-                        messages.add("Bỏ qua serial đã tồn tại: " + ci.getSerialNumber());
+                        warningMessages.add(String.format(
+                                "⚠️ Duplicate serial skipped: %s", ci.getSerialNumber()));
                         continue;
                     }
                     if (existingCodes.contains(ci.getCardCode())) {
                         skipped++;
-                        messages.add("Bỏ qua mã nạp đã tồn tại: " + ci.getCardCode());
+                        warningMessages.add(String.format(
+                                "⚠️ Duplicate card code skipped: %s", ci.getCardCode()));
                         continue;
                     }
                     finalInsert.add(ci);
@@ -119,41 +132,88 @@ public class CardItemAddServlet extends HttpServlet {
                         con = DBContext.getInstance().getConnection();
                         con.setAutoCommit(false);
 
-                        // insert batch using the connection
                         cardItemDAO.insertBatch(con, finalInsert);
 
-                        // update product quantity (increase by number of inserted cards)
-                        boolean qtyOk = productDAO.adjustQuantityWithCheck(con, productId, finalInsert.size());
+                        boolean qtyOk = productDAO.adjustQuantityWithCheck(
+                                con, productId, finalInsert.size());
+
                         if (!qtyOk) {
                             con.rollback();
-                            messages.add("Không thể cập nhật số lượng sản phẩm (quantity). Thao tác đã bị huỷ.");
+                            errorMessages.add(
+                                    "❌ Failed to update product quantity. Transaction rolled back.");
                         } else {
                             con.commit();
-                            messages.add("Thêm thành công " + finalInsert.size() + " thẻ. (Bỏ qua " + skipped + " thẻ)");
+
+                            String successMsg = String.format(
+                                    "✅ Successfully added %d card(s)!", finalInsert.size());
+
+                            if (skipped > 0) {
+                                successMsg += String.format(" (%d duplicate(s) skipped)", skipped);
+                            }
+
+                            successMessages.add(successMsg);
+
+                            // Get product name for better message
+                            Products product = productDAO.getById(productId);
+                            if (product != null) {
+                                successMessages.add(String.format(
+                                        "📦 Product: <strong>%s</strong> - New total: <strong>%d cards</strong>",
+                                        product.getProductName(),
+                                        product.getQuantity()
+                                ));
+                            }
                         }
                     } catch (Exception ex) {
                         if (con != null) {
-                            try { con.rollback(); } catch (Exception ignore) {}
+                            try {
+                                con.rollback();
+                            } catch (Exception ignore) {}
                         }
                         ex.printStackTrace();
-                        messages.add("Lỗi khi lưu thẻ. Vui lòng thử lại.");
+                        errorMessages.add(
+                                "❌ Error saving cards. Please try again. Details: " + ex.getMessage());
                     } finally {
                         if (con != null) {
-                            try { con.setAutoCommit(true); con.close(); } catch (Exception ignore) {}
+                            try {
+                                con.setAutoCommit(true);
+                                con.close();
+                            } catch (Exception ignore) {}
                         }
                     }
                 } else {
-                    messages.add("Không có thẻ hợp lệ để thêm. (Tất cả bị trùng hoặc không hợp lệ)");
+                    warningMessages.add(
+                            "⚠️ No valid cards to add. All cards are duplicates or invalid.");
                 }
             } else {
-                messages.add("Không có thẻ hợp lệ để thêm.");
+                warningMessages.add("⚠️ No valid cards to add. Please check your input.");
             }
         }
 
-        // reload products for the form and show messages
+        // Build final message
+        StringBuilder finalMessage = new StringBuilder();
+
+        if (!errorMessages.isEmpty()) {
+            finalMessage.append("<div style='color: #991b1b; margin-bottom: 10px;'>");
+            finalMessage.append(String.join("<br/>", errorMessages));
+            finalMessage.append("</div>");
+        }
+
+        if (!successMessages.isEmpty()) {
+            finalMessage.append("<div style='color: #065f46; margin-bottom: 10px;'>");
+            finalMessage.append(String.join("<br/>", successMessages));
+            finalMessage.append("</div>");
+        }
+
+        if (!warningMessages.isEmpty()) {
+            finalMessage.append("<div style='color: #92400e; margin-bottom: 10px;'>");
+            finalMessage.append(String.join("<br/>", warningMessages));
+            finalMessage.append("</div>");
+        }
+
+        // Reload products for the form
         List<Products> products = productDAO.getAll();
         request.setAttribute("products", products);
-        request.setAttribute("message", String.join("<br/>", messages));
+        request.setAttribute("message", finalMessage.toString());
         request.getRequestDispatcher("/page/admin/carditemsadd.jsp").forward(request, response);
     }
 }
