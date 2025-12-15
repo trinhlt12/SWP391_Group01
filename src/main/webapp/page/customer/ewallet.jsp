@@ -504,11 +504,6 @@
             <div class="icon">💰</div>
             <div class="label">Nạp Tiền</div>
         </a>
-
-        <a href="<%= request.getContextPath() %>/history" class="action-btn">
-            <div class="icon">📊</div>
-            <div class="label">Lịch Sử</div>
-        </a>
     </div>
     <!-- Deposit Form - Hidden by default -->
     <div class="deposit-form-container" id="depositFormContainer">
