@@ -322,8 +322,27 @@
                                          </c:choose>
                                      </td>
                                      <td><b>${p.productName}</b></td>
-                                     <td>${p.providerName}</td>
-                                     <td>${p.categoryName}</td>
+                                     <!-- Provider Name: lookup theo providerId -->
+                                                             <td>
+                                                                 <c:set var="provName" value="-" />
+                                                                 <c:forEach var="prov" items="${providers}">
+                                                                     <c:if test="${prov.providerId == p.providerId}">
+                                                                         <c:set var="provName" value="${prov.providerName}" />
+                                                                     </c:if>
+                                                                 </c:forEach>
+                                                                 ${provName}
+                                                             </td>
+
+                                                             <!-- Category Name: lookup theo categoryId -->
+                                                             <td>
+                                                                 <c:set var="catName" value="-" />
+                                                                 <c:forEach var="cat" items="${categories}">
+                                                                     <c:if test="${cat.categoryId == p.categoryId}">
+                                                                         <c:set var="catName" value="${cat.categoryName}" />
+                                                                     </c:if>
+                                                                 </c:forEach>
+                                                                 ${catName}
+                                                             </td>
                                      <td>${p.price}</td>
                                      <td>${p.quantity}</td>
                                      <td>
