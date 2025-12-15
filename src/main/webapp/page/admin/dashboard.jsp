@@ -67,6 +67,9 @@
                         <span class="hide-menu">Home</span>
                     </li>
                     <li class="sidebar-item">
+                        <a class="sidebar-link" href="${pageContext.request.contextPath}/admin/products" aria-expanded="false">
+                            <i class="ti ti-atom"></i>
+                            <span class="hide-menu">Manage Product</span>
                         <a class="sidebar-link" href="${pageContext.request.contextPath}/admin/user-list" aria-expanded="false">
                             <i class="ti ti-atom"></i>
                             <span class="hide-menu">User</span>
