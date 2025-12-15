@@ -343,10 +343,17 @@
 
         <form action="${pageContext.request.contextPath}/admin/user-create" method="post">
             <div class="modal-body">
-                <c:if test="${not empty sessionScope.error}">
+                <c:if test="${not empty sessionScope.createError}">
                     <div class="alert alert-danger">
                         <i class="fas fa-exclamation-circle mr-1"></i>
-                            ${sessionScope.error}
+                            ${sessionScope.createError}
+                    </div>
+                </c:if>
+
+                <c:if test="${not empty sessionScope.createMessage}">
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle mr-1"></i>
+                            ${sessionScope.createMessage}
                     </div>
                 </c:if>
                 <div class="row">
@@ -417,7 +424,6 @@
         document.getElementById('modalEmail').value = email;
         document.getElementById('modalPhone').value = phone;
 
-        // Gán giá trị cho Select Box (jQuery cho nhanh vì giao diện có sẵn jQuery)
         $('#modalRole').val(role);
         $('#modalStatus').val(status);
     }
@@ -429,15 +435,17 @@
 <script src="${pageContext.request.contextPath}/assetAdmin/assets/vendor/stacked-menu/stacked-menu.min.js"></script>
 <script src="${pageContext.request.contextPath}/assetAdmin/assets/vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="${pageContext.request.contextPath}/assetAdmin/assets/javascript/theme.min.js"></script>
-<c:if test="${not empty sessionScope.error and not empty sessionScope.openCreateModal}">
+<c:if test="${sessionScope.openCreateModal}">
     <script>
         $(document).ready(function () {
             $('#createUserModal').modal('show');
         });
     </script>
-
-    <%-- Xóa cờ mở modal đi --%>
+    <c:remove var="createError" scope="session"/>
+    <c:remove var="createMessage" scope="session"/>
     <c:remove var="openCreateModal" scope="session"/>
 </c:if>
+
+
 </body>
 </html>
