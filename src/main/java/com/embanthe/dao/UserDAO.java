@@ -218,6 +218,70 @@ public class UserDAO {
             ps.executeUpdate();
         }
     }
+    // Thêm vào file: com/embanthe/dao/UserDAO.java
+    // Thêm vào file: com/embanthe/dao/UserDAO.java
+
+    public boolean checkUsernameExists(String username)  {
+        // Chỉ cần SELECT 1 để kiểm tra sự tồn tại (nhanh hơn SELECT *)
+        String sql = "SELECT 1 FROM Users WHERE username = ?";
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, username);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Hàm kiểm tra Email trùng (dùng luôn cho Controller)
+    public boolean checkEmailExists(String email)  {
+        String sql = "SELECT 1 FROM Users WHERE email = ?";
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, email);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public boolean insertUser(Users user)   {
+        // 1. Câu lệnh SQL (Kiểm tra lại tên cột trong bảng Users của bạn)
+        String sql = "INSERT INTO Users (username, password_hash, full_name, email, phone, role, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, user.getUsername());
+            ps.setString(2, user.getPasswordHash());
+
+            ps.setString(3, user.getFullName());
+            ps.setString(4, user.getEmail());
+            ps.setString(5, user.getPhone());
+            ps.setString(6, user.getRole());   // Ví dụ: 'ADMIN', 'CUSTOMER'
+            ps.setString(7, user.getStatus()); // Ví dụ: 'ACTIVE', 'INACTIVE'
+
+            // 3. Thực thi lệnh
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (Exception e) {
+            System.out.println("Lỗi tại insertUser: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
     // Map dữ liệu từ ResultSet sang User model mới
     private Users mapRow(ResultSet rs) throws SQLException {
         return Users.builder()
@@ -239,7 +303,7 @@ public class UserDAO {
         try {
             UserDAO dao = new UserDAO();
             //List<User> users = dao.getAll();
-           // User user = dao.getUserByEmail("hoangluffy0981@gmail.com");
+            // User user = dao.getUserByEmail("hoangluffy0981@gmail.com");
 
 //            if (user != null) {
 //                user.setUsername("luffy");

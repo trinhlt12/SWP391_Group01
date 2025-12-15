@@ -18,8 +18,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-@WebServlet(name = "DepositServlet", urlPatterns = {"/ewallet"})
-public class DepositServlet extends HttpServlet {
+@WebServlet(name = "EwalletServlet", urlPatterns = {"/ewallet"})
+public class EwalletServlet extends HttpServlet {
 
     private final PaymentService paymentService = new PaymentService();
     private final TransactionDAO transactionDAO = new TransactionDAO();
@@ -28,7 +28,7 @@ public class DepositServlet extends HttpServlet {
 
     private static String walletPath = "/page/customer/ewallet.jsp";
 
-    public DepositServlet() throws SQLException {
+    public EwalletServlet() throws SQLException {
         userDAO = new UserDAO();
     }
 
