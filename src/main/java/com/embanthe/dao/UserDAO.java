@@ -307,6 +307,44 @@ public class UserDAO {
         }
         return null; // Không tìm thấy thì trả về null
     }
+
+    public List<Users> getUsersPaging(int page, int pageSize) {
+        List<Users> list = new ArrayList<>();
+
+        String sql = "SELECT * FROM Users ORDER BY created_at ASC LIMIT ? OFFSET ?";
+
+        int offset = (page - 1) * pageSize;
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, pageSize);
+            ps.setInt(2, offset);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    public int countUsers() {
+        String sql = "SELECT COUNT(*) FROM Users";
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) return rs.getInt(1);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     // Map dữ liệu từ ResultSet sang User model mới
     private Users mapRow(ResultSet rs) throws SQLException {
         return Users.builder()
