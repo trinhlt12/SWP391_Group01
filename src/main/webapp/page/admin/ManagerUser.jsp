@@ -429,15 +429,15 @@
 <script src="${pageContext.request.contextPath}/assetAdmin/assets/vendor/stacked-menu/stacked-menu.min.js"></script>
 <script src="${pageContext.request.contextPath}/assetAdmin/assets/vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="${pageContext.request.contextPath}/assetAdmin/assets/javascript/theme.min.js"></script>
-<c:if test="${not empty sessionScope.error}">
+<c:if test="${not empty sessionScope.error and not empty sessionScope.openCreateModal}">
     <script>
         $(document).ready(function () {
             $('#createUserModal').modal('show');
         });
     </script>
 
-    <%-- Xóa lỗi sau khi hiển thị để tránh lặp --%>
-    <c:remove var="error" scope="session"/>
+    <%-- Xóa cờ mở modal đi --%>
+    <c:remove var="openCreateModal" scope="session"/>
 </c:if>
 </body>
 </html>

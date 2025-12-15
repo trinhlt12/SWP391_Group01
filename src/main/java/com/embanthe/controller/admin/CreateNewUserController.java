@@ -83,6 +83,7 @@ public class CreateNewUserController extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
             session.setAttribute("error", "Lỗi hệ thống: " + e.getMessage());
+            session.setAttribute("openCreateModal", "true");
         }
 
         response.sendRedirect(request.getContextPath() + "/admin/user-list");

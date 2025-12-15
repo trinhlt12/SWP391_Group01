@@ -268,6 +268,25 @@ public class UserDAO {
         }
         return false;
     }
+    // Hàm mới: Chỉ lấy đúng cái tên Username theo ID
+    public String getUsernameById(int userId) {
+        String sql = "SELECT username FROM Users WHERE user_id = ?";
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("username");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null; // Không tìm thấy thì trả về null
+    }
     // Map dữ liệu từ ResultSet sang User model mới
     private Users mapRow(ResultSet rs) throws SQLException {
         return Users.builder()
