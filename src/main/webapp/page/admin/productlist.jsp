@@ -243,18 +243,36 @@
                  gap: 8px;
              }
          }
+         /* thêm vào block style hiện có */
+         .alert { padding:10px 14px; border-radius:8px; margin-bottom:16px; border:1px solid #e2e8f0; background:#f8fafc; color:#0f172a; }
+         .alert-success { background:#ecfdf5; border-color:#bbf7d0; color:#064e3b; }
+         .alert-error   { background:#fff1f2; border-color:#fecaca; color:#7f1d1d; }
+     <script>
+       setTimeout(function(){ var a = document.querySelector('.alert'); if(a) a.style.display='none'; }, 5000);
+     </script>
+
      </style>
  </head>
  <body>
      <div class="container">
          <div class="header">
              <h2>Product Management</h2>
+             <a href="${pageContext.request.contextPath}/admin/carditems" class="btn-add">
+                 View inventory
+             </a>
              <a href="${pageContext.request.contextPath}/admin/products/add" class="btn-add">
                  ➕ Add New Product
              </a>
          </div>
 
          <div class="table-container">
+         <c:if test="${not empty sessionScope.message}">
+             <div class="alert ${sessionScope.messageType == 'success' ? 'alert-success' : 'alert-error'}">
+                 <c:out value="${sessionScope.message}"/>
+             </div>
+             <c:remove var="message" scope="session"/>
+             <c:remove var="messageType" scope="session"/>
+         </c:if>
              <!-- Filter, sort và pageSize -->
              <div class="filter-bar">
                  <form method="get" action="${pageContext.request.contextPath}/admin/products">
@@ -322,8 +340,27 @@
                                          </c:choose>
                                      </td>
                                      <td><b>${p.productName}</b></td>
-                                     <td>${p.providerName}</td>
-                                     <td>${p.categoryName}</td>
+                                     <!-- Provider Name: lookup theo providerId -->
+                                                             <td>
+                                                                 <c:set var="provName" value="-" />
+                                                                 <c:forEach var="prov" items="${providers}">
+                                                                     <c:if test="${prov.providerId == p.providerId}">
+                                                                         <c:set var="provName" value="${prov.providerName}" />
+                                                                     </c:if>
+                                                                 </c:forEach>
+                                                                 ${provName}
+                                                             </td>
+
+                                                             <!-- Category Name: lookup theo categoryId -->
+                                                             <td>
+                                                                 <c:set var="catName" value="-" />
+                                                                 <c:forEach var="cat" items="${categories}">
+                                                                     <c:if test="${cat.categoryId == p.categoryId}">
+                                                                         <c:set var="catName" value="${cat.categoryName}" />
+                                                                     </c:if>
+                                                                 </c:forEach>
+                                                                 ${catName}
+                                                             </td>
                                      <td>${p.price}</td>
                                      <td>${p.quantity}</td>
                                      <td>
