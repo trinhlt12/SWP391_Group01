@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -27,7 +28,6 @@
     </script>
 
     <style>
-        /* Small custom tweaks to match admin theme */
         .table-fixed thead th { position: sticky; top: 0; z-index: 1; }
         .hide-code { font-family: monospace; letter-spacing: 2px; color: #64748b; }
         .stock-badge { display:inline-block; padding:4px 8px; border-radius: 999px; font-weight:700; font-size:12px; }
@@ -36,6 +36,9 @@
         .stock-badge.out { background:#fff1f2; color:#9f1239; border:1px solid #fecaca; }
         .btn-add-row { margin-top: 8px; }
         .required { color: #ef4444; margin-left: 4px; }
+        .is-invalid { border-color: #dc3545; }
+        .invalid-feedback { display: none; color: #dc3545; font-size: 12px; margin-top: 4px; }
+        .is-invalid + .invalid-feedback { display: block; }
     </style>
 </head>
 <body>
@@ -48,7 +51,6 @@
                     <span class="hamburger-box"><span class="hamburger-inner"></span></span>
                 </button>
                 <a href="${pageContext.request.contextPath}/home">
-                    <!-- same logo as other pages -->
                     <svg xmlns="http://www.w3.org/2000/svg" height="28" viewBox="0 0 351 100">...</svg>
                 </a>
             </div>
@@ -96,7 +98,7 @@
                         <div class="card card-fluid">
                             <div class="card-body">
 
-                                <!-- === MESSAGES: render request-scoped lists (added here) === -->
+                                <!-- Messages -->
                                 <c:if test="${not empty errorMessages}">
                                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                         <c:forEach var="m" items="${errorMessages}">
@@ -129,9 +131,7 @@
                                         </button>
                                     </div>
                                 </c:if>
-                                <!-- === end messages block === -->
 
-                                <!-- Legacy single message (kept if other code uses session) -->
                                 <c:if test="${not empty sessionScope.message}">
                                     <div class="alert alert-${sessionScope.messageType == 'success' ? 'success' : 'danger'} alert-dismissible fade show" role="alert">
                                         <c:out value="${sessionScope.message}"/>
@@ -143,15 +143,17 @@
                                     <c:remove var="messageType" scope="session"/>
                                 </c:if>
 
-                                <!-- FORM: add cards -->
-                                <form action="${pageContext.request.contextPath}/admin/carditems/add" method="post" id="cardForm">
+                                <!-- FORM -->
+                                <form action="${pageContext.request.contextPath}/admin/carditems/add" method="post" id="cardForm" novalidate>
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <label class="font-weight-bold">Sản phẩm <span class="required">*</span></label>
                                             <select name="productId" id="productId" class="custom-select" required>
                                                 <option value="">-- Chọn sản phẩm --</option>
                                                 <c:forEach var="prd" items="${products}">
-                                                    <option value="${prd.productId}" data-available="${prd.quantity}" data-price="${prd.price}">
+                                                    <option value="${prd.productId}"
+                                                            data-available="${prd.quantity}" data-price="${prd.price}"
+                                                            <c:if test="${param.productId == prd.productId}">selected</c:if>>
                                                         ${prd.productName} — ${prd.price} VNĐ
                                                     </option>
                                                 </c:forEach>
@@ -160,11 +162,17 @@
                                                 <span>Available: </span>
                                                 <span id="availableCount" class="stock-badge ok">0</span>
                                             </small>
+                                            <div class="invalid-feedback" id="productError">Vui lòng chọn sản phẩm.</div>
                                         </div>
                                         <input type="hidden" name="defaultStatus" value="AVAILABLE" />
                                     </div>
 
                                     <hr/>
+
+                                    <c:set var="serialList" value="${empty paramValues['serialNumber[]'] ? paramValues.serialNumber : paramValues['serialNumber[]']}" />
+                                    <c:set var="codeList" value="${empty paramValues['cardCode[]'] ? paramValues.cardCode : paramValues['cardCode[]']}" />
+                                    <c:set var="dateList" value="${empty paramValues['expirationDate[]'] ? paramValues.expirationDate : paramValues['expirationDate[]']}" />
+                                    <c:set var="rowLen" value="${fn:length(serialList)}" />
 
                                     <div class="table-responsive">
                                         <table class="table table-hover table-fixed" id="add-list">
@@ -177,20 +185,68 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <input type="text" name="serialNumber[]" class="form-control" required minlength="3" maxlength="64" placeholder="Serial" />
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" name="cardCode[]" class="form-control" required minlength="4" maxlength="64" placeholder="Code" />
-                                                    </td>
-                                                    <td>
-                                                        <input type="date" name="expirationDate[]" class="form-control" />
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)">🗑</button>
-                                                    </td>
-                                                </tr>
+                                                <!-- Render lại dữ liệu đã nhập nếu có, ngược lại hiển thị một hàng trống -->
+                                                <c:choose>
+                                                    <c:when test="${rowLen gt 0}">
+                                                        <c:forEach var="s" items="${serialList}" varStatus="st">
+                                                            <tr>
+                                                                <td>
+                                                                    <input type="text" name="serialNumber[]" class="form-control serial-input"
+                                                                           required minlength="3" maxlength="64"
+                                                                           pattern="^[A-Za-z0-9_-]{3,64}$"
+                                                                           title="Chỉ chữ/số/dấu gạch dưới/gạch ngang. Độ dài 3–64."
+                                                                           placeholder="Serial"
+                                                                           value="${fn:trim(s)}" />
+                                                                    <div class="invalid-feedback">Serial 3–64 ký tự, chỉ chữ/số/-/_</div>
+                                                                </td>
+                                                                <td>
+                                                                    <input type="text" name="cardCode[]" class="form-control code-input"
+                                                                           required minlength="4" maxlength="64"
+                                                                           pattern="^[A-Za-z0-9_-]{4,64}$"
+                                                                           title="Chỉ chữ/số/dấu gạch dưới/gạch ngang. Độ dài 4–64."
+                                                                           placeholder="Code"
+                                                                           value="${fn:trim(codeList[st.index])}" />
+                                                                    <div class="invalid-feedback">Mã thẻ 4–64 ký tự, chỉ chữ/số/-/_</div>
+                                                                </td>
+                                                                <td>
+                                                                    <input type="date" name="expirationDate[]" class="form-control date-input"
+                                                                           value="${dateList[st.index]}" />
+                                                                    <div class="invalid-feedback">Ngày hết hạn phải từ hôm nay trở đi.</div>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)">🗑</button>
+                                                                </td>
+                                                            </tr>
+                                                        </c:forEach>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <tr>
+                                                            <td>
+                                                                <input type="text" name="serialNumber[]" class="form-control serial-input"
+                                                                       required minlength="3" maxlength="64"
+                                                                       pattern="^[A-Za-z0-9_-]{3,64}$"
+                                                                       title="Chỉ chữ/số/dấu gạch dưới/gạch ngang. Độ dài 3–64."
+                                                                       placeholder="Serial" />
+                                                                <div class="invalid-feedback">Serial 3–64 ký tự, chỉ chữ/số/-/_</div>
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" name="cardCode[]" class="form-control code-input"
+                                                                       required minlength="4" maxlength="64"
+                                                                       pattern="^[A-Za-z0-9_-]{4,64}$"
+                                                                       title="Chỉ chữ/số/dấu gạch dưới/gạch ngang. Độ dài 4–64."
+                                                                       placeholder="Code" />
+                                                                <div class="invalid-feedback">Mã thẻ 4–64 ký tự, chỉ chữ/số/-/_</div>
+                                                            </td>
+                                                            <td>
+                                                                <input type="date" name="expirationDate[]" class="form-control date-input" />
+                                                                <div class="invalid-feedback">Ngày hết hạn phải từ hôm nay trở đi.</div>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)">🗑</button>
+                                                            </td>
+                                                        </tr>
+                                                    </c:otherwise>
+                                                </c:choose>
                                             </tbody>
                                         </table>
                                     </div>
@@ -200,10 +256,14 @@
                                             <button type="button" id="addrow-btn" class="btn btn-primary btn-add-row">
                                                 <i class="fas fa-plus mr-1"></i> Thêm hàng
                                             </button>
-                                            <span class="ml-3 text-muted">Tổng hàng: <strong id="rowCount">1</strong></span>
+                                            <span class="ml-3 text-muted">Tổng hàng:
+                                                <strong id="rowCount">
+                                                    <c:out value="${rowLen gt 0 ? rowLen : 1}" />
+                                                </strong>
+                                            </span>
                                         </div>
                                         <div class="form-actions">
-                                            <button type="submit" class="btn btn-success">
+                                            <button type="submit" class="btn btn-success" id="submitBtn">
                                                 <i class="fas fa-save mr-1"></i> Lưu
                                             </button>
                                             <button type="reset" class="btn btn-secondary" onclick="return confirm('Bạn có chắc muốn đặt lại form?')">
@@ -242,14 +302,32 @@
         const tbody = document.querySelector('#add-list tbody');
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td><input type="text" name="serialNumber[]" class="form-control" required minlength="3" maxlength="64" placeholder="Serial" /></td>
-            <td><input type="text" name="cardCode[]" class="form-control" required minlength="4" maxlength="64" placeholder="Code" /></td>
-            <td><input type="date" name="expirationDate[]" class="form-control" /></td>
+            <td>
+                <input type="text" name="serialNumber[]" class="form-control serial-input"
+                       required minlength="3" maxlength="64"
+                       pattern="^[A-Za-z0-9_-]{3,64}$"
+                       title="Chỉ chữ/số/dấu gạch dưới/gạch ngang. Độ dài 3–64."
+                       placeholder="Serial" />
+                <div class="invalid-feedback">Serial 3–64 ký tự, chỉ chữ/số-/_</div>
+            </td>
+            <td>
+                <input type="text" name="cardCode[]" class="form-control code-input"
+                       required minlength="4" maxlength="64"
+                       pattern="^[A-Za-z0-9_-]{4,64}$"
+                       title="Chỉ chữ/số/dấu gạch dưới/gạch ngang. Độ dài 4–64."
+                       placeholder="Code" />
+                <div class="invalid-feedback">Mã thẻ 4–64 ký tự, chỉ chữ/số-/_</div>
+            </td>
+            <td>
+                <input type="date" name="expirationDate[]" class="form-control date-input" />
+                <div class="invalid-feedback">Ngày hết hạn phải từ hôm nay trở đi.</div>
+            </td>
             <td class="text-center"><button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)">🗑</button></td>
         `;
         tbody.appendChild(tr);
         updateRowCount();
         tr.querySelector('input').focus();
+        attachInputHandlers(tr);
     }
 
     function removeRow(btn) {
@@ -270,6 +348,17 @@
     const availableCountEl = document.getElementById('availableCount');
 
     if (productSelect) {
+        // initialize badge from selected on load
+        (function initAvailable() {
+            const opt = productSelect.options[productSelect.selectedIndex];
+            const available = opt ? parseInt(opt.getAttribute('data-available') || '0', 10) : 0;
+            availableCountEl.textContent = available;
+            availableCountEl.className = 'stock-badge';
+            if (available === 0) availableCountEl.classList.add('out');
+            else if (available < 10) availableCountEl.classList.add('low');
+            else availableCountEl.classList.add('ok');
+        })();
+
         productSelect.addEventListener('change', function () {
             const opt = this.options[this.selectedIndex];
             const available = opt ? parseInt(opt.getAttribute('data-available') || '0', 10) : 0;
@@ -278,14 +367,83 @@
             if (available === 0) availableCountEl.classList.add('out');
             else if (available < 10) availableCountEl.classList.add('low');
             else availableCountEl.classList.add('ok');
+
+            if (!this.value) {
+                this.classList.add('is-invalid');
+                document.getElementById('productError').style.display = 'block';
+            } else {
+                this.classList.remove('is-invalid');
+                document.getElementById('productError').style.display = 'none';
+            }
         });
     }
 
-    // Form submit validation: duplicates and product selected
+    function trimValue(el) {
+        if (el && typeof el.value === 'string') {
+            el.value = el.value.trim();
+        }
+    }
+
+    function validateDateInput(input) {
+        const val = input.value;
+        if (!val) {
+            input.classList.remove('is-invalid');
+            return true;
+        }
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        const d = new Date(val);
+        if (isNaN(d.getTime()) || d < today) {
+            input.classList.add('is-invalid');
+            return false;
+        } else {
+            input.classList.remove('is-invalid');
+            return true;
+        }
+    }
+
+    function validateTextInput(input, minLen) {
+        trimValue(input);
+        const v = input.value;
+        const patternAttr = input.getAttribute('pattern');
+        const pattern = patternAttr ? new RegExp(patternAttr) : null;
+        const maxLen = parseInt(input.getAttribute('maxlength') || '64', 10);
+        const ok = v.length >= minLen && v.length <= maxLen && (!pattern || pattern.test(v));
+        if (!ok) input.classList.add('is-invalid');
+        else input.classList.remove('is-invalid');
+        return ok;
+    }
+
+    function attachInputHandlers(scope) {
+        const serials = (scope || document).querySelectorAll('.serial-input');
+        const codes = (scope || document).querySelectorAll('.code-input');
+        const dates = (scope || document).querySelectorAll('.date-input');
+
+        serials.forEach(inp => {
+            inp.addEventListener('blur', () => validateTextInput(inp, 3));
+            inp.addEventListener('input', () => inp.classList.remove('is-invalid'));
+        });
+        codes.forEach(inp => {
+            inp.addEventListener('blur', () => validateTextInput(inp, 4));
+            inp.addEventListener('input', () => inp.classList.remove('is-invalid'));
+        });
+        dates.forEach(inp => {
+            inp.addEventListener('change', () => validateDateInput(inp));
+        });
+    }
+
+    attachInputHandlers(document);
+
+    // Submit validation + trim
     document.getElementById('cardForm').addEventListener('submit', function (e) {
-        const productId = document.getElementById('productId').value;
+        document.querySelectorAll('input[type="text"]').forEach(trimValue);
+
+        const productIdEl = document.getElementById('productId');
+        const productId = productIdEl.value;
         if (!productId) {
             e.preventDefault();
+            productIdEl.classList.add('is-invalid');
+            document.getElementById('productError').style.display = 'block';
             alert('Vui lòng chọn sản phẩm.');
             return false;
         }
@@ -294,34 +452,36 @@
         const codes = [];
         const serialInputs = document.querySelectorAll('input[name="serialNumber[]"]');
         const codeInputs = document.querySelectorAll('input[name="cardCode[]"]');
+        const dateInputs = document.querySelectorAll('input[name="expirationDate[]"]');
 
         for (let i = 0; i < serialInputs.length; i++) {
-            const s = serialInputs[i].value.trim();
-            const c = codeInputs[i].value.trim();
+            const sInp = serialInputs[i];
+            const cInp = codeInputs[i];
+            const dInp = dateInputs[i];
 
-            if (!s) {
+            const sOk = validateTextInput(sInp, 3);
+            const cOk = validateTextInput(cInp, 4);
+            const dOk = validateDateInput(dInp);
+
+            if (!sOk || !cOk || !dOk) {
                 e.preventDefault();
-                alert('Serial không được để trống.');
-                serialInputs[i].focus();
+                alert(`Hàng ${i+1} có lỗi. Vui lòng kiểm tra lại các trường đánh dấu đỏ.`);
                 return false;
             }
-            if (!c) {
-                e.preventDefault();
-                alert('Mã thẻ không được để trống.');
-                codeInputs[i].focus();
-                return false;
-            }
+
+            const s = sInp.value;
+            const c = cInp.value;
 
             if (serials.includes(s)) {
                 e.preventDefault();
-                alert('Trùng serial: ' + s);
-                serialInputs[i].focus();
+                sInp.classList.add('is-invalid');
+                alert('Trùng serial trong form: ' + s);
                 return false;
             }
             if (codes.includes(c)) {
                 e.preventDefault();
-                alert('Trùng mã thẻ: ' + c);
-                codeInputs[i].focus();
+                cInp.classList.add('is-invalid');
+                alert('Trùng mã thẻ trong form: ' + c);
                 return false;
             }
             serials.push(s);
@@ -332,9 +492,11 @@
             e.preventDefault();
             return false;
         }
+
+        document.getElementById('submitBtn').disabled = true;
     });
 
-    // initialize
+    // initialize row count based on rendered rows
     updateRowCount();
 </script>
 </body>
