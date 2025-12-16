@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -57,20 +58,34 @@
     <!-- SEARCH BAR -->
     <form class="search-bar" method="get" action="${pageContext.request.contextPath}/admin/carditems">
         <input type="text" name="searchSerial" placeholder="Tìm Serial" value="${searchSerial}">
-        
+        <input type="text" name="searchCode" placeholder="Tìm mã nạp" value="${searchCode == null ? '' : searchCode}">
+
         <select name="productId">
             <option value="">-- Tất cả sản phẩm --</option>
             <c:forEach var="prd" items="${products}">
-                <option value="${prd.productId}" ${productId == prd.productId ? 'selected' : ''}>${prd.productName} (${prd.price}đ)</option>
+                <option value="${prd.productId}" <c:if test="${productId != null and productId == prd.productId}">selected</c:if>>
+                    ${prd.productName} (${prd.price}đ)
+                </option>
             </c:forEach>
         </select>
+
         <select name="status">
             <option value="">-- Trạng thái --</option>
-            <option value="AVAILABLE" ${status == 'AVAILABLE' ? 'selected' : ''}>Chưa bán</option>
-            <option value="SOLD" ${status == 'SOLD' ? 'selected' : ''}>Đã bán</option>
-            <option value="EXPIRED" ${status == 'EXPIRED' ? 'selected' : ''}>Hết hạn</option>
-            <option value="LOCKED" ${status == 'LOCKED' ? 'selected' : ''}>Bị khóa</option>
+            <option value="AVAILABLE" <c:if test="${status == 'AVAILABLE'}">selected</c:if>>Chưa bán</option>
+            <option value="SOLD" <c:if test="${status == 'SOLD'}">selected</c:if>>Đã bán</option>
+            <option value="EXPIRED" <c:if test="${status == 'EXPIRED'}">selected</c:if>>Hết hạn</option>
+            <option value="LOCKED" <c:if test="${status == 'LOCKED'}">selected</c:if>>Bị khóa</option>
         </select>
+
+        <!-- NEW: select pageSize -->
+        <label for="pageSize">Hiển thị:</label>
+        <select name="pageSize" id="pageSize">
+            <option value="10" <c:if test="${pageSize == 10}">selected</c:if>>10</option>
+            <option value="20" <c:if test="${pageSize == 20}">selected</c:if>>20</option>
+            <option value="50" <c:if test="${pageSize == 50}">selected</c:if>>50</option>
+            <option value="100" <c:if test="${pageSize == 100}">selected</c:if>>100</option>
+        </select>
+
         <button type="submit">Lọc/Tìm</button>
     </form>
 
@@ -95,8 +110,9 @@
                 <tbody>
                 <c:forEach var="card" items="${cardList}" varStatus="stt">
                     <tr>
-                        <td>${(currentPage-1)*20 + stt.index + 1}</td>
-                        <td><b>${card.serialNumber}</b></td>
+                        <!-- use dynamic pageSize for sequence number -->
+                        <td>${(currentPage-1) * pageSize + stt.index + 1}</td>
+                        <td><b><c:out value="${card.serialNumber}"/></b></td>
                         <td>
                             <span id="code-${card.cardItemId}"
                                  class="hide-code"
@@ -107,17 +123,38 @@
                             </span>
                             <a href="javascript:void(0)" onclick="toggleCode('${card.cardItemId}')" title="Hiện/Ẩn mã">👁️</a>
                         </td>
-                        <td>${card.productName}</td>
-                        <td>${card.price} đ</td>
-                        <td class="status-${card.status}">${card.status}</td>
+
+                        <!-- product display: if using productMap from servlet, prefer that; fallback to card.productName if present -->
+                        <td>
+                            <c:choose>
+                                <c:when test="${not empty productMap and not empty productMap[card.productId]}">
+                                    <c:out value="${productMap[card.productId].productName}"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:out value="${card.productName}"/>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${not empty productMap and not empty productMap[card.productId]}">
+                                    <c:out value="${productMap[card.productId].price}"/> đ
+                                </c:when>
+                                <c:otherwise>
+                                    <c:out value="${card.price}"/> đ
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
+
+                        <td class="status-${card.status}"><c:out value="${card.status}"/></td>
                         <td>
                             <c:if test="${not empty card.expirationDate}">
-                                ${card.expirationDate}
+                                <c:out value="${card.expirationDate}"/>
                             </c:if>
                         </td>
                         <td>
                             <c:if test="${not empty card.createdAt}">
-                                ${card.createdAt}
+                                <c:out value="${card.createdAt}"/>
                             </c:if>
                         </td>
                     </tr>
@@ -128,13 +165,13 @@
                 <c:if test="${totalPages > 1}">
                     <c:forEach var="i" begin="1" end="${totalPages}">
                         <a class="pg ${i == currentPage ? 'selected' : ''}"
-                           href="${pageContext.request.contextPath}/admin/carditems?page=${i}&searchSerial=${searchSerial}&searchCode=${searchCode}&productId=${productId}&status=${status}">
+                           href="${pageContext.request.contextPath}/admin/carditems?page=${i}&pageSize=${pageSize}&searchSerial=${fn:escapeXml(searchSerial)}&searchCode=${fn:escapeXml(searchCode)}&productId=${productId}&status=${fn:escapeXml(status)}">
                             ${i}
                         </a>
                     </c:forEach>
                 </c:if>
                 <div style="margin-top:7px;font-size:13px;">
-                    Tổng số thẻ: <b>${totalItems}</b> | Trang ${currentPage} / ${totalPages}
+                    Tổng số thẻ: <b><c:out value="${totalItems}"/></b> | Trang <b><c:out value="${currentPage}"/></b> / <b><c:out value="${totalPages}"/></b>
                 </div>
             </div>
         </c:otherwise>

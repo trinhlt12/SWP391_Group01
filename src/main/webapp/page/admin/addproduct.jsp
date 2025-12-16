@@ -21,6 +21,30 @@
         .err-msg { color: red; font-size: 13px;}
         button { background: #667eea; color: white; padding: 10px 32px; border: none; border-radius: 6px; font-weight: bold;}
         button:hover { background: #4051ad;}
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 24px;
+        }
+        .btn-reset {
+            background: #94a3b8;
+        }
+        .btn-reset:hover {
+            background: #64748b;
+        }
+        .btn-back {
+            background: #e5e7eb;
+            color: #334155;
+            text-decoration: none;
+            padding: 10px 32px;
+            border-radius: 6px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .btn-back:hover {
+            background: #cbd5e1;
+        }
+
     </style>
 </head>
 <body>
@@ -68,7 +92,15 @@
             <div class="err-msg">${validateErrors['image']}</div>
         </c:if>
 
-        <button type="submit">Add Product</button>
+        <div class="btn-group">
+            <a href="${pageContext.request.contextPath}/admin/products" class="btn-back">⬅ Back</a>
+
+            <div>
+                <button type="reset" class="btn-reset">Reset</button>
+                <button type="submit">Add Product</button>
+            </div>
+        </div>
+
     </form>
 </div>
 </body>

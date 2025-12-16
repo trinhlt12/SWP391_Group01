@@ -25,20 +25,16 @@ public class ProfileServlet extends HttpServlet {
             response.sendRedirect("login");
             return;
         }
-        try {
-            UserDAO userDAO = new UserDAO();
-            Users user = userDAO.getUserByEmail(email);
-            if (user == null) {
-                request.getRequestDispatcher("home").forward(request, response);
-                return;
-            }
-            // Đưa user vào request attribute để hiển thị ở JSP
-            request.setAttribute("user", user);
-            // Forward sang trang JSP để render thông tin
-            request.getRequestDispatcher("page/userProfile/userProfile.jsp").forward(request, response);
-        } catch (SQLException e) {
-            throw new ServletException("Database error", e);
+        UserDAO userDAO = new UserDAO();
+        Users user = userDAO.getUserByEmail(email);
+        if (user == null) {
+            request.getRequestDispatcher("home").forward(request, response);
+            return;
         }
+        // Đưa user vào request attribute để hiển thị ở JSP
+        request.setAttribute("user", user);
+        // Forward sang trang JSP để render thông tin
+        request.getRequestDispatcher("page/userProfile/userProfile.jsp").forward(request, response);
     }
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
