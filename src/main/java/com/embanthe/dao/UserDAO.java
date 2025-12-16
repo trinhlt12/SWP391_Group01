@@ -13,17 +13,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAO {
-    private final Connection connection;
+//    private final Connection connection;
 
-    public UserDAO() throws SQLException {
-        this.connection = DBContext.getInstance().getConnection();
-    }
+//    public UserDAO() throws SQLException {
+//        this.connection = DBContext.getInstance().getConnection();
+//    }
 
     // Lấy tất cả User
     public List<Users> getAll() throws SQLException {
         List<Users> users = new ArrayList<>();
         String sql = "SELECT * FROM Users";
-        try (Statement st = connection.createStatement();
+        try (
+                Connection conn = DBContext.getInstance().getConnection();
+                Statement st = conn.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
                 users.add(mapRow(rs));
@@ -64,7 +66,8 @@ public class UserDAO {
     // Lấy User theo Email
     public Users getUserByEmail(String email) throws SQLException {
         String sql = "SELECT * FROM Users WHERE email = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection conn = DBContext.getInstance().getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, email);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -78,7 +81,8 @@ public class UserDAO {
     // Kiểm tra email đã tồn tại chưa
     public boolean checkEmailExist(String email) throws SQLException {
         String sql = "SELECT 1 FROM Users WHERE email = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection conn = DBContext.getInstance().getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, email);
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next();
@@ -102,20 +106,25 @@ public class UserDAO {
     // Cập nhật thông tin cơ bản của User theo user_id
     public boolean updateUser(Users user) throws SQLException {
         String sql = "UPDATE Users SET " +
-                "username = ?, " +
                 "full_name = ?, " +
                 "email = ?, " +
-                "phone = ? " +
+                "phone = ?, " +
+                "role = ?, " +
+                "status = ? " +
                 "WHERE user_id = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, user.getUsername());
-            ps.setString(2, user.getFullName());
-            ps.setString(3, user.getEmail());
-            ps.setString(4, user.getPhone());
-            ps.setInt(5, user.getUserId());
+
+        try (Connection connection= DBContext.getInstance().getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, user.getFullName());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPhone());
+            ps.setString(4, user.getRole());
+            ps.setString(5, user.getStatus());
+            ps.setInt(6, user.getUserId());
             return ps.executeUpdate() > 0;
         }
     }
+
 
     public boolean updateUserInfo(int userId, String fullName, String email, String phone, String role, String status) {
         String sql = "UPDATE Users SET full_name=?, email=?, phone=?, role=?, status=? WHERE user_id=?";
@@ -193,20 +202,31 @@ public class UserDAO {
         }
         return list;
     }
-    // Đổi mật khẩu theo user_id
-    public boolean changePassword(int userId, String newPasswordHash) throws SQLException {
-        String sql = "UPDATE Users SET password_hash = ? WHERE user_id = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, newPasswordHash);
+    public boolean changePassword(int userId, String hashedPassword) {
+
+        String sql = "UPDATE users SET password_hash = ? WHERE user_id = ?";
+
+        try (
+                Connection conn = DBContext.getInstance().getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+            ps.setString(1, hashedPassword);
             ps.setInt(2, userId);
+
             return ps.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return false;
     }
+
     public void insertGoogleUser(Users user) throws SQLException {
         String sql = "INSERT INTO users (username, email, full_name, password_hash, role, balance, status, created_at) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
 
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection conn = DBContext.getInstance().getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getEmail());
             ps.setString(3, user.getFullName());
@@ -282,6 +302,63 @@ public class UserDAO {
         }
         return false;
     }
+    // Hàm mới: Chỉ lấy đúng cái tên Username theo ID
+    public String getUsernameById(int userId) {
+        String sql = "SELECT username FROM Users WHERE user_id = ?";
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("username");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null; // Không tìm thấy thì trả về null
+    }
+
+    public List<Users> getUsersPaging(int page, int pageSize) {
+        List<Users> list = new ArrayList<>();
+
+        String sql = "SELECT * FROM Users ORDER BY created_at ASC LIMIT ? OFFSET ?";
+
+        int offset = (page - 1) * pageSize;
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, pageSize);
+            ps.setInt(2, offset);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    public int countUsers() {
+        String sql = "SELECT COUNT(*) FROM Users";
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) return rs.getInt(1);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     // Map dữ liệu từ ResultSet sang User model mới
     private Users mapRow(ResultSet rs) throws SQLException {
         return Users.builder()
@@ -330,7 +407,7 @@ public class UserDAO {
 //            boolean exists = dao.checkEmailExist("customer02@example.com");
 //            System.out.println("📧 Email exists? " + exists);
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -28,9 +28,10 @@ public class CreateNewUserController extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession();
 
-
         try {
             UserDAO userDAO = new UserDAO();
+
+            // Lấy dữ liệu từ form
             String username = request.getParameter("username");
             String passwordRaw = request.getParameter("password");
             String fullname = request.getParameter("fullname");
@@ -41,22 +42,36 @@ public class CreateNewUserController extends HttpServlet {
 
             // 1. Validate backend
             String error = validateUserCreate(
-                    username,
-                    passwordRaw,
-                    fullname,
-                    email,
-                    phone,
-                    role,
-                    status,
-                    userDAO
+                    username, passwordRaw, fullname, email, phone, role, status, userDAO
             );
 
+            // ============================================================
+            // NẾU CÓ LỖI: Lưu thông báo + Mở modal + Lưu dữ liệu cũ
+            // ============================================================
             if (error != null) {
-                session.setAttribute("error", error);
-                session.setAttribute("showCreateModal", true);
+                // 1. Báo lỗi
+                session.setAttribute("createError", error);
+
+                // 2. Cờ hiệu để JSP tự động mở lại Modal
+                session.setAttribute("openCreateModal", "true");
+
+                // 3. LƯU LẠI DỮ LIỆU CŨ (Sticky Form)
+                // Để người dùng không phải nhập lại từ đầu
+                session.setAttribute("oldUsername", username);
+                session.setAttribute("oldFullname", fullname);
+                session.setAttribute("oldEmail", email);
+                session.setAttribute("oldPhone", phone);
+                session.setAttribute("oldRole", role);
+                session.setAttribute("oldStatus", status);
+                // Lưu ý: Tuyệt đối KHÔNG lưu passwordRaw vì lý do bảo mật
+
                 response.sendRedirect(request.getContextPath() + "/admin/user-list");
-                return;
+                return; // Dừng xử lý tại đây
             }
+
+            // ============================================================
+            // NẾU THÀNH CÔNG
+            // ============================================================
 
             // 2. Hash password
             String passwordHash = PasswordUtil.hash(passwordRaw);
@@ -75,14 +90,23 @@ public class CreateNewUserController extends HttpServlet {
             boolean isSuccess = userDAO.insertUser(newUser);
 
             if (isSuccess) {
-                session.setAttribute("message", "Thêm mới thành công user: " + username);
+                session.setAttribute("createMessage", "Thêm mới thành công user: " + username);
+                // Xóa cờ modal nếu lỡ còn sót
+                session.removeAttribute("openCreateModal");
             } else {
-                session.setAttribute("error", "Lỗi database: Không thể thêm mới user.");
+                session.setAttribute("createError", "Lỗi database: Không thể thêm mới user.");
+                session.setAttribute("openCreateModal", "true");
+                // Cũng nên lưu lại data cũ ở đây đề phòng lỗi DB
+                session.setAttribute("oldUsername", username);
+                session.setAttribute("oldFullname", fullname);
+                session.setAttribute("oldEmail", email);
+                session.setAttribute("oldPhone", phone);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            session.setAttribute("error", "Lỗi hệ thống: " + e.getMessage());
+            session.setAttribute("createError", "Lỗi hệ thống: " + e.getMessage());
+            session.setAttribute("openCreateModal", "true");
         }
 
         response.sendRedirect(request.getContextPath() + "/admin/user-list");
@@ -91,29 +115,27 @@ public class CreateNewUserController extends HttpServlet {
     /**
      * Validate backend khi tạo user mới
      */
-    private String validateUserCreate(
-            String username,
-            String password,
-            String fullname,
-            String email,
-            String phone,
-            String role,
-            String status,
-            UserDAO userDAO
-    ) {
+    private String validateUserCreate(String username, String password, String fullname,
+                                      String email, String phone, String role,
+                                      String status, UserDAO userDAO) {
 
         // 1. Required fields
-        if (username == null || username.trim().isEmpty())
-            return "Username không được để trống";
+        if (username == null || username.trim().isEmpty()) return "Username không được để trống";
+        if (fullname == null || fullname.trim().isEmpty()) return "Họ tên không được để trống";
+        if (email == null || email.trim().isEmpty()) return "Email không được để trống";
 
-        if (password == null || password.length() < 6)
+        // ========================================================================
+        // NÂNG CẤP VALIDATE PASSWORD TẠI ĐÂY
+        // ========================================================================
+        if (password == null || password.length() < 6) {
             return "Mật khẩu phải có ít nhất 6 ký tự";
+        }
+        String strongPasswordPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{6,}$";
 
-        if (fullname == null || fullname.trim().isEmpty())
-            return "Họ tên không được để trống";
-
-        if (email == null || email.trim().isEmpty())
-            return "Email không được để trống";
+        if (!password.matches(strongPasswordPattern)) {
+            return "Mật khẩu quá yếu! Phải có ít nhất: 1 chữ hoa, 1 chữ thường, 1 số và không có dấu cách.";
+        }
+        // ========================================================================
 
         // 2. Format validation
         if (!username.matches("^[a-zA-Z0-9_]{4,30}$"))
@@ -126,17 +148,11 @@ public class CreateNewUserController extends HttpServlet {
             return "Số điện thoại phải gồm đúng 10 chữ số";
 
         // 3. Business rules
-        if (!("ADMIN".equals(role) || "CUSTOMER".equals(role)))
-            return "Vai trò không hợp lệ";
+        if (!("ADMIN".equals(role) || "CUSTOMER".equals(role))) return "Vai trò không hợp lệ";
+        if (!("ACTIVE".equals(status) || "INACTIVE".equals(status))) return "Trạng thái không hợp lệ";
 
-        if (!("ACTIVE".equals(status) || "INACTIVE".equals(status)))
-            return "Trạng thái không hợp lệ";
-
-        if (userDAO.checkUsernameExists(username))
-            return "Tên đăng nhập đã tồn tại";
-
-        if (userDAO.checkEmailExists(email))
-            return "Email đã được sử dụng";
+        if (userDAO.checkUsernameExists(username)) return "Tên đăng nhập đã tồn tại";
+        if (userDAO.checkEmailExists(email)) return "Email đã được sử dụng";
 
         return null; // hợp lệ
     }
