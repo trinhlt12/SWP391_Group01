@@ -83,9 +83,6 @@
                             <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button">Thông tin chung</button>
                         </li>
                         <li class="nav-item">
-                            <button class="nav-link" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button">Bảo mật</button>
-                        </li>
-                        <li class="nav-item">
                             <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button">Lịch sử giao dịch</button>
                         </li>
                     </ul>
@@ -129,21 +126,6 @@
                                     </div>
                                 </div>
                                 <button class="btn btn-primary" type="submit">Lưu thay đổi</button>
-                            </form>
-                        </div>
-
-                        <div class="tab-pane fade" id="security">
-                            <form action="${pageContext.request.contextPath}/admin/user-security" method="post">
-                                <input type="hidden" name="id" value="${user.userId}">
-                                <div class="mb-3">
-                                    <label class="small mb-1">Mật khẩu mới</label>
-                                    <input class="form-control" name="newPass" type="password" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="small mb-1">Xác nhận mật khẩu</label>
-                                    <input class="form-control" name="confirmPass" type="password" required>
-                                </div>
-                                <button class="btn btn-danger" type="submit">Đổi mật khẩu</button>
                             </form>
                         </div>
 
