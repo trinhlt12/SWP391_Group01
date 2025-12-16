@@ -629,6 +629,15 @@
                             </c:otherwise>
                         </c:choose>
                     </div>
+                    <div class="transaction-details">
+                        <h4>${trans.message}</h4>
+                        <div class="transaction-date">
+                            <fmt:formatDate value="${trans.createdAt}" pattern="dd/MM/yyyy HH:mm"/>
+                            - <a href="transaction-detail?id=${trans.transactionId}" style="color: #059669; text-decoration: underline; font-weight: bold;">
+                            Xem chi tiết
+                        </a>
+                        </div>
+                    </div>
                 </div>
             </c:forEach>
 
@@ -664,8 +673,51 @@
     </div>
 </div>
 
+<!-- Transaction Detail Modal -->
+<div class="modal fade" id="transactionDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chi Tiết Giao Dịch</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-content-placeholder">
+                <!-- Nội dung sẽ được AJAX load vào đây -->
+                <div class="text-center">
+                    <div class="spinner-border text-success" role="status"></div>
+                    <p>Đang tải dữ liệu...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
+
+    function viewTransactionDetail(transactionId) {
+        const modalElement = document.getElementById('transactionDetailModal');
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+
+        document.getElementById('modal-content-placeholder').innerHTML =
+            '<div class="text-center py-3"><div class="spinner-border text-success"></div></div>';
+
+        fetch('ewallet?mode=detail&id=' + transactionId)
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to load');
+                return response.text();
+            })
+            .then(html => {
+                document.getElementById('modal-content-placeholder').innerHTML = html;
+            })
+            .catch(error => {
+                document.getElementById('modal-content-placeholder').innerHTML =
+                    '<p class="text-danger text-center">Không thể tải thông tin giao dịch.</p>';
+            });
+    }
     // Filter transactions
     function filterTransactions(type) {
         const items = document.querySelectorAll('.transaction-item');
