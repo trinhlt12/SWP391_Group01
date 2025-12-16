@@ -75,18 +75,33 @@ public class TransactionDAO {
     }
 
     public List<Transactions> getRecentTransactions(int userId, int pageIndex, int pageSize) {
-        List<Transactions> list = new ArrayList<>();
+        return getRecentTransactions(userId, "ALL", pageIndex, pageSize);
+    }
 
+    public List<Transactions> getRecentTransactions(int userId, String status, int pageIndex, int pageSize) {
+        List<Transactions> list = new ArrayList<>();
         int offset = (pageIndex - 1) * pageSize;
 
-        String sql = "SELECT * FROM Transactions WHERE user_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?";
+        StringBuilder sql = new StringBuilder("SELECT * FROM transactions WHERE user_id = ?");
+
+        if (status != null && !status.isEmpty() && !status.equals("ALL")) {
+            sql.append(" AND status = ?");
+        }
+
+        sql.append(" ORDER BY created_at DESC LIMIT ? OFFSET ?");
 
         try (Connection conn = DBContext.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
 
-            ps.setInt(1, userId);
-            ps.setInt(2, pageSize); // Lấy bao nhiêu dòng
-            ps.setInt(3, offset);
+            int paramIndex = 1;
+            ps.setInt(paramIndex++, userId);
+
+            if (status != null && !status.isEmpty() && !status.equals("ALL")) {
+                ps.setString(paramIndex++, status);
+            }
+
+            ps.setInt(paramIndex++, pageSize);
+            ps.setInt(paramIndex++, offset);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -94,12 +109,10 @@ public class TransactionDAO {
                     t.setTransactionId(rs.getInt("transaction_id"));
                     t.setUserId(rs.getInt("user_id"));
                     t.setAmount(rs.getDouble("amount"));
-                    t.setType(rs.getString("type"));     // DEPOSIT, PURCHASE...
-                    t.setStatus(rs.getString("status")); // SUCCESS, PENDING...
+                    t.setType(rs.getString("type"));
+                    t.setStatus(rs.getString("status"));
                     t.setMessage(rs.getString("message"));
                     t.setCreatedAt(rs.getTimestamp("created_at"));
-                    t.setOrderId(rs.getInt("order_id"));
-
                     list.add(t);
                 }
             }
@@ -110,16 +123,34 @@ public class TransactionDAO {
     }
 
     public int countTransactionsByUserId(int userId) {
-        String sql = "SELECT COUNT(*) FROM Transactions WHERE user_id = ?";
-        try (Connection conn = DBContext.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        return countTransactionsByUserId(userId, "ALL");
+    }
 
-            ps.setInt(1, userId);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1);
+    public int countTransactionsByUserId(int userId, String status) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM transactions WHERE user_id = ?");
+
+        boolean hasStatus = (status != null && !status.isEmpty() && !status.equals("ALL"));
+
+        if (hasStatus) {
+            sql.append(" AND status = ?");
+        }
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            int paramIndex = 1;
+            ps.setInt(paramIndex++, userId);
+
+            if (hasStatus) {
+                ps.setString(paramIndex++, status);
             }
-        } catch (Exception e) {
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return 0;

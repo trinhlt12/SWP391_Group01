@@ -607,6 +607,9 @@
                             <div class="transaction-date">
                                 <!-- Format ngày tháng -->
                                 <fmt:formatDate value="${trans.createdAt}" pattern="dd/MM/yyyy HH:mm"/>
+                                <a href="transaction-detail?id=${trans.transactionId}" style="color: #059669; text-decoration: underline; font-weight: bold;">
+                                    Xem chi tiết
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -632,10 +635,7 @@
                     <div class="transaction-details">
                         <h4>${trans.message}</h4>
                         <div class="transaction-date">
-                            <fmt:formatDate value="${trans.createdAt}" pattern="dd/MM/yyyy HH:mm"/>
-                            - <a href="transaction-detail?id=${trans.transactionId}" style="color: #059669; text-decoration: underline; font-weight: bold;">
-                            Xem chi tiết
-                        </a>
+
                         </div>
                     </div>
                 </div>

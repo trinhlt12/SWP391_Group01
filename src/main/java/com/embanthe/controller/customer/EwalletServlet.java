@@ -44,7 +44,10 @@ public class EwalletServlet extends HttpServlet {
                 session.setAttribute("user", updatedUser);
                 currentUser = updatedUser;
             }
-
+            String status = req.getParameter("status");
+            if (status == null || status.isEmpty()) {
+                status = "ALL";
+            }
             int page = 1;
             int pageSize = 10;
 
@@ -60,11 +63,13 @@ public class EwalletServlet extends HttpServlet {
             int totalPages = (int) Math.ceil((double) totalTransactions / pageSize);
 
 
-            List<Transactions> transactionList = transactionDAO.getRecentTransactions((int) currentUser.getUserId(), page, pageSize);
+            List<Transactions> transactionList = transactionDAO.getRecentTransactions((int) currentUser.getUserId(), status, page, pageSize);
 
             req.setAttribute("transactionList", transactionList);
             req.setAttribute("currentPage", page);
             req.setAttribute("totalPages", totalPages);
+            req.setAttribute("currentStatus", status);
+
         } else {
             resp.sendRedirect(req.getContextPath() + "/login");
             return;
