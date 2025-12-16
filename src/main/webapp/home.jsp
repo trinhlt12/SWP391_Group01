@@ -115,7 +115,7 @@
 
         </div>
 
-        <div class="container">
+        <%--<div class="container">
 
             <div class="row gy-4">
 
@@ -139,7 +139,7 @@
 
             </div>
 
-        </div>
+        </div>--%>
 
     </section>
     <!-- Featured Services Section -->

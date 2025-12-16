@@ -7,17 +7,12 @@ public class Orders {
     private int orderId;
     private int userId;
     private int productId;
-
-    private int quantity;          // Số thẻ mua
-    private double totalAmount;    // Tổng tiền = price * quantity
-    private String status;         // PENDING | COMPLETED | FAILED | CANCELLED
-
-    private Timestamp createdAt;
-
-    /* ====== Fields dùng để JOIN hiển thị (không map DB) ====== */
     private String productName;
-    private double productPrice;
-
+    private int unitPrice;
+    private int quantity;
+    private double totalAmount;
+    private String status;
+    private Timestamp createdAt;
     public Orders() {
     }
 
@@ -43,6 +38,22 @@ public class Orders {
 
     public void setProductId(int productId) {
         this.productId = productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public int getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(int unitPrice) {
+        this.unitPrice = unitPrice;
     }
 
     public int getQuantity() {
@@ -75,23 +86,5 @@ public class Orders {
 
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
-    }
-
-    /* ====== JOIN fields ====== */
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public double getProductPrice() {
-        return productPrice;
-    }
-
-    public void setProductPrice(double productPrice) {
-        this.productPrice = productPrice;
     }
 }
