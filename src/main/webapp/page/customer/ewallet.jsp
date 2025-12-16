@@ -633,6 +633,34 @@
             </c:forEach>
 
         </div>
+        <!-- Pagination -->
+        <c:if test="${totalPages > 1}">
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+
+                    <!-- Nút Previous -->
+                    <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                        <a class="page-link" href="ewallet?page=${currentPage - 1}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+
+                    <!-- Các nút số trang -->
+                    <c:forEach begin="1" end="${totalPages}" var="i">
+                        <li class="page-item ${currentPage == i ? 'active' : ''}">
+                            <a class="page-link" href="ewallet?page=${i}">${i}</a>
+                        </li>
+                    </c:forEach>
+
+                    <!-- Nút Next -->
+                    <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                        <a class="page-link" href="ewallet?page=${currentPage + 1}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </c:if>
     </div>
 </div>
 
