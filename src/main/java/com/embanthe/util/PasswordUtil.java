@@ -2,6 +2,8 @@ package com.embanthe.util;
 
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.security.SecureRandom;
+
 public class PasswordUtil {
 
     private static final int LOG_ROUNDS = 12;
@@ -22,6 +24,15 @@ public class PasswordUtil {
         } catch (Exception e) {
             return false;
         }
+    }
+    public static String generateRandomPassword(int length) {
+        String chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#";
+        SecureRandom random = new SecureRandom();
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return sb.toString();
     }
 
     // Generate hash for testing

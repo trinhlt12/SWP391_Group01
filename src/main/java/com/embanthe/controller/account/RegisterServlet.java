@@ -61,6 +61,27 @@ public class RegisterServlet extends HttpServlet {
             request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
             return;
         }
+        if (username.length() > 30) {
+            request.setAttribute("message", "Username không được vượt quá 30 ký tự!");
+            request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
+            return;
+        }
+
+        if (fullName.length() > 30) {
+            request.setAttribute("message", "Fullname không được vượt quá 30 ký tự!");
+            request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
+            return;
+        }
+        if (!isValidVietnamPhone(phone)) {
+            request.setAttribute("message", "Số điện thoại không hợp lệ! Vui lòng nhập số Việt Nam (0xxxxxxxxx hoặc +84xxxxxxxx).");
+            request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
+            return;
+        }
+        if (password.length() > 20) {
+            request.setAttribute("message", "Mật khẩu không được vượt quá 20 ký tự!");
+            request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
+            return;
+        }
         if (!password.equals(confirmPassword)) {
             request.setAttribute("message", "Mật khẩu xác nhận không khớp!");
             request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
@@ -74,14 +95,17 @@ public class RegisterServlet extends HttpServlet {
 
         try {
             boolean usernameExist = authDAO.isUsernameExists(username);
+            boolean fullnameExist = authDAO.isFullNameExists(fullName);
             boolean phoneExist = authDAO.isPhoneExists(phone);
             boolean emailExist = authDAO.isEmailExists(email);
-            if (emailExist || usernameExist || phoneExist) {
+            if (emailExist || usernameExist || phoneExist||fullnameExist) {
                 if (emailExist) {
                     request.setAttribute("message", "Email này đã được sử dụng!");
                 } else if (usernameExist) {
-                    request.setAttribute("message", "Tên đăng nhập đã tồn tại!");
-                } else if (phoneExist) {
+                    request.setAttribute("message", "Username đã tồn tại!");
+                } else if (fullnameExist) {
+                    request.setAttribute("message", "Fullname đã tồn tại!");
+                }else if (phoneExist) {
                     request.setAttribute("message", "Số điện thoại này đã được sử dụng!");
                 }
                 request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
@@ -151,5 +175,10 @@ public class RegisterServlet extends HttpServlet {
         return password != null && password.matches(regex);
     }
 
-
+    private boolean isValidVietnamPhone(String phone) {
+        // Cho phép số bắt đầu bằng 0 và có 10 chữ số
+        // hoặc bắt đầu bằng +84 và theo sau là 9 chữ số
+        String regex = "^(0\\d{9}|\\+84\\d{9})$";
+        return phone != null && phone.matches(regex);
+    }
 }

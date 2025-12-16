@@ -7,14 +7,10 @@ public class Products {
     private int categoryId;
     private String productName;
 
-    private double price;     // Giá bán
-    private int quantity;     // Số lượng tồn kho (logic)
+    private double price;
+    private int quantity;
 
     private String imageUrl;
-
-    // Thêm 2 trường để hiển thị tên liên quan đến provider và category
-    private String providerName;
-    private String categoryName;
 
     public Products() {
     }
@@ -22,7 +18,6 @@ public class Products {
     public int getProductId() {
         return productId;
     }
-
     public void setProductId(int productId) {
         this.productId = productId;
     }
@@ -30,7 +25,6 @@ public class Products {
     public int getProviderId() {
         return providerId;
     }
-
     public void setProviderId(int providerId) {
         this.providerId = providerId;
     }
@@ -38,7 +32,6 @@ public class Products {
     public int getCategoryId() {
         return categoryId;
     }
-
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
@@ -46,7 +39,6 @@ public class Products {
     public String getProductName() {
         return productName;
     }
-
     public void setProductName(String productName) {
         this.productName = productName;
     }
@@ -54,7 +46,6 @@ public class Products {
     public double getPrice() {
         return price;
     }
-
     public void setPrice(double price) {
         this.price = price;
     }
@@ -62,7 +53,6 @@ public class Products {
     public int getQuantity() {
         return quantity;
     }
-
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
@@ -70,25 +60,7 @@ public class Products {
     public String getImageUrl() {
         return imageUrl;
     }
-
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
-    }
-
-    // Getter và Setter cho providerName và categoryName
-    public String getProviderName() {
-        return providerName;
-    }
-
-    public void setProviderName(String providerName) {
-        this.providerName = providerName;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
     }
 }

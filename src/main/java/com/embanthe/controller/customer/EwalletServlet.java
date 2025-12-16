@@ -45,10 +45,26 @@ public class EwalletServlet extends HttpServlet {
                 currentUser = updatedUser;
             }
 
-            List<Transactions> transactionList = transactionDAO.getRecentTransactions((int) currentUser.getUserId(), 10);
+            int page = 1;
+            int pageSize = 10;
+
+            if (req.getParameter("page") != null) {
+                try {
+                    page = Integer.parseInt(req.getParameter("page"));
+                } catch (NumberFormatException e) {
+                    page = 1;
+                }
+            }
+
+            int totalTransactions = transactionDAO.countTransactionsByUserId((int) currentUser.getUserId());
+            int totalPages = (int) Math.ceil((double) totalTransactions / pageSize);
+
+
+            List<Transactions> transactionList = transactionDAO.getRecentTransactions((int) currentUser.getUserId(), page, pageSize);
 
             req.setAttribute("transactionList", transactionList);
-
+            req.setAttribute("currentPage", page);
+            req.setAttribute("totalPages", totalPages);
         } else {
             resp.sendRedirect(req.getContextPath() + "/login");
             return;
@@ -70,19 +86,19 @@ public class EwalletServlet extends HttpServlet {
 
         try {
             String amountStr = request.getParameter("amount");
-            if (amountStr == null || amountStr.isEmpty()) {
+            /*if (amountStr == null || amountStr.isEmpty()) {
                 request.setAttribute("errorMessage", "Vui lòng nhập số tiền.");
                 request.getRequestDispatcher(walletPath).forward(request, response);
                 return;
-            }
+            }*/
 
             long amount = Long.parseLong(amountStr);
 
-            if (amount < 10000 || amount > 50000000) {
+            /*if (amount < 10000 || amount > 50000000) {
                 request.setAttribute("errorMessage", "Số tiền nạp phải từ 10.000đ đến 50.000.000đ");
                 request.getRequestDispatcher(walletPath).forward(request, response);
                 return;
-            }
+            }*/
 
             String ipAddr = VNPayUtils.getIpAddress(request);
 

@@ -33,9 +33,8 @@
                 <button class="hamburger hamburger-squeeze mr-2" type="button" data-toggle="aside-menu">
                     <span class="hamburger-box"><span class="hamburger-inner"></span></span>
                 </button>
-                <a href="${pageContext.request.contextPath}/home">
-    <a href="${pageContext.request.contextPath}/home"
-       class="text-decoration-none d-flex align-items-center">
+<%--                <a href="${pageContext.request.contextPath}/home">--%>
+    <a href="${pageContext.request.contextPath}/admin" class="text-decoration-none d-flex align-items-center">
 
     <span style="
         font-size: 22px;
@@ -85,17 +84,17 @@
                 <nav id="stacked-menu" class="stacked-menu">
                     <ul class="menu">
                         <li class="menu-item">
-                            <a href="${pageContext.request.contextPath}/home" class="menu-link">
+                            <a href="${pageContext.request.contextPath}/admin" class="menu-link">
                                 <span class="menu-icon fas fa-home"></span> <span class="menu-text">Trang chủ</span>
                             </a>
                         </li>
                         <li class="menu-item has-active">
-                            <a href="${pageContext.request.contextPath}/user/list" class="menu-link">
+                            <a href="${pageContext.request.contextPath}/admin/user-list" class="menu-link">
                                 <span class="menu-icon fas fa-users"></span> <span class="menu-text">Quản lý User</span>
                             </a>
                         </li>
                         <li class="menu-item">
-                            <a href="${pageContext.request.contextPath}/user/list" class="menu-link">
+                            <a href="#" class="menu-link">
                                 <span class="menu-icon fas fa-users"></span> <span class="menu-text">Quản lý System</span>
                             </a>
                         </li>
@@ -120,6 +119,27 @@
                     </header>
 
                     <div class="page-section">
+                        <div class="card-deck-xl">
+                            <c:if test="${not empty sessionScope.createMessage}">
+                                <div class="alert alert-success alert-dismissible fade show w-100" role="alert">
+                                    <i class="fas fa-check-circle"></i> ${sessionScope.createMessage}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <% session.removeAttribute("createMessage"); %>
+                            </c:if>
+
+                            <c:if test="${not empty sessionScope.createError}">
+                                <div class="alert alert-danger alert-dismissible fade show w-100" role="alert">
+                                    <i class="fas fa-exclamation-triangle"></i> ${sessionScope.createError}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <% session.removeAttribute("createError"); %>
+                            </c:if>
+                        </div>
                         <div class="card card-fluid">
                             <div class="card-body">
                                 <div class="row mb-3">
@@ -143,7 +163,7 @@
                                                         <option value="">-- Tất cả Role --</option>
 
                                                         <option value="Admin" ${param.role == 'Admin' ? 'selected' : ''}>Admin</option>
-                                                        <option value="User" ${param.role == 'User' ? 'selected' : ''}>User</option>
+                                                        <option value="Customer" ${param.role == 'Customer' ? 'selected' : ''}>Customer</option>
                                                     </select>
                                                 </div>
 
@@ -164,7 +184,6 @@
                                         </form>
                                     </div>
                                 </div>
-                                <div class="table-responsive">
                                 <div class="table-responsive">
                                     <table class="table table-hover">
                                         <thead class="thead-light">
@@ -196,15 +215,16 @@
                                                 <td class="align-middle">${u.role}</td>
                                                 <td class="align-middle">${u.status}</td>
                                                 <td class="align-middle text-center">
+
                                                     <form action="${pageContext.request.contextPath}/admin/user-reset-pass"
                                                           method="post"
-                                                          style="display:inline; color: #0a53be"
-                                                          onsubmit="return confirm('Reset mật khẩu về: ${u.username}@123 ?');">
+                                                          style="display:inline;"
+                                                          onsubmit="return confirm('CẢNH BÁO: Bạn có chắc chắn muốn reset mật khẩu của [${u.username}]?\n\nHệ thống sẽ tự động sinh mật khẩu mới và gửi về email: ${u.email}');">
 
-                                                        <input type="hidden" name="id" value="${u.userId}">
+                                                        <input type="hidden" name="userId" value="${u.userId}">
 
-                                                        <button type="submit" class="btn btn-sm btn-icon btn-warning" title="Reset mật khẩu">
-                                                            <i class="fas fa-key" ></i>
+                                                        <button type="submit" class="btn btn-sm btn-icon btn-warning" title="Reset & Gửi Email">
+                                                            <i class="fas fa-key"></i>
                                                         </button>
                                                     </form>
 
@@ -229,13 +249,37 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                <c:if test="${totalPages > 1}">
+                                    <nav aria-label="Page navigation" class="mt-3">
+                                        <ul class="pagination justify-content-center"> <li class="page-item ${currentPage <= 1 ? 'disabled' : ''}">
+                                            <a class="page-link" href="${pageContext.request.contextPath}/admin/user-list?page=${currentPage - 1}" tabindex="-1">Trước</a>
+                                        </li>
+
+                                            <c:forEach begin="1" end="${totalPages}" var="i">
+                                                <li class="page-item ${currentPage == i ? 'active' : ''}">
+                                                    <a class="page-link" href="${pageContext.request.contextPath}/admin/user-list?page=${i}">${i}</a>
+                                                </li>
+                                            </c:forEach>
+
+                                            <li class="page-item ${currentPage >= totalPages ? 'disabled' : ''}">
+                                                <a class="page-link" href="${pageContext.request.contextPath}/admin/user-list?page=${currentPage + 1}">Sau</a>
+                                            </li>
+
+                                        </ul>
+                                    </nav>
+                                </c:if>
+
+
                             </div>
                         </div>
-                        </div></div></div></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
     </main>
 
 </div>
-// modal edit user
+<%-- modal edit user --%>
 <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -298,130 +342,109 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="resetPassModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<%--Modal Add new user--%>
+<%--Modal Add new user--%>
+<div class="modal fade" id="createUserModal" tabindex="-1" role="dialog" aria-labelledby="createUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"> <i class="fas fa-key"></i> Đổi mật khẩu</h5>
+                <h5 class="modal-title" id="createUserModalLabel">
+                    <i class="fas fa-user-plus text-success"></i> Thêm người dùng mới
+                </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="${pageContext.request.contextPath}/admin/user-reset-pass" method="post">
+
+            <form action="${pageContext.request.contextPath}/admin/user-create" method="post">
                 <div class="modal-body">
-                    <input type="hidden" name="id" id="resetPassId">
+                    <%-- Hiển thị thông báo lỗi nếu có --%>
+                    <c:if test="${not empty sessionScope.createError}">
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle mr-1"></i>
+                                ${sessionScope.createError}
+                        </div>
+                    </c:if>
 
-                    <p>Đang đổi mật khẩu cho tài khoản: <strong id="resetPassUsername" class="text-primary"></strong></p>
+                    <c:if test="${not empty sessionScope.createMessage}">
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle mr-1"></i>
+                                ${sessionScope.createMessage}
+                        </div>
+                    </c:if>
 
-                    <div class="form-group">
-                        <label>Mật khẩu mới</label>
-                        <input type="password" class="form-control" name="newPass" required placeholder="Nhập mật khẩu mới...">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-muted border-bottom pb-2">Thông tin tài khoản</h6>
+
+                            <div class="form-group">
+                                <label>Tài khoản (Username) <span class="text-danger">*</span></label>
+                                <%-- Thêm value để giữ lại dữ liệu --%>
+                                <input type="text" class="form-control" name="username"
+                                       value="${sessionScope.oldUsername}"
+                                       required placeholder="Nhập tên đăng nhập...">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Mật khẩu <span class="text-danger">*</span></label>
+                                <%-- Mật khẩu KHÔNG được lưu lại value vì lý do bảo mật --%>
+                                <input type="password" class="form-control" name="password"
+                                       required placeholder="Nhập mật khẩu...">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Vai trò</label>
+                                <select class="form-control" name="role">
+                                    <%-- Kiểm tra oldRole để chọn lại đúng dòng đã chọn --%>
+                                    <option value="CUSTOMER" ${sessionScope.oldRole == 'CUSTOMER' ? 'selected' : ''}>Customer</option>
+                                    <option value="ADMIN" ${sessionScope.oldRole == 'ADMIN' ? 'selected' : ''}>Admin</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Trạng thái</label>
+                                <select class="form-control" name="status">
+                                    <option value="ACTIVE" ${sessionScope.oldStatus == 'ACTIVE' ? 'selected' : ''}>Active</option>
+                                    <option value="INACTIVE" ${sessionScope.oldStatus == 'INACTIVE' ? 'selected' : ''}>Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <h6 class="text-muted border-bottom pb-2">Thông tin cá nhân</h6>
+
+                            <div class="form-group">
+                                <label>Họ và tên <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="fullname"
+                                       value="${sessionScope.oldFullname}"
+                                       required placeholder="Nhập họ tên đầy đủ..." maxlength="20">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Email <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control" name="email"
+                                       value="${sessionScope.oldEmail}"
+                                       required placeholder="example@email.com" maxlength="50">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Số điện thoại</label>
+                                <input type="text" class="form-control" name="phone"
+                                       value="${sessionScope.oldPhone}"
+                                       placeholder="Nhập số điện thoại..." maxlength="10">
+                            </div>
+                        </div>
                     </div>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                    <button type="submit" class="btn btn-warning">Lưu mật khẩu</button>
+                    <button type="submit" class="btn btn-success">Tạo mới</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
-<%--Modal Add new user--%>
-<div class="modal fade" id="createUserModal" tabindex="-1" role="dialog" aria-labelledby="createUserModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document"> <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="createUserModalLabel">
-                <i class="fas fa-user-plus text-success"></i> Thêm người dùng mới
-            </h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-
-
-
-        <form action="${pageContext.request.contextPath}/admin/user-create" method="post">
-            <div class="modal-body">
-                <c:if test="${not empty sessionScope.error}">
-                    <div class="alert alert-danger">
-                        <i class="fas fa-exclamation-circle mr-1"></i>
-                            ${sessionScope.error}
-                    </div>
-                </c:if>
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6 class="text-muted border-bottom pb-2">Thông tin tài khoản</h6>
-                        <div class="form-group">
-                            <label>Tài khoản (Username) <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="username" required placeholder="Nhập tên đăng nhập...">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Mật khẩu <span class="text-danger">*</span></label>
-                            <input type="password" class="form-control" name="password" required placeholder="Nhập mật khẩu...">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Vai trò</label>
-                            <select class="form-control" name="role">
-                                <option value="CUSTOMER">Customer</option>
-                                <option value="ADMIN">Admin</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Trạng thái</label>
-                            <select class="form-control" name="status">
-                                <option value="ACTIVE" selected>Active</option>
-                                <option value="INACTIVE">Inactive</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <h6 class="text-muted border-bottom pb-2">Thông tin cá nhân</h6>
-                        <div class="form-group">
-                            <label>Họ và tên <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="fullname" required placeholder="Nhập họ tên đầy đủ..." maxlength="20">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Email <span class="text-danger">*</span></label>
-                            <input type="email" class="form-control" name="email" required placeholder="example@email.com" maxlength="50">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Số điện thoại</label>
-                            <input type="text" class="form-control" name="phone" placeholder="Nhập số điện thoại..." maxlength="10">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                <button type="submit" class="btn btn-success">Tạo mới</button>
-            </div>
-        </form>
-    </div>
-    </div>
-</div>
-<script>
-
-    function fillDataToModal(id, username, fullname, email, phone, role, status) {
-        // Gán giá trị vào các ô input trong Modal
-        document.getElementById('modalUserId').value = id;
-        document.getElementById('modalUsername').value = username;
-        document.getElementById('modalFullName').value = fullname;
-        document.getElementById('modalEmail').value = email;
-        document.getElementById('modalPhone').value = phone;
-
-        // Gán giá trị cho Select Box (jQuery cho nhanh vì giao diện có sẵn jQuery)
-        $('#modalRole').val(role);
-        $('#modalStatus').val(status);
-    }
-</script>
 <script src="${pageContext.request.contextPath}/assetAdmin/assets/vendor/jquery/jquery.min.js"></script>
 <script src="${pageContext.request.contextPath}/assetAdmin/assets/vendor/bootstrap/js/popper.min.js"></script>
 <script src="${pageContext.request.contextPath}/assetAdmin/assets/vendor/bootstrap/js/bootstrap.min.js"></script>
@@ -429,15 +452,39 @@
 <script src="${pageContext.request.contextPath}/assetAdmin/assets/vendor/stacked-menu/stacked-menu.min.js"></script>
 <script src="${pageContext.request.contextPath}/assetAdmin/assets/vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="${pageContext.request.contextPath}/assetAdmin/assets/javascript/theme.min.js"></script>
-<c:if test="${not empty sessionScope.error}">
-    <script>
-        $(document).ready(function () {
-            $('#createUserModal').modal('show');
-        });
-    </script>
+<script>
+    function fillDataToModal(id, username, fullname, email, phone, role, status) {
+        document.getElementById('modalUserId').value = id;
+        document.getElementById('modalUsername').value = username;
+        document.getElementById('modalFullName').value = fullname;
+        document.getElementById('modalEmail').value = email;
+        document.getElementById('modalPhone').value = phone;
+        $('#modalRole').val(role);
+        $('#modalStatus').val(status);
+    }
 
-    <%-- Xóa lỗi sau khi hiển thị để tránh lặp --%>
-    <c:remove var="error" scope="session"/>
+    $(document).ready(function () {
+        // Kiểm tra biến session 'openCreateModal'
+        <c:if test="${not empty sessionScope.openCreateModal}">
+        $('#createUserModal').modal('show');
+        </c:if>
+    });
+</script>
+
+<c:if test="${not empty sessionScope.openCreateModal}">
+    <c:remove var="openCreateModal" scope="session"/>
+    <c:remove var="createError" scope="session"/>
+    <c:remove var="createMessage" scope="session"/>
+
+    <%-- Xóa dữ liệu cũ trong form --%>
+    <c:remove var="oldUsername" scope="session"/>
+    <c:remove var="oldFullname" scope="session"/>
+    <c:remove var="oldEmail" scope="session"/>
+    <c:remove var="oldPhone" scope="session"/>
+    <c:remove var="oldRole" scope="session"/>
+    <c:remove var="oldStatus" scope="session"/>
 </c:if>
+
+
 </body>
 </html>

@@ -16,35 +16,38 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
+        UserDAO dao = new UserDAO();
 
-        try {
-            String keyword = request.getParameter("keyword");
-            String role = request.getParameter("role");
-            String username = request.getParameter("username");
-            String status = request.getParameter("status");
-            // 1. Gọi DAO để lấy danh sách từ Database
-            UserDAO userDAO = new UserDAO();
-            List<Users> userList;
 
-            if ((keyword != null && !keyword.trim().isEmpty()) ||
-                    (role != null && !role.trim().isEmpty()) ||
-                    (status != null && !status.trim().isEmpty())) {
-
-                userList = userDAO.searchUsers(keyword, role, status,null, null, null);
-
-            } else {
-                userList = userDAO.getAll();
+        int page = 1;
+        if (request.getParameter("page") != null) {
+            try {
+                int inputPage = Integer.parseInt(request.getParameter("page"));
+                if (inputPage < 1) {
+                    page = 1;
+                } else {
+                    page = inputPage;
+                }
+            } catch (NumberFormatException e) {
+                page = 1;
             }
-
-            request.setAttribute("listUser", userList);
-            request.getRequestDispatcher("/page/admin/ManagerUser.jsp").forward(request, response);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            // Nếu lỗi thì hiển thị thông báo đơn giản (hoặc chuyển sang trang error.jsp)
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Lỗi khi lấy danh sách User: " + e.getMessage());
         }
+
+        int pageSize = 5;
+
+        // 3. Gọi hàm DAO đã có sẵn
+        List<Users> list = dao.getUsersPaging(page, pageSize);
+        int totalUsers = dao.countUsers();
+
+        // 4. Tính tổng số trang
+        // Công thức: (totalUsers / pageSize) làm tròn lên
+        int totalPages = (int) Math.ceil((double) totalUsers / pageSize);
+
+        // 5. Đẩy dữ liệu sang JSP
+        request.setAttribute("listUser", list);
+        request.setAttribute("currentPage", page);    // Trang đang đứng
+        request.setAttribute("totalPages", totalPages); // Tổng số trang để vẽ nút
+
+        request.getRequestDispatcher("/page/admin/ManagerUser.jsp").forward(request, response);
     }
 }
