@@ -33,9 +33,8 @@
                 <button class="hamburger hamburger-squeeze mr-2" type="button" data-toggle="aside-menu">
                     <span class="hamburger-box"><span class="hamburger-inner"></span></span>
                 </button>
-                <a href="${pageContext.request.contextPath}/home">
-    <a href="${pageContext.request.contextPath}/home"
-       class="text-decoration-none d-flex align-items-center">
+<%--                <a href="${pageContext.request.contextPath}/home">--%>
+    <a href="${pageContext.request.contextPath}/admin" class="text-decoration-none d-flex align-items-center">
 
     <span style="
         font-size: 22px;
