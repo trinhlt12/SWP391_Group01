@@ -43,7 +43,7 @@ public class RegisterServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException{
 
         request.setCharacterEncoding("UTF-8");
 
@@ -54,9 +54,31 @@ public class RegisterServlet extends HttpServlet {
         String password = request.getParameter("password");
         String confirmPassword = request.getParameter("confirmPassword");
 
+
         if (isEmpty(username) || isEmpty(fullName) || isEmpty(email) || isEmpty(phone)
                 || isEmpty(password) || isEmpty(confirmPassword)) {
             request.setAttribute("message", "Vui lòng điền đầy đủ thông tin!");
+            request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
+            return;
+        }
+        if (username.length() > 30) {
+            request.setAttribute("message", "Username không được vượt quá 30 ký tự!");
+            request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
+            return;
+        }
+
+        if (fullName.length() > 30) {
+            request.setAttribute("message", "Fullname không được vượt quá 30 ký tự!");
+            request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
+            return;
+        }
+        if (!isValidVietnamPhone(phone)) {
+            request.setAttribute("message", "Số điện thoại không hợp lệ! Vui lòng nhập số Việt Nam (0xxxxxxxxx hoặc +84xxxxxxxx).");
+            request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
+            return;
+        }
+        if (password.length() > 20) {
+            request.setAttribute("message", "Mật khẩu không được vượt quá 20 ký tự!");
             request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
             return;
         }
@@ -72,12 +94,24 @@ public class RegisterServlet extends HttpServlet {
         }
 
         try {
+            boolean usernameExist = authDAO.isUsernameExists(username);
+            boolean fullnameExist = authDAO.isFullNameExists(fullName);
+            boolean phoneExist = authDAO.isPhoneExists(phone);
             boolean emailExist = authDAO.isEmailExists(email);
-            if (emailExist) {
-                request.setAttribute("message", "Email này đã được sử dụng!");
+            if (emailExist || usernameExist || phoneExist||fullnameExist) {
+                if (emailExist) {
+                    request.setAttribute("message", "Email này đã được sử dụng!");
+                } else if (usernameExist) {
+                    request.setAttribute("message", "Username đã tồn tại!");
+                } else if (fullnameExist) {
+                    request.setAttribute("message", "Fullname đã tồn tại!");
+                }else if (phoneExist) {
+                    request.setAttribute("message", "Số điện thoại này đã được sử dụng!");
+                }
                 request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
                 return;
             }
+
 
             // Sinh OTP
             int otpValue = 100000 + new Random().nextInt(900000);
@@ -139,5 +173,12 @@ public class RegisterServlet extends HttpServlet {
         // Ít nhất 1 chữ in hoa, 1 số, 1 ký tự đặc biệt, tối thiểu 8 ký tự
         String regex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
         return password != null && password.matches(regex);
+    }
+
+    private boolean isValidVietnamPhone(String phone) {
+        // Cho phép số bắt đầu bằng 0 và có 10 chữ số
+        // hoặc bắt đầu bằng +84 và theo sau là 9 chữ số
+        String regex = "^(0\\d{9}|\\+84\\d{9})$";
+        return phone != null && phone.matches(regex);
     }
 }

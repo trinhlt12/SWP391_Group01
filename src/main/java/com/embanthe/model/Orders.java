@@ -1,76 +1,90 @@
 package com.embanthe.model;
 
+import java.sql.Timestamp;
+
 public class Orders {
 
-  private int orderId;
-  private int userId;
-  private int productId;
-  private int quantity;
-  private double totalAmount;
-  private String status;
-  private java.sql.Timestamp createdAt;
+    private int orderId;
+    private int userId;
+    private int productId;
+    private String productName;
+    private int unitPrice;
+    private int quantity;
+    private double totalAmount;
+    private String status;
+    private Timestamp createdAt;
+    public Orders() {
+    }
 
+    public int getOrderId() {
+        return orderId;
+    }
 
-  public int getOrderId() {
-    return orderId;
-  }
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
 
-  public void setOrderId(int orderId) {
-    this.orderId = orderId;
-  }
+    public int getUserId() {
+        return userId;
+    }
 
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
-  public int getUserId() {
-    return userId;
-  }
+    public int getProductId() {
+        return productId;
+    }
 
-  public void setUserId(int userId) {
-    this.userId = userId;
-  }
+    public void setProductId(int productId) {
+        this.productId = productId;
+    }
 
+    public String getProductName() {
+        return productName;
+    }
 
-  public int getProductId() {
-    return productId;
-  }
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
 
-  public void setProductId(int productId) {
-    this.productId = productId;
-  }
+    public int getUnitPrice() {
+        return unitPrice;
+    }
 
+    public void setUnitPrice(int unitPrice) {
+        this.unitPrice = unitPrice;
+    }
 
-  public int getQuantity() {
-    return quantity;
-  }
+    public int getQuantity() {
+        return quantity;
+    }
 
-  public void setQuantity(int quantity) {
-    this.quantity = quantity;
-  }
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
+    public double getTotalAmount() {
+        return totalAmount;
+    }
 
-  public double getTotalAmount() {
-    return totalAmount;
-  }
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
 
-  public void setTotalAmount(double totalAmount) {
-    this.totalAmount = totalAmount;
-  }
+    public String getStatus() {
+        return status;
+    }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-  public String getStatus() {
-    return status;
-  }
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
 
-  public void setStatus(String status) {
-    this.status = status;
-  }
-
-
-  public java.sql.Timestamp getCreatedAt() {
-    return createdAt;
-  }
-
-  public void setCreatedAt(java.sql.Timestamp createdAt) {
-    this.createdAt = createdAt;
-  }
-
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
 }

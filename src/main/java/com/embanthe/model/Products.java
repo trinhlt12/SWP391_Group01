@@ -2,75 +2,65 @@ package com.embanthe.model;
 
 public class Products {
 
-    private long productId;
-    private long providerId;
-    private long categoryId;
+    private int productId;
+    private int providerId;
+    private int categoryId;
     private String productName;
+
     private double price;
-    private double denomination;
+    private int quantity;
+
     private String imageUrl;
 
-
-    public long getProductId() {
-        return productId;
+    public Products() {
     }
 
-    public void setProductId(long productId) {
+    public int getProductId() {
+        return productId;
+    }
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 
-
-    public long getProviderId() {
+    public int getProviderId() {
         return providerId;
     }
-
-    public void setProviderId(long providerId) {
+    public void setProviderId(int providerId) {
         this.providerId = providerId;
     }
 
-
-    public long getCategoryId() {
+    public int getCategoryId() {
         return categoryId;
     }
-
-    public void setCategoryId(long categoryId) {
+    public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
-
 
     public String getProductName() {
         return productName;
     }
-
     public void setProductName(String productName) {
         this.productName = productName;
     }
 
-
     public double getPrice() {
         return price;
     }
-
     public void setPrice(double price) {
         this.price = price;
     }
 
-
-    public double getDenomination() {
-        return denomination;
+    public int getQuantity() {
+        return quantity;
     }
-
-    public void setDenomination(double denomination) {
-        this.denomination = denomination;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
-
 
     public String getImageUrl() {
         return imageUrl;
     }
-
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
-
 }
