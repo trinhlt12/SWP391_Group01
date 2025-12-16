@@ -257,6 +257,9 @@
      <div class="container">
          <div class="header">
              <h2>Product Management</h2>
+             <a href="${pageContext.request.contextPath}/admin/carditems" class="btn-add">
+                 View inventory
+             </a>
              <a href="${pageContext.request.contextPath}/admin/products/add" class="btn-add">
                  ➕ Add New Product
              </a>
