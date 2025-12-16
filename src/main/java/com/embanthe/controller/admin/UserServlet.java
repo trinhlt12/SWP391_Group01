@@ -22,7 +22,12 @@ public class UserServlet extends HttpServlet {
         int page = 1;
         if (request.getParameter("page") != null) {
             try {
-                page = Integer.parseInt(request.getParameter("page"));
+                int inputPage = Integer.parseInt(request.getParameter("page"));
+                if (inputPage < 1) {
+                    page = 1;
+                } else {
+                    page = inputPage;
+                }
             } catch (NumberFormatException e) {
                 page = 1;
             }
