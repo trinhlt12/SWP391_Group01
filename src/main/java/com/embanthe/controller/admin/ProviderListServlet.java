@@ -1,7 +1,7 @@
 package com.embanthe.controller.admin;
 
-import com.embanthe.dao. ProviderDAO;
-import com. embanthe.model.Providers;
+import com.embanthe.dao.ProviderDAO;
+import com.embanthe.model.Providers;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -16,7 +16,7 @@ public class ProviderListServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String pageStr = request. getParameter("page");
+        String pageStr = request.getParameter("page");
         String search = request.getParameter("search");
 
         int page = 1, pageSize = 10;
@@ -28,7 +28,10 @@ public class ProviderListServlet extends HttpServlet {
         if (page > totalPages && totalPages != 0) page = totalPages;
 
         int offset = (page - 1) * pageSize;
-        List<Providers> list = providerDAO. getPagedList(search, offset, pageSize);
+        List<Providers> list = providerDAO.getPagedList(search, offset, pageSize);
+
+        // Debug: in ra console/ logs để kiểm tra
+        System.out.println("[ProviderListServlet] search=" + search + ", page=" + page + ", totalItems=" + totalItems + ", listSize=" + (list != null ? list.size() : 0));
 
         request.setAttribute("list", list);
         request.setAttribute("currentPage", page);
@@ -36,6 +39,7 @@ public class ProviderListServlet extends HttpServlet {
         request.setAttribute("totalItems", totalItems);
         request.setAttribute("search", search == null ? "" : search);
 
+        // Forward tới trang đúng (chỉnh đường dẫn theo vị trí JSP trong project)
         request.getRequestDispatcher("/page/admin/providerlist.jsp").forward(request, response);
     }
 }

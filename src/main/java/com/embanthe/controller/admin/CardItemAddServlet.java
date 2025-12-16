@@ -12,7 +12,9 @@ import javax.servlet.http.*;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.DataTruncation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +23,10 @@ import java.util.Set;
 public class CardItemAddServlet extends HttpServlet {
     private CardItemDAO cardItemDAO = new CardItemDAO();
     private ProductDAO productDAO = new ProductDAO();
+
+    // Set these to match your DB column sizes. Adjust if your schema uses different lengths.
+    private static final int MAX_SERIAL_LENGTH = 64;
+    private static final int MAX_CODE_LENGTH = 64;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -77,6 +83,20 @@ public class CardItemAddServlet extends HttpServlet {
                 if (s.isEmpty() || c.isEmpty()) {
                     warningMessages.add(String.format(
                             "⚠️ Row %d skipped: Serial number or card code is empty.", i + 1));
+                    continue;
+                }
+
+                // Server-side length validation to prevent DataTruncation from DB
+                if (s.length() > MAX_SERIAL_LENGTH) {
+                    warningMessages.add(String.format(
+                            "⚠️ Row %d skipped: Serial too long (%d chars). Max allowed: %d.",
+                            i + 1, s.length(), MAX_SERIAL_LENGTH));
+                    continue;
+                }
+                if (c.length() > MAX_CODE_LENGTH) {
+                    warningMessages.add(String.format(
+                            "⚠️ Row %d skipped: Card code too long (%d chars). Max allowed: %d.",
+                            i + 1, c.length(), MAX_CODE_LENGTH));
                     continue;
                 }
 
@@ -157,7 +177,7 @@ public class CardItemAddServlet extends HttpServlet {
                             Products product = productDAO.getById(productId);
                             if (product != null) {
                                 successMessages.add(String.format(
-                                        "📦 Product: <strong>%s</strong> - New total: <strong>%d cards</strong>",
+                                        "📦 Product: %s - New total: %d cards",
                                         product.getProductName(),
                                         product.getQuantity()
                                 ));
@@ -170,8 +190,35 @@ public class CardItemAddServlet extends HttpServlet {
                             } catch (Exception ignore) {}
                         }
                         ex.printStackTrace();
-                        errorMessages.add(
-                                "❌ Error saving cards. Please try again. Details: " + ex.getMessage());
+
+                        // Friendly error message for data truncation
+                        boolean isTruncation = false;
+                        if (ex instanceof DataTruncation) {
+                            isTruncation = true;
+                        } else if (ex instanceof SQLException) {
+                            String msg = ((SQLException) ex).getMessage();
+                            if (msg != null && msg.toLowerCase().contains("data too long")) {
+                                isTruncation = true;
+                            }
+                        } else {
+                            Throwable cause = ex.getCause();
+                            if (cause != null && cause instanceof SQLException) {
+                                String msg = ((SQLException) cause).getMessage();
+                                if (msg != null && msg.toLowerCase().contains("data too long")) {
+                                    isTruncation = true;
+                                }
+                            }
+                        }
+
+                        if (isTruncation) {
+                            errorMessages.add(String.format(
+                                    "❌ Error saving cards: A value is too long for the database column. " +
+                                            "Please ensure serials are <= %d chars and codes are <= %d chars.",
+                                    MAX_SERIAL_LENGTH, MAX_CODE_LENGTH));
+                        } else {
+                            errorMessages.add(
+                                    "❌ Error saving cards. Please try again. Details: " + ex.getMessage());
+                        }
                     } finally {
                         if (con != null) {
                             try {
@@ -189,31 +236,14 @@ public class CardItemAddServlet extends HttpServlet {
             }
         }
 
-        // Build final message
-        StringBuilder finalMessage = new StringBuilder();
-
-        if (!errorMessages.isEmpty()) {
-            finalMessage.append("<div style='color: #991b1b; margin-bottom: 10px;'>");
-            finalMessage.append(String.join("<br/>", errorMessages));
-            finalMessage.append("</div>");
-        }
-
-        if (!successMessages.isEmpty()) {
-            finalMessage.append("<div style='color: #065f46; margin-bottom: 10px;'>");
-            finalMessage.append(String.join("<br/>", successMessages));
-            finalMessage.append("</div>");
-        }
-
-        if (!warningMessages.isEmpty()) {
-            finalMessage.append("<div style='color: #92400e; margin-bottom: 10px;'>");
-            finalMessage.append(String.join("<br/>", warningMessages));
-            finalMessage.append("</div>");
-        }
+        // Instead of building HTML here, pass lists to JSP and let JSP render alerts
+        request.setAttribute("errorMessages", errorMessages);
+        request.setAttribute("successMessages", successMessages);
+        request.setAttribute("warningMessages", warningMessages);
 
         // Reload products for the form
         List<Products> products = productDAO.getAll();
         request.setAttribute("products", products);
-        request.setAttribute("message", finalMessage.toString());
         request.getRequestDispatcher("/page/admin/carditemsadd.jsp").forward(request, response);
     }
 }
