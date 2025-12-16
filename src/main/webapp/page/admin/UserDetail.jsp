@@ -3,7 +3,6 @@
   User: hungd
   Date: 13/12/2025
   Time: 11:11
-  To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -80,10 +79,17 @@
                 <div class="card-header">
                     <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
                         <li class="nav-item">
-                            <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button">Thông tin chung</button>
+                            <button class="nav-link ${param.activeTab != 'history' ? 'active' : ''}"
+                                    id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button">
+                                Thông tin chung
+                            </button>
                         </li>
+
                         <li class="nav-item">
-                            <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button">Lịch sử giao dịch</button>
+                            <button class="nav-link ${param.activeTab == 'history' ? 'active' : ''}"
+                                    id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button">
+                                Lịch sử giao dịch
+                            </button>
                         </li>
                     </ul>
                 </div>
@@ -91,7 +97,7 @@
                 <div class="card-body">
                     <div class="tab-content" id="myTabContent">
 
-                        <div class="tab-pane fade show active" id="profile">
+                        <div class="tab-pane fade ${param.activeTab != 'history' ? 'show active' : ''}" id="profile">
                             <form action="${pageContext.request.contextPath}/admin/user-update" method="post">
                                 <input type="hidden" name="id" value="${user.userId}">
                                 <div class="mb-3">
@@ -129,10 +135,15 @@
                             </form>
                         </div>
 
-                        <div class="tab-pane fade" id="history">
+                        <div class="tab-pane fade ${param.activeTab == 'history' ? 'show active' : ''}" id="history">
+
                             <c:if test="${empty history}">
-                                <p class="text-center text-muted my-4">Chưa có giao dịch nào gần đây.</p>
+                                <div class="text-center py-5 text-muted">
+                                    <i class="fas fa-folder-open fa-3x mb-3"></i>
+                                    <p>Người dùng này chưa có giao dịch nào.</p>
+                                </div>
                             </c:if>
+
                             <c:if test="${not empty history}">
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-hover">
@@ -142,7 +153,7 @@
                                             <th>Loại</th>
                                             <th>Số tiền</th>
                                             <th>Trạng thái</th>
-                                            <th>Ngày tạo</th>
+                                            <th>Thời gian</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -150,9 +161,9 @@
                                             <tr>
                                                 <td>#${t.transactionId}</td>
                                                 <td>
-                                                        <span class="badge ${t.type == 'DEPOSIT' ? 'bg-primary' : 'bg-info'}">
-                                                                ${t.type}
-                                                        </span>
+                                                    <span class="badge ${t.type == 'DEPOSIT' ? 'bg-primary' : 'bg-info'}">
+                                                            ${t.type}
+                                                    </span>
                                                 </td>
                                                 <td class="${t.type == 'DEPOSIT' ? 'text-success' : 'text-danger'} fw-bold">
                                                         ${t.type == 'DEPOSIT' ? '+' : '-'}<fmt:formatNumber value="${t.amount}" /> đ
@@ -176,6 +187,36 @@
                                         </tbody>
                                     </table>
                                 </div>
+
+                                <c:if test="${totalPages > 1}">
+                                    <nav class="mt-4" aria-label="Page navigation">
+                                        <ul class="pagination justify-content-center">
+
+                                            <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                                                <a class="page-link" href="user-detail?id=${user.userId}&page=${currentPage - 1}&activeTab=history">
+                                                    <i class="fas fa-chevron-left"></i>
+                                                </a>
+                                            </li>
+
+                                            <c:forEach begin="1" end="${totalPages}" var="i">
+                                                <li class="page-item ${currentPage == i ? 'active' : ''}">
+                                                    <a class="page-link"
+                                                       href="user-detail?id=${user.userId}&page=${i}&activeTab=history">
+                                                            ${i}
+                                                    </a>
+                                                </li>
+                                            </c:forEach>
+
+                                            <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                                <a class="page-link"
+                                                   href="user-detail?id=${user.userId}&page=${currentPage + 1}&activeTab=history">
+                                                    <i class="fas fa-chevron-right"></i>
+                                                </a>
+                                            </li>
+
+                                        </ul>
+                                    </nav>
+                                </c:if>
                             </c:if>
                         </div>
 

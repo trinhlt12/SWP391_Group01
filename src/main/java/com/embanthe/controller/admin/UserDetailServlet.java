@@ -17,22 +17,18 @@ import java.util.List;
 @WebServlet(name = "UserDetailController", urlPatterns = {"/admin/user-detail"})
 public class UserDetailServlet extends HttpServlet {
 
-    // Khởi tạo DAO trực tiếp (Vì DAO của bạn giờ đã an toàn, không ném Exception khi new)
+
     private final UserDAO userDAO = new UserDAO();
     private final TransactionsDAO transDAO = new TransactionsDAO();
 
     public UserDetailServlet() throws SQLException {
     }
 
-    // --- KHÔNG CẦN VIẾT CONSTRUCTOR ---
-    // Java sẽ tự tạo constructor mặc định rỗng
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-
             String idStr = request.getParameter("id");
-
             if (idStr == null || idStr.trim().isEmpty()) {
                 response.sendRedirect(request.getContextPath() + "/admin/user-list");
                 return;
@@ -40,30 +36,50 @@ public class UserDetailServlet extends HttpServlet {
 
             int userId = Integer.parseInt(idStr);
 
-            // 2. Lấy thông tin User
+            // 1. Lấy thông tin User
             Users user = userDAO.getUserById(userId);
-
             if (user == null) {
-
                 response.sendRedirect(request.getContextPath() + "/admin/user-list");
                 return;
             }
 
-            List<Transactions> history = transDAO.getRecentTransactions(userId);
+            int pageSize = 5;
+            int totalRecords = transDAO.countTransactionsByUserId(userId);
+            int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
+            if (totalPages == 0) {
+                totalPages = 1;
+            }
+            int page = 1;
+            try {
+                String pageStr = request.getParameter("page");
+                if (pageStr != null) {
+                    page = Integer.parseInt(pageStr);
+                }
+            } catch (NumberFormatException e) {
+                page = 1;
+            }
 
-            // 4. Đẩy dữ liệu sang JSP
+            if (page < 1) {
+                page = 1;
+            }
+
+            if (page > totalPages) {
+                page = totalPages;
+            }
+
+            List<Transactions> history = transDAO.getRecentTransactions(userId, page, pageSize);
+
             request.setAttribute("user", user);
             request.setAttribute("history", history);
 
-            // Chuyển hướng sang trang giao diện
+            request.setAttribute("currentPage", page);
+            request.setAttribute("totalPages", totalPages);
+
             request.getRequestDispatcher("/page/admin/UserDetail.jsp").forward(request, response);
 
-        } catch (NumberFormatException e) {
-            // ID trên URL không phải số
-            response.sendRedirect(request.getContextPath() + "/admin/user-list");
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect(request.getContextPath() + "/error.jsp"); // Trang lỗi nếu có
+            response.sendRedirect(request.getContextPath() + "/admin/user-list");
         }
     }
 }
