@@ -83,6 +83,15 @@ public class AuthDAO {
             }
         }
     }
+    public boolean isFullNameExists(String fullname) throws SQLException {
+        String sql = "SELECT 1 FROM Users WHERE full_name  = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, fullname);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
     private Users mapRow(ResultSet rs) throws SQLException {
         return Users.builder()
                 .userId(rs.getInt("user_id"))
@@ -102,26 +111,28 @@ public class AuthDAO {
 
         try {
             AuthDAO authDAO = new AuthDAO();
-            Scanner sc = new Scanner(System.in);
-
-            System.out.println("=== TEST ĐĂNG NHẬP TÀI KHOẢN ===");
-            System.out.print("Nhập email: ");
-            String email = sc.nextLine();
-
-            System.out.print("Nhập mật khẩu: ");
-            String password = sc.nextLine();
-
-            Users user = authDAO.login(email, password);
-            if (user != null) {
-                System.out.println("✅ Đăng nhập thành công!");
-                System.out.println("Xin chào, " + user.getFullName());
-                System.out.println("Role: " + user.getRole());
-                System.out.println("Balance: " + user.getBalance());
-            } else {
-                System.out.println("❌ Đăng nhập thất bại! Sai email hoặc mật khẩu.");
-            }
-
-            sc.close();
+            boolean isFullNameExists = authDAO.isFullNameExists("Hoang");
+            System.out.println(isFullNameExists);
+//            Scanner sc = new Scanner(System.in);
+//
+//            System.out.println("=== TEST ĐĂNG NHẬP TÀI KHOẢN ===");
+//            System.out.print("Nhập email: ");
+//            String email = sc.nextLine();
+//
+//            System.out.print("Nhập mật khẩu: ");
+//            String password = sc.nextLine();
+//
+//            Users user = authDAO.login(email, password);
+//            if (user != null) {
+//                System.out.println("✅ Đăng nhập thành công!");
+//                System.out.println("Xin chào, " + user.getFullName());
+//                System.out.println("Role: " + user.getRole());
+//                System.out.println("Balance: " + user.getBalance());
+//            } else {
+//                System.out.println("❌ Đăng nhập thất bại! Sai email hoặc mật khẩu.");
+//            }
+//
+//            sc.close();
         } catch (SQLException e) {
             System.out.println("Lỗi kết nối CSDL:");
             e.printStackTrace();

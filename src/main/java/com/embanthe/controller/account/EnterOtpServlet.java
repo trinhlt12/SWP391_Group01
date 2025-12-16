@@ -42,7 +42,7 @@ public class EnterOtpServlet extends HttpServlet {
                     AuthDAO authDAO = new AuthDAO();
                     boolean success = authDAO.register(username, fullName, email, password, phone);
                     if (success) {
-                        request.setAttribute("message", "Đăng ký thành công! Bạn có thể đăng nhập.");
+                        request.setAttribute("success", "Đăng ký thành công! Bạn có thể đăng nhập.");
                         dispatcher = request.getRequestDispatcher("page/system/login.jsp");
                     } else {
                         request.setAttribute("message", "Email đã tồn tại!");

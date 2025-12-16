@@ -34,6 +34,11 @@
                             <a href="" class="text-nowrap logo-img text-center d-block py-3 w-100">
                                 <img src="image/Logo.png" style="width: 120px; height: auto;" alt="">
                             </a>
+                            <c:if test="${not empty success}">
+                                <div style="color:blue; font-weight:bold;">
+                                        ${success}
+                                </div>
+                            </c:if>
                             <c:if test="${not empty message}">
                                 <div style="color:red; font-weight:bold;">
                                         ${message}
