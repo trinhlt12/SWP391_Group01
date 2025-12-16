@@ -74,15 +74,19 @@ public class TransactionDAO {
         }
     }
 
-    public List<Transactions> getRecentTransactions(int userId, int limit) {
+    public List<Transactions> getRecentTransactions(int userId, int pageIndex, int pageSize) {
         List<Transactions> list = new ArrayList<>();
-        String sql = "SELECT * FROM transactions WHERE user_id = ? ORDER BY created_at DESC LIMIT ?";
+
+        int offset = (pageIndex - 1) * pageSize;
+
+        String sql = "SELECT * FROM Transactions WHERE user_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?";
 
         try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, userId);
-            ps.setInt(2, limit);
+            ps.setInt(2, pageSize); // Lấy bao nhiêu dòng
+            ps.setInt(3, offset);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -103,5 +107,21 @@ public class TransactionDAO {
             e.printStackTrace();
         }
         return list;
+    }
+
+    public int countTransactionsByUserId(int userId) {
+        String sql = "SELECT COUNT(*) FROM Transactions WHERE user_id = ?";
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }

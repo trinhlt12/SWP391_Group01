@@ -33,9 +33,8 @@
                 <button class="hamburger hamburger-squeeze mr-2" type="button" data-toggle="aside-menu">
                     <span class="hamburger-box"><span class="hamburger-inner"></span></span>
                 </button>
-                <a href="${pageContext.request.contextPath}/home">
-    <a href="${pageContext.request.contextPath}/home"
-       class="text-decoration-none d-flex align-items-center">
+<%--                <a href="${pageContext.request.contextPath}/home">--%>
+    <a href="${pageContext.request.contextPath}/admin" class="text-decoration-none d-flex align-items-center">
 
     <span style="
         font-size: 22px;
@@ -120,6 +119,27 @@
                     </header>
 
                     <div class="page-section">
+                        <div class="card-deck-xl">
+                            <c:if test="${not empty sessionScope.createMessage}">
+                                <div class="alert alert-success alert-dismissible fade show w-100" role="alert">
+                                    <i class="fas fa-check-circle"></i> ${sessionScope.createMessage}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <% session.removeAttribute("createMessage"); %>
+                            </c:if>
+
+                            <c:if test="${not empty sessionScope.createError}">
+                                <div class="alert alert-danger alert-dismissible fade show w-100" role="alert">
+                                    <i class="fas fa-exclamation-triangle"></i> ${sessionScope.createError}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <% session.removeAttribute("createError"); %>
+                            </c:if>
+                        </div>
                         <div class="card card-fluid">
                             <div class="card-body">
                                 <div class="row mb-3">
@@ -195,15 +215,16 @@
                                                 <td class="align-middle">${u.role}</td>
                                                 <td class="align-middle">${u.status}</td>
                                                 <td class="align-middle text-center">
+
                                                     <form action="${pageContext.request.contextPath}/admin/user-reset-pass"
                                                           method="post"
-                                                          style="display:inline; color: #0a53be"
-                                                          onsubmit="return confirm('Reset mật khẩu về: ${u.username}@123 ?');">
+                                                          style="display:inline;"
+                                                          onsubmit="return confirm('CẢNH BÁO: Bạn có chắc chắn muốn reset mật khẩu của [${u.username}]?\n\nHệ thống sẽ tự động sinh mật khẩu mới và gửi về email: ${u.email}');">
 
-                                                        <input type="hidden" name="id" value="${u.userId}">
+                                                        <input type="hidden" name="userId" value="${u.userId}">
 
-                                                        <button type="submit" class="btn btn-sm btn-icon btn-warning" title="Reset mật khẩu">
-                                                            <i class="fas fa-key" ></i>
+                                                        <button type="submit" class="btn btn-sm btn-icon btn-warning" title="Reset & Gửi Email">
+                                                            <i class="fas fa-key"></i>
                                                         </button>
                                                     </form>
 
@@ -321,35 +342,6 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="resetPassModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"> <i class="fas fa-key"></i> Đổi mật khẩu</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form action="${pageContext.request.contextPath}/admin/user-reset-pass" method="post">
-                <div class="modal-body">
-                    <input type="hidden" name="id" id="resetPassId">
-
-                    <p>Đang đổi mật khẩu cho tài khoản: <strong id="resetPassUsername" class="text-primary"></strong></p>
-
-                    <div class="form-group">
-                        <label>Mật khẩu mới</label>
-                        <input type="password" class="form-control" name="newPass" required placeholder="Nhập mật khẩu mới...">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                    <button type="submit" class="btn btn-warning">Lưu mật khẩu</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
 <%--Modal Add new user--%>
 <%--Modal Add new user--%>
 <div class="modal fade" id="createUserModal" tabindex="-1" role="dialog" aria-labelledby="createUserModalLabel" aria-hidden="true">
@@ -453,20 +445,6 @@
         </div>
     </div>
 </div>
-<script>
-
-    function fillDataToModal(id, username, fullname, email, phone, role, status) {
-        // Gán giá trị vào các ô input trong Modal
-        document.getElementById('modalUserId').value = id;
-        document.getElementById('modalUsername').value = username;
-        document.getElementById('modalFullName').value = fullname;
-        document.getElementById('modalEmail').value = email;
-        document.getElementById('modalPhone').value = phone;
-
-        $('#modalRole').val(role);
-        $('#modalStatus').val(status);
-    }
-</script>
 <script src="${pageContext.request.contextPath}/assetAdmin/assets/vendor/jquery/jquery.min.js"></script>
 <script src="${pageContext.request.contextPath}/assetAdmin/assets/vendor/bootstrap/js/popper.min.js"></script>
 <script src="${pageContext.request.contextPath}/assetAdmin/assets/vendor/bootstrap/js/bootstrap.min.js"></script>

@@ -124,9 +124,6 @@ public class CreateNewUserController extends HttpServlet {
         if (fullname == null || fullname.trim().isEmpty()) return "Họ tên không được để trống";
         if (email == null || email.trim().isEmpty()) return "Email không được để trống";
 
-        // ========================================================================
-        // NÂNG CẤP VALIDATE PASSWORD TẠI ĐÂY
-        // ========================================================================
         if (password == null || password.length() < 6) {
             return "Mật khẩu phải có ít nhất 6 ký tự";
         }
@@ -147,7 +144,6 @@ public class CreateNewUserController extends HttpServlet {
         if (phone != null && !phone.isBlank() && !phone.matches("^\\d{10}$"))
             return "Số điện thoại phải gồm đúng 10 chữ số";
 
-        // 3. Business rules
         if (!("ADMIN".equals(role) || "CUSTOMER".equals(role))) return "Vai trò không hợp lệ";
         if (!("ACTIVE".equals(status) || "INACTIVE".equals(status))) return "Trạng thái không hợp lệ";
 

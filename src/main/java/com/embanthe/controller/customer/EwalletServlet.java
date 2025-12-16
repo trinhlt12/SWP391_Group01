@@ -45,10 +45,26 @@ public class EwalletServlet extends HttpServlet {
                 currentUser = updatedUser;
             }
 
-            List<Transactions> transactionList = transactionDAO.getRecentTransactions((int) currentUser.getUserId(), 10);
+            int page = 1;
+            int pageSize = 10;
+
+            if (req.getParameter("page") != null) {
+                try {
+                    page = Integer.parseInt(req.getParameter("page"));
+                } catch (NumberFormatException e) {
+                    page = 1;
+                }
+            }
+
+            int totalTransactions = transactionDAO.countTransactionsByUserId((int) currentUser.getUserId());
+            int totalPages = (int) Math.ceil((double) totalTransactions / pageSize);
+
+
+            List<Transactions> transactionList = transactionDAO.getRecentTransactions((int) currentUser.getUserId(), page, pageSize);
 
             req.setAttribute("transactionList", transactionList);
-
+            req.setAttribute("currentPage", page);
+            req.setAttribute("totalPages", totalPages);
         } else {
             resp.sendRedirect(req.getContextPath() + "/login");
             return;

@@ -66,7 +66,6 @@ public class UserUpdateDetailServlet extends HttpServlet {
                 session.setAttribute("error", "Lỗi cập nhật! Có thể Email đã tồn tại hoặc lỗi server.");
             }
 
-            // Redirect lại trang chi tiết
             response.sendRedirect(request.getContextPath() + "/admin/user-detail?id=" + userId);
 
         } catch (NumberFormatException e) {
