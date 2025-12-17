@@ -46,9 +46,9 @@
                             </c:if>
                             <form action="login" method="post">
                                 <div class="mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">Email</label>
-                                    <input type="email" name="email" class="form-control" id="exampleInputEmail1"
-                                           aria-describedby="emailHelp" value="${cookie.email.value}">
+                                    <label for="exampleInputEmail1" class="form-label">Username</label>
+                                    <input type="text" name="username" class="form-control"
+                                           value="${cookie.username.value}">
                                 </div>
                                 <div class="mb-4">
                                     <label for="exampleInputPassword1" class="form-label">Mật khẩu</label>
@@ -77,7 +77,7 @@
                                        class="btn btn-outline-primary w-100 py-8 fs-4 rounded-2 d-flex align-items-center justify-content-center gap-3">
                                         <img src="https://www.google.com/favicon.ico" width="20" height="20"
                                              alt="Google">
-                                        <span>Đăng nhập bằng Google</span>
+                                        <span>Tạo tài khoản nhanh với Google</span>
                                     </a>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-center">

@@ -16,14 +16,14 @@ public class ChangePasswordServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String email = (String) request.getSession().getAttribute("email");
+        String username = (String) request.getSession().getAttribute("username");
 
-        if (email == null) {
+        if (username == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
         UserDAO userDAO = new UserDAO();
-        Users user = userDAO.getUserByEmail(email);
+        Users user = userDAO.getUserByUsername(username);
 
         if (user == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "User not found");
@@ -38,8 +38,8 @@ public class ChangePasswordServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String email = (String) request.getSession().getAttribute("email");
-        if (email == null) {
+        String username = (String) request.getSession().getAttribute("username");
+        if (username == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
@@ -49,7 +49,7 @@ public class ChangePasswordServlet extends HttpServlet {
         String confirmPassword = request.getParameter("confirmPassword");
 
         UserDAO userDAO = new UserDAO();
-        Users user = userDAO.getUserByEmail(email);
+        Users user = userDAO.getUserByUsername(username);
 
         if (user == null) {
             response.sendRedirect("home");

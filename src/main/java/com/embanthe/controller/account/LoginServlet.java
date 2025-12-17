@@ -18,13 +18,13 @@ public class LoginServlet extends HttpServlet {
 
         String code = request.getParameter("code");
         Cookie[] cookies = request.getCookies();
-        String email = null;
+        String username = null;
         String password = null;
 
         if (cookies != null) {
             for (Cookie c : cookies) {
-                if ("email".equals(c.getName())) {
-                    email = c.getValue();
+                if ("username".equals(c.getName())) {
+                    username = c.getValue();
                 }
                 if ("password".equals(c.getName())) {
                     password = c.getValue();
@@ -46,7 +46,7 @@ public class LoginServlet extends HttpServlet {
 
             if (existingUser != null) {
                 // Nếu email đã tồn tại trong DB → báo lỗi
-                request.setAttribute("message", "Tài khoản với email này đã tồn tại. Vui lòng đăng nhập bằng email & mật khẩu.");
+                request.setAttribute("message", "Tài khoản với email này đã tồn tại. Vui lòng đăng nhập lại.");
                 request.getRequestDispatcher("page/system/login.jsp").forward(request, response);
                 return;
             }
@@ -73,12 +73,12 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String email = request.getParameter("email");
+        String username = request.getParameter("username");
         String password = request.getParameter("password");
         String remember = request.getParameter("remember");
         try {
             AuthDAO authDAO = new AuthDAO();
-            Users user = authDAO.login(email, password);
+            Users user = authDAO.login(username, password);
 
             if (user != null) {
                 // Lưu user vào session
@@ -95,17 +95,29 @@ public class LoginServlet extends HttpServlet {
                 }
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
-                session.setAttribute("email", user.getEmail());
+                session.setAttribute("username", user.getUsername());
                 if (remember != null) {
-                    Cookie cookieEmail = new Cookie("email", email);
+                    Cookie cookieUser = new Cookie("username", username);
                     Cookie cookiePass = new Cookie("password", password);
-                    cookieEmail.setPath("/");
+                    cookieUser.setPath("/");
                     cookiePass.setPath("/");
 
-                    cookieEmail.setMaxAge(2 * 60 * 60);
+                    cookieUser.setMaxAge(2 * 60 * 60);
                     cookiePass.setMaxAge(2 * 60 * 60);
 
-                    response.addCookie(cookieEmail);
+                    response.addCookie(cookieUser);
+                    response.addCookie(cookiePass);
+                }else {
+                    Cookie cookieUser = new Cookie("username", "");
+                    Cookie cookiePass = new Cookie("password", "");
+
+                    cookieUser.setPath("/");
+                    cookiePass.setPath("/");
+
+                    cookieUser.setMaxAge(0);
+                    cookiePass.setMaxAge(0);
+
+                    response.addCookie(cookieUser);
                     response.addCookie(cookiePass);
                 }
                 // Kiểm tra role (CUSTOMER/ADMIN)

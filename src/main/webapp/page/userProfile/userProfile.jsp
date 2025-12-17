@@ -41,46 +41,41 @@
     <base href="${pageContext.request.contextPath}/">
 
 </head>
-<body>
+<body class="index-page">
 <header id="header" class="header d-flex align-items-center sticky-top">
     <div class="container-fluid container-xl position-relative d-flex align-items-center">
 
         <a href="home" class="logo d-flex align-items-center me-auto">
 
             <img src="image/Logo.png" alt="Logo">
-            <h1 class="sitename">Em Bán Thẻ</h1>
+            <h1 class="">Em Bán Thẻ</h1>
         </a>
 
         <nav id="navmenu" class="navmenu">
+
             <ul>
-                <li><a href="home" class="active">Home</a></li>
-                <li><a href="#about">Dịch Vụ</a></li>
+
+                <li><a href="#hero" >Home</a></li>
+                <li><a href="${pageContext.request.contextPath}/service">Dịch Vụ</a></li>
                 <c:if test="${not empty sessionScope.user}">
-                    <li><a href="#services">Ewallet</a></li>
+                    <li><a href="${pageContext.request.contextPath}/ewallet">Ewallet</a></li>
                     <li><a href="#portfolio">Thống Kê</a></li>
                     <li><a href="#team">Link Thanh Toán</a></li>
                     <li><a href="#policy">Chính Sách</a></li>
-
                     <li class="dropdown">
-
-
                         <img src="image/icons8-user-male-16.png" alt="User Icon"
                              style="width:20px; height:20px; margin-right:5px;">
 
                         <span>${sessionScope.user.fullName} - ${sessionScope.user.balance} VND</span>
                         <i class="bi bi-chevron-down toggle-dropdown"></i>
-
                         <ul>
                             <li><a href="userprofile">Thông tin cá nhân</a></li>
-                            <li><a href="#">Đổi Mật Khẩu Đăng nhập</a></li>
+                            <li><a href="changePassword">Đổi Mật Khẩu Đăng nhập</a></li>
                             <li><a href="#">Email: ${sessionScope.user.email}</a></li>
                             <li><a href="logout">Đăng xuất</a></li>
                         </ul>
                     </li>
-
-
                 </c:if>
-
                 <!-- Nếu chưa đăng nhập -->
                 <c:if test="${empty sessionScope.user}">
                     <li><a href="login">Đăng nhập</a></li>
@@ -102,7 +97,14 @@
                         <img src="image/icons8-profile-96.png" class="rounded-circle profile-pic" alt="Profile Picture">
 
                     </div>
-                    <h3 class="mt-3 mb-1"> ${sessionScope.user.username}</h3>
+
+                    <h3 class="mt-3 mb-1"> ${sessionScope.user.fullName}
+                    </h3>
+                    <c:if test="${sessionScope.user.status == 'ACTIVE'}">
+                        <p class="text-success mb-0">Hoạt Động</p>
+                    </c:if>
+                    <label class="form-label">Ngày mở tài khoản: <fmt:formatDate value="${sessionScope.user.createdAt}"
+                                                                                 pattern="dd/MM/yyyy"/></label>
 
                 </div>
             </div>
@@ -123,9 +125,11 @@
                             <div class="col-lg-3 border-end">
                                 <div class="p-4">
                                     <div class="nav flex-column nav-pills">
-                                        <a class="nav-link active" href="userprofile"><i class="fas fa-user me-2"></i>Thông Tin Cá Nhân</a>
-                                        <a class="nav-link" href="changePassword"><i class="fas fa-lock me-2"></i>Đổi Mật Khẩu</a>
-                                        <a class="nav-link" href="#"><i class="fas fa-credit-card me-2"></i>Billing</a>
+                                        <a class="nav-link active" href="userprofile"><i class="fas fa-user me-2"></i>Thông
+                                            Tin Cá Nhân</a>
+                                        <a class="nav-link" href="changePassword"><i class="fas fa-lock me-2"></i>Đổi
+                                            Mật Khẩu</a>
+                                        <a class="nav-link" href="discounts"><i class="fas fa-credit-card me-2"></i>Billing</a>
                                         <a class="nav-link" href="#"><i class="fas fa-chart-line me-2"></i>Activity</a>
                                     </div>
                                 </div>
@@ -133,10 +137,23 @@
 
                             <!-- Content Area -->
                             <div class="col-lg-9">
+                                <c:if test="${not empty success}">
+                                    <div style="color:blue; font-weight:bold;">
+                                            ${success}
+                                    </div>
+                                    <c:remove var="success" scope="session"/>
+                                </c:if>
+                                <c:if test="${not empty error}">
+                                    <div style="color:red; font-weight:bold;">
+                                            ${error}
+                                    </div>
+                                </c:if>
                                 <div class="p-4">
                                     <!-- Personal Information -->
                                     <div class="mb-4">
                                         <h5 class="mb-4">Thông tin cá nhân</h5>
+                                        <label class="form-label">Username:</label>
+                                        <span class="fw-bold text-primary"> ${sessionScope.user.username} </span>
                                         <form action="userprofile" method="post" id="profileForm">
                                             <div class="position-absolute top-0 end-0 p-3">
                                                 <!-- Nút Edit -->
@@ -153,31 +170,27 @@
                                                 </button>
                                             </div>
                                             <div class="row g-3">
+
                                                 <div class="col-md-6">
-                                                    <label class="form-label">First Name</label>
-                                                    <input type="text" class="form-control" name="username"
-                                                           value="${sessionScope.user.username}" readonly>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="form-label">Last Name</label>
-                                                    <input type="text" class="form-control" name="fullName"
+                                                    <label class="form-label">Fullname</label>
+                                                    <input type="text" class="form-control" id="fullNameInput"
+                                                           name="fullName"
                                                            value="${sessionScope.user.fullName}" readonly>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <label class="form-label">Email</label>
-                                                    <input type="email" class="form-control" name="email"
-                                                           value="${sessionScope.user.email}" readonly>
-                                                </div>
-                                                <div class="col-md-6">
                                                     <label class="form-label">Phone</label>
-                                                    <input type="tel" class="form-control" name="phone"
+                                                    <input type="tel" class="form-control" id="phoneInput" name="phone"
                                                            value="${sessionScope.user.phone}" readonly>
                                                 </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Email</label>
+                                                    <input type="tel" class="form-control" id="emailInput" name="email"
+                                                           value="${sessionScope.user.email}" readonly>
+                                                </div>
+
                                             </div>
                                         </form>
                                     </div>
-
-
                                 </div>
                             </div>
                         </div>
@@ -190,30 +203,6 @@
 </div>
 <footer id="footer" class="footer">
 
-    <!-- Newsletter -->
-    <div class="footer-newsletter">
-        <div class="container">
-            <div class="row justify-content-center text-center">
-                <div class="col-lg-6">
-                    <h4>Đăng ký nhận tin</h4>
-                    <p>
-                        Nhận thông báo khuyến mãi, thẻ mới và ưu đãi độc quyền từ EmBanThe.
-                    </p>
-                    <form action="#" method="post" class="php-email-form">
-                        <div class="newsletter-form">
-                            <input type="email" name="email" placeholder="Nhập email của bạn" required>
-                            <input type="submit" value="Đăng ký">
-                        </div>
-                        <div class="loading">Đang gửi...</div>
-                        <div class="error-message"></div>
-                        <div class="sent-message">
-                            Đăng ký thành công. Cảm ơn bạn!
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Footer Top -->
     <div class="container footer-top">
@@ -293,10 +282,16 @@
     const editBtn = document.getElementById("editBtn");
     const saveBtn = document.getElementById("saveBtn");
     const cancelBtn = document.getElementById("cancelBtn");
-    const inputs = document.querySelectorAll("#profileForm input");
+
+    // Chỉ lấy 3 input cần sửa
+    const editableInputs = [
+        document.getElementById("fullNameInput"),
+        document.getElementById("phoneInput"),
+        document.getElementById("emailInput")
+    ];
 
     editBtn.addEventListener("click", function () {
-        inputs.forEach(input => input.removeAttribute("readonly"));
+        editableInputs.forEach(input => input.removeAttribute("readonly"));
         saveBtn.classList.remove("d-none");
         cancelBtn.classList.remove("d-none");
         editBtn.classList.add("d-none");
@@ -304,14 +299,15 @@
 
     cancelBtn.addEventListener("click", function () {
         // Khôi phục readonly
-        inputs.forEach(input => input.setAttribute("readonly", true));
+        editableInputs.forEach(input => input.setAttribute("readonly", true));
         // Ẩn Save/Cancel, hiện lại Edit
         saveBtn.classList.add("d-none");
         cancelBtn.classList.add("d-none");
         editBtn.classList.remove("d-none");
-        // Reset giá trị input về dữ liệu gốc (nếu muốn)
-        inputs.forEach(input => input.value = input.defaultValue);
+        // Reset giá trị input về dữ liệu gốc
+        editableInputs.forEach(input => input.value = input.defaultValue);
     });
+
 </script>
 </body>
 

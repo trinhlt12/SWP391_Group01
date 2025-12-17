@@ -17,10 +17,10 @@ public class AuthDAO {
         this.connection = DBContext.getInstance().getConnection();
     }
 
-    public Users login(String email, String password) throws SQLException {
-        String sql = "SELECT * FROM Users WHERE email = ?";
+    public Users login(String username, String password) throws SQLException {
+        String sql = "SELECT * FROM Users WHERE username = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, email);
+            ps.setString(1, username);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     String hashed = rs.getString("password_hash");
@@ -98,7 +98,7 @@ public class AuthDAO {
                 .username(rs.getString("username"))
                 .fullName(rs.getString("full_name"))
                 .email(rs.getString("email"))
-                .passwordHash(rs.getString("password_hash")) // map từ cột snake_case sang field camelCase
+                .passwordHash(rs.getString("password_hash"))
                 .phone(rs.getString("phone"))
                 .role(rs.getString("role"))
                 .balance(rs.getDouble("balance"))

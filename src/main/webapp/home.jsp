@@ -46,7 +46,7 @@
 
         <a href="home" class="logo d-flex align-items-center me-auto">
 
-            <img src="image/Logo.png" alt="Logo" >
+            <img src="image/Logo.png" alt="Logo">
             <h1 class="sitename">Em Bán Thẻ</h1>
         </a>
 
@@ -68,7 +68,7 @@
                         <i class="bi bi-chevron-down toggle-dropdown"></i>
                         <ul>
                             <li><a href="userprofile">Thông tin cá nhân</a></li>
-                            <li><a href="#">Đổi Mật Khẩu Đăng nhập</a></li>
+                            <li><a href="changePassword">Đổi Mật Khẩu Đăng nhập</a></li>
                             <li><a href="#">Email: ${sessionScope.user.email}</a></li>
                             <li><a href="logout">Đăng xuất</a></li>
                         </ul>
@@ -218,12 +218,14 @@
                     <c:forEach var="p" items="${providerList}">
                         <div class="swiper-slide">
                             <div class="testimonial-item">
-                                <img src="${p.logoUrl}"  alt="${p.providerName}" width="150" style="justify-content: center">
+                                <img src="${p.logoUrl}" alt="${p.providerName}" width="150"
+                                     style="justify-content: center">
                                 <h3>${p.providerName}</h3>
 
 
                             </div>
-                        </div><!-- End testimonial item -->
+                        </div>
+                        <!-- End testimonial item -->
                     </c:forEach>
 
 
@@ -356,10 +358,14 @@
             <div class="col-lg-2 col-md-3 footer-links">
                 <h4>Dịch vụ</h4>
                 <ul>
-                    <li><i class="bi bi-chevron-right"></i> <a href="${pageContext.request.contextPath}/service">Thẻ điện thoại</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="${pageContext.request.contextPath}/service">Thẻ game</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="${pageContext.request.contextPath}/service">Nạp điện thoại</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="${pageContext.request.contextPath}/ewallet">Ví điện tử</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="${pageContext.request.contextPath}/service">Thẻ
+                        điện thoại</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="${pageContext.request.contextPath}/service">Thẻ
+                        game</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="${pageContext.request.contextPath}/service">Nạp
+                        điện thoại</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="${pageContext.request.contextPath}/ewallet">Ví điện
+                        tử</a></li>
                 </ul>
             </div>
 
