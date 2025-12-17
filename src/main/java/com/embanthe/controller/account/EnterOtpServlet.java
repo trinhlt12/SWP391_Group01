@@ -30,8 +30,8 @@ public class EnterOtpServlet extends HttpServlet {
         Long otpGeneratedTime = (Long) session.getAttribute("otpGeneratedTime");
         if (otpGeneratedTime == null || System.currentTimeMillis() - otpGeneratedTime > 30 * 60 * 1000) {
             session.invalidate();
-            request.setAttribute("message", "OTP đã hết hạn. Vui lòng đăng ký lại!");
-            RequestDispatcher dispatcher = request.getRequestDispatcher("page/system/register.jsp");
+            request.setAttribute("message", "OTP đã hết hạn. Vui lòng gửi lại !");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("page/system/login.jsp");
             dispatcher.forward(request, response);
             return;
         }

@@ -41,6 +41,7 @@ public class ForgotPasswordServlet extends HttpServlet {
                 mySession.setAttribute("email", email);
                 mySession.setAttribute("actionType", "forgotPassword");
                 mySession.setAttribute("otpAttempts", 0);
+                mySession.setAttribute("otpGeneratedTime", System.currentTimeMillis());
                 // Chuyển ngay sang trang nhập OTP
                 request.setAttribute("email", email);
                 request.setAttribute("message", "OTP đã được gửi đến email của bạn!");
