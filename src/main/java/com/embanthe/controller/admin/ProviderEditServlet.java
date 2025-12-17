@@ -26,13 +26,21 @@ public class ProviderEditServlet extends HttpServlet {
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         int id = Integer.parseInt(request.getParameter("providerId"));
-        String name = request. getParameter("providerName");
+        String name = request.getParameter("providerName");
         String logo = request.getParameter("logoUrl");
+        String statusStr = request.getParameter("status");
+
+        int status = 1;
+        if (statusStr != null && (statusStr.equals("0") || statusStr.equals("1"))) {
+            status = Integer.parseInt(statusStr);
+        }
 
         Providers p = new Providers();
         p.setProviderId(id);
         p.setProviderName(name);
         p.setLogoUrl(logo);
+        p.setStatus(status);
+
         providerDAO.update(p);
 
         response.sendRedirect(request.getContextPath() + "/admin/providers");

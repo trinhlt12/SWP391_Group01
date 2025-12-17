@@ -16,9 +16,32 @@
         body { font-family: Arial,sans-serif; background: #f6f8fa;}
         .container { max-width: 600px; margin: 40px auto; background: white; padding: 32px; border-radius: 12px; box-shadow: 0 8px 30px #cfd8dc;}
         h2 { margin-bottom: 24px; color: #333}
+
         label { margin-top: 10px; font-weight: 600;}
         input, select { width: 100%; padding: 10px; margin: 5px 0 18px 0; border: 1px solid #bbb; border-radius: 5px;}
+
         .err-msg { color: red; font-size: 13px;}
+
+        /* NEW: label + error on same line */
+        .field-head{
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 10px;
+        }
+        .field-head label{
+            margin-top: 0; /* override old label margin so it aligns nicely */
+        }
+        .field-head .err-msg{
+            white-space: nowrap;
+            margin: 0;
+            text-align: right;
+            max-width: 60%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         button { background: #667eea; color: white; padding: 10px 32px; border: none; border-radius: 6px; font-weight: bold;}
         button:hover { background: #4051ad;}
         .btn-group {
@@ -26,12 +49,8 @@
             justify-content: space-between;
             margin-top: 24px;
         }
-        .btn-reset {
-            background: #94a3b8;
-        }
-        .btn-reset:hover {
-            background: #64748b;
-        }
+        .btn-reset { background: #94a3b8; }
+        .btn-reset:hover { background: #64748b; }
         .btn-back {
             background: #e5e7eb;
             color: #334155;
@@ -41,10 +60,7 @@
             font-weight: bold;
             display: inline-block;
         }
-        .btn-back:hover {
-            background: #cbd5e1;
-        }
-
+        .btn-back:hover { background: #cbd5e1; }
     </style>
 </head>
 <body>
@@ -52,49 +68,63 @@
     <h2>Add New Product</h2>
     <form action="${pageContext.request.contextPath}/admin/products/add" method="post" enctype="multipart/form-data">
 
-        <label>Product Name *</label>
+        <!-- Product Name -->
+        <div class="field-head">
+            <label>Product Name *</label>
+            <c:if test="${not empty validateErrors['productName']}">
+                <div class="err-msg">${validateErrors['productName']}</div>
+            </c:if>
+        </div>
         <input type="text" name="productName" value="${inputProductName != null ? inputProductName : ''}">
-        <c:if test="${not empty validateErrors['productName']}">
-            <div class="err-msg">${validateErrors['productName']}</div>
-        </c:if>
 
-        <label>Category *</label>
+        <!-- Category -->
+        <div class="field-head">
+            <label>Category *</label>
+            <c:if test="${not empty validateErrors['categoryId']}">
+                <div class="err-msg">${validateErrors['categoryId']}</div>
+            </c:if>
+        </div>
         <select name="categoryId">
             <option value="">-- Select Category --</option>
             <c:forEach var="c" items="${listCategory}">
                 <option value="${c.categoryId}" ${inputCategoryId == c.categoryId ? 'selected' : ''}>${c.categoryName}</option>
             </c:forEach>
         </select>
-        <c:if test="${not empty validateErrors['categoryId']}">
-            <div class="err-msg">${validateErrors['categoryId']}</div>
-        </c:if>
 
-        <label>Provider *</label>
+        <!-- Provider -->
+        <div class="field-head">
+            <label>Provider *</label>
+            <c:if test="${not empty validateErrors['providerId']}">
+                <div class="err-msg">${validateErrors['providerId']}</div>
+            </c:if>
+        </div>
         <select name="providerId">
             <option value="">-- Select Provider --</option>
             <c:forEach var="p" items="${listProvider}">
                 <option value="${p.providerId}" ${inputProviderId == p.providerId ? 'selected' : ''}>${p.providerName}</option>
             </c:forEach>
         </select>
-        <c:if test="${not empty validateErrors['providerId']}">
-            <div class="err-msg">${validateErrors['providerId']}</div>
-        </c:if>
 
-        <label>Price *</label>
+        <!-- Price -->
+        <div class="field-head">
+            <label>Price *</label>
+            <c:if test="${not empty validateErrors['price']}">
+                <div class="err-msg">${validateErrors['price']}</div>
+            </c:if>
+        </div>
         <input type="number" step="1000" name="price" min="0" value="${inputPrice != null ? inputPrice : ''}">
-        <c:if test="${not empty validateErrors['price']}">
-            <div class="err-msg">${validateErrors['price']}</div>
-        </c:if>
 
-        <label>Image</label>
+        <!-- Image -->
+        <div class="field-head">
+            <label>Image</label>
+            <c:if test="${not empty validateErrors['image']}">
+                <div class="err-msg">${validateErrors['image']}</div>
+            </c:if>
+        </div>
         <input type="file" name="image" accept=".jpg,.jpeg,.png">
-        <c:if test="${not empty validateErrors['image']}">
-            <div class="err-msg">${validateErrors['image']}</div>
-        </c:if>
 
         <div class="btn-group">
             <a href="${pageContext.request.contextPath}/admin/products" class="btn-back">⬅ Back</a>
-
             <div>
                 <button type="reset" class="btn-reset">Reset</button>
                 <button type="submit">Add Product</button>

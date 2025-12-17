@@ -5,6 +5,7 @@ public class Categories {
     private int categoryId;
     private String categoryName;
     private String description;
+    private int status; // 1: active, 0: inactive
 
     public int getCategoryId() {
         return categoryId;
@@ -28,5 +29,13 @@ public class Categories {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

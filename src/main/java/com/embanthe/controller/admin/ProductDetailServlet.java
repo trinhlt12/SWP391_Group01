@@ -1,6 +1,9 @@
 package com.embanthe.controller.admin;
 
+import com.embanthe.dao.CategoryDAO;
 import com.embanthe.dao.ProductDAO;
+import com.embanthe.dao.ProviderDAO;
+import com.embanthe.model.Categories;
 import com.embanthe.model.Products;
 
 import javax.servlet.*;
@@ -12,6 +15,9 @@ import java.io.IOException;
 
 @WebServlet("/admin/product-detail")
 public class ProductDetailServlet extends HttpServlet {
+
+    private CategoryDAO categoryDao = new CategoryDAO();
+    private ProviderDAO providerDao = new ProviderDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -41,10 +47,14 @@ public class ProductDetailServlet extends HttpServlet {
                 return;
             }
 
-            // 5. Đẩy data sang JSP
+            String categoryName = dao.getCategoryNameById(product.getCategoryId());
+            String providerName = dao.getProviderNameById(product.getProviderId());
+            request.setAttribute("categoryName", categoryName);
+            request.setAttribute("providerName", providerName);
             request.setAttribute("product", product);
             request.getRequestDispatcher("/page/admin/productdetail.jsp")
                     .forward(request, response);
+
 
         } catch (NumberFormatException e) {
             response.sendRedirect(request.getContextPath() + "/admin/products");

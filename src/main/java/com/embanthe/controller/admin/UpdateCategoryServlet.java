@@ -28,10 +28,17 @@ public class UpdateCategoryServlet extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
+        String statusStr = request.getParameter("status");
+        int status = 1;
+        if (statusStr != null && (statusStr.equals("0") || statusStr.equals("1"))) {
+            status = Integer.parseInt(statusStr);
+        }
+
         Categories c = new Categories();
         c.setCategoryId(Integer.parseInt(request.getParameter("categoryId")));
         c.setCategoryName(request.getParameter("categoryName"));
         c.setDescription(request.getParameter("description"));
+        c.setStatus(status);
 
         dao.update(c);
 

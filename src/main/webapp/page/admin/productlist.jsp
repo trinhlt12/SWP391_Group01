@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,6 +26,7 @@
     </script>
 </head>
 <body>
+<fmt:setLocale value="vi_VN" />
 <div class="app">
 
     <header class="app-header app-header-dark">
@@ -199,8 +201,8 @@
                                         <c:when test="${empty list}">
                                             <div class="text-center py-5">
                                                 <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
-                                                <h5 class="text-muted">Không tìm thấy sản phẩm nào</h5>
-                                                <p class="text-muted">Hãy thêm sản phẩm mới để bắt đầu</p>
+                                                <h5 class="text-muted">Không tìm thấy nhà mạng nào</h5>
+                                                <p class="text-muted">Hãy thêm nhà mạng để bắt đầu</p>
                                             </div>
                                         </c:when>
                                         <c:otherwise>
@@ -254,7 +256,11 @@
                                                             </c:forEach>
                                                             ${catName}
                                                         </td>
-                                                        <td class="align-middle"><strong class="text-success">${p.price} VNĐ</strong></td>
+                                                        <td class="align-middle">
+                                                            <strong class="text-success">
+                                                                <fmt:formatNumber value="${p.price}" type="number" maxFractionDigits="0"/> VNĐ
+                                                            </strong>
+                                                        </td>
 
                                                         <td class="align-middle text-right">
                                                         <a href="${pageContext.request.contextPath}/admin/product-detail?id=${p.productId}"

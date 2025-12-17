@@ -21,6 +21,7 @@ public class ProviderDAO {
                 p.setProviderId(rs.getInt("provider_id"));
                 p.setProviderName(rs.getString("provider_name"));
                 p.setLogoUrl(rs.getString("logo_url"));
+                p.setStatus(rs.getInt("status"));
                 list.add(p);
             }
         } catch (Exception e) {
@@ -29,16 +30,15 @@ public class ProviderDAO {
         return list;
     }
 
-    // Lấy danh sách có phân trang và tìm kiếm
-    public List<Providers> getPagedList(String search, int offset, int pageSize) {
+    public List<Providers> getPagedList(Integer status, int offset, int pageSize) {
         List<Providers> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT * FROM providers WHERE 1=1 ");
         List<Object> params = new ArrayList<>();
-        if (search != null && !search. trim().isEmpty()) {
-            sql.append("AND provider_name LIKE ? ");
-            params.add("%" + search. trim() + "%");
+        if (status != null) {
+            sql.append("AND status = ? ");
+            params.add(status);
         }
-        sql.append("ORDER BY provider_id DESC LIMIT ?  OFFSET ?");
+        sql.append("ORDER BY provider_id DESC LIMIT ? OFFSET ?");
         params.add(pageSize);
         params.add(offset);
 
@@ -47,14 +47,14 @@ public class ProviderDAO {
             for (int i = 0; i < params.size(); i++) {
                 ps.setObject(i + 1, params.get(i));
             }
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    Providers p = new Providers();
-                    p.setProviderId(rs.getInt("provider_id"));
-                    p.setProviderName(rs.getString("provider_name"));
-                    p.setLogoUrl(rs. getString("logo_url"));
-                    list.add(p);
-                }
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Providers p = new Providers();
+                p.setProviderId(rs.getInt("provider_id"));
+                p.setProviderName(rs.getString("provider_name"));
+                p.setLogoUrl(rs.getString("logo_url"));
+                p.setStatus(rs.getInt("status"));
+                list.add(p);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,22 +62,20 @@ public class ProviderDAO {
         return list;
     }
 
-    // Đếm số lượng
-    public int count(String search) {
+    public int count(Integer status) {
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM providers WHERE 1=1 ");
         List<Object> params = new ArrayList<>();
-        if (search != null && !search. trim().isEmpty()) {
-            sql.append("AND provider_name LIKE ? ");
-            params.add("%" + search.trim() + "%");
+        if (status != null) {
+            sql.append("AND status = ? ");
+            params.add(status);
         }
         try (Connection con = DBContext.getInstance().getConnection();
              PreparedStatement ps = con.prepareStatement(sql.toString())) {
             for (int i = 0; i < params.size(); i++) {
-                ps. setObject(i + 1, params.get(i));
+                ps.setObject(i + 1, params.get(i));
             }
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return rs.getInt(1);
-            }
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -107,11 +105,12 @@ public class ProviderDAO {
 
     // Thêm provider
     public void insert(Providers p) {
-        String sql = "INSERT INTO providers (provider_name, logo_url) VALUES (?, ?)";
+        String sql = "INSERT INTO providers (provider_name, logo_url, status) VALUES (?, ?, ?)";
         try (Connection con = DBContext.getInstance().getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, p.getProviderName());
             ps.setString(2, p.getLogoUrl());
+            ps.setInt(3, p.getStatus());
             ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -126,6 +125,7 @@ public class ProviderDAO {
             ps.setString(1, p.getProviderName());
             ps.setString(2, p.getLogoUrl());
             ps.setInt(3, p.getProviderId());
+            ps.setInt(4, p.getStatus());
             ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();

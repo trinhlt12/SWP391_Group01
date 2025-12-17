@@ -17,27 +17,30 @@ public class ProviderListServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String pageStr = request.getParameter("page");
-        String search = request.getParameter("search");
+        String statusStr = request.getParameter("status");
 
-        int page = 1, pageSize = 10;
+        int page = 1, pageSize = 5;
+        Integer status = null;
         try { if (pageStr != null) page = Integer.parseInt(pageStr); } catch (Exception ignored) {}
         if (page < 1) page = 1;
 
-        int totalItems = providerDAO.count(search);
+        if (statusStr != null && (statusStr.equals("1") || statusStr.equals("0"))) {
+            status = Integer.valueOf(statusStr);
+        }
+
+        int totalItems = providerDAO.count(status);
         int totalPages = (int) Math.ceil((double) totalItems / pageSize);
         if (page > totalPages && totalPages != 0) page = totalPages;
 
         int offset = (page - 1) * pageSize;
-        List<Providers> list = providerDAO.getPagedList(search, offset, pageSize);
 
-        // Debug: in ra console/ logs để kiểm tra
-        System.out.println("[ProviderListServlet] search=" + search + ", page=" + page + ", totalItems=" + totalItems + ", listSize=" + (list != null ? list.size() : 0));
+        List<Providers> list = providerDAO.getPagedList(status, offset, pageSize);
 
         request.setAttribute("list", list);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("totalItems", totalItems);
-        request.setAttribute("search", search == null ? "" : search);
+        request.setAttribute("status", statusStr);
 
         // Forward tới trang đúng (chỉnh đường dẫn theo vị trí JSP trong project)
         request.getRequestDispatcher("/page/admin/providerlist.jsp").forward(request, response);

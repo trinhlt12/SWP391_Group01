@@ -382,4 +382,40 @@ public class ProductDAO {
         }
         return "-";
     }
+
+    /**
+     * (Option B) Kiểm tra có sản phẩm nào đang dùng categoryId không.
+     * Trả về true nếu tồn tại ít nhất 1 product tham chiếu category này.
+     */
+    public boolean existsProductByCategoryId(int categoryId) {
+        String sql = "SELECT 1 FROM products WHERE category_id = ? LIMIT 1";
+        try (Connection con = DBContext.getInstance().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, categoryId);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * (Option B) Kiểm tra có sản phẩm nào đang dùng providerId không.
+     * Trả về true nếu tồn tại ít nhất 1 product tham chiếu provider này.
+     */
+    public boolean existsProductByProviderId(int providerId) {
+        String sql = "SELECT 1 FROM products WHERE provider_id = ? LIMIT 1";
+        try (Connection con = DBContext.getInstance().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, providerId);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
 }

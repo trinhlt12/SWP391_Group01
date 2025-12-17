@@ -29,6 +29,7 @@ public class AddCategoryServlet extends HttpServlet {
 
         String name = request.getParameter("categoryName");
         String description = request.getParameter("description");
+        String statusStr = request.getParameter("status");
 
         String error = CategoryValidator.validate(name);
 
@@ -36,12 +37,20 @@ public class AddCategoryServlet extends HttpServlet {
             request.setAttribute("error", error);
             request.setAttribute("categoryName", name);
             request.setAttribute("description", description);
+            request.setAttribute("status", statusStr);
             request.getRequestDispatcher("/page/admin/categoryadd.jsp").forward(request, response);
             return;
         }
+
+        int status = 1; // default active
+        if (statusStr != null && (statusStr.equals("0") || statusStr.equals("1"))) {
+            status = Integer.parseInt(statusStr);
+        }
+
         Categories c = new Categories();
-        c.setCategoryName(request.getParameter("categoryName"));
-        c.setDescription(request.getParameter("description"));
+        c.setCategoryName(name);
+        c.setDescription(description);
+        c.setStatus(status);
 
         dao.insert(c);
 

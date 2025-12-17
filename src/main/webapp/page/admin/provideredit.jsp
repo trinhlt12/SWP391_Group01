@@ -6,12 +6,16 @@
     <meta charset="UTF-8">
     <title>Cập nhật nhà cung cấp</title>
     <style>
+<<<<<<< Updated upstream
         /* Đồng bộ giao diện với addproduct/provideradd */
+        /* Match categoryupdate.jsp styling */
         body { font-family: Arial, sans-serif; background: #f6f8fa; }
         .container { max-width: 600px; margin: 40px auto; background: white; padding: 32px; border-radius: 12px; box-shadow: 0 8px 30px #cfd8dc; }
         h2 { margin-bottom: 24px; color: #333; }
         label { margin-top: 10px; font-weight: 600; display:block; }
         input { width: 100%; padding: 10px; margin: 5px 0 18px 0; border: 1px solid #bbb; border-radius: 5px; box-sizing: border-box; }
+        input, select, textarea { width: 100%; padding: 10px; margin: 5px 0 18px 0; border: 1px solid #bbb; border-radius: 5px; box-sizing: border-box; font-family: inherit; }
+        textarea { min-height: 120px; resize: vertical; }
         .err-msg { color: red; font-size: 13px; margin-top: -12px; margin-bottom: 12px; }
         button { background: #667eea; color: white; padding: 10px 32px; border: none; border-radius: 6px; font-weight: bold; }
         button:hover { background: #4051ad; cursor: pointer; }
@@ -38,12 +42,17 @@
 
     <c:if test="${not empty sessionScope.message}">
         <div class="alert alert-${sessionScope.messageType == 'success' ? 'success' : 'danger'}" role="alert" style="margin-bottom:16px;">
+    <h2>Cập nhật nhà cung cấp</h2>
+
+    <c:if test="${not empty sessionScope.message}">
+        <div class="err-msg" style="margin-bottom:16px;">
             <c:out value="${sessionScope.message}"/>
         </div>
         <c:remove var="message" scope="session"/>
         <c:remove var="messageType" scope="session"/>
     </c:if>
 
+<<<<<<< Updated upstream
     <form action="${pageContext.request.contextPath}/admin/providers/edit?id=${provider.providerId}" method="post">
         <label>Tên nhà cung cấp *</label>
         <input type="text" name="providerName"
@@ -60,13 +69,31 @@
         <c:if test="${not empty validateErrors['logoUrl']}">
             <div class="err-msg"><c:out value="${validateErrors['logoUrl']}"/></div>
         </c:if>
+    <form method="post" action="${pageContext.request.contextPath}/admin/providers/edit">
+        <input type="hidden" name="providerId" value="${provider.providerId}" />
+
+        <label>Tên nhà cung cấp *</label>
+        <input type="text" name="providerName" value="${provider.providerName}" required />
+
+        <label>Logo URL</label>
+        <input type="text" name="logoUrl" value="${provider.logoUrl}"
+               placeholder="/assetAdmin/assets/images/providers/logo.png" />
+        <div class="small-note">Bạn có thể nhập đường dẫn tương đối (ví dụ: /assetAdmin/assets/images/xxx.png) hoặc URL đầy đủ.</div>
+
+        <label>Trạng thái</label>
+        <select class="form-control" name="status" required>
+            <option value="1" ${provider.status == 1 ? 'selected' : ''}>Đang hoạt động</option>
+            <option value="0" ${provider.status == 0 ? 'selected' : ''}>Ngừng hoạt động</option>
+        </select>
 
         <div class="btn-group">
             <a href="${pageContext.request.contextPath}/admin/providers" class="btn-back">⬅ Quay về</a>
 
             <div style="display:flex; gap:8px;">
                 <button type="reset" class="btn-reset">Reset</button>
+<<<<<<< Updated upstream
                 <button type="submit">Lưu thay đổi</button>
+                <button type="submit">Cập nhật</button>
             </div>
         </div>
     </form>

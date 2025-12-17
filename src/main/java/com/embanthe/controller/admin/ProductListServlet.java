@@ -62,6 +62,7 @@ public class ProductListServlet extends HttpServlet {
         request.setAttribute("providers", providers);
 
         request.getRequestDispatcher("/page/admin/productlist.jsp").forward(request, response);
+
     }
 
     @Override

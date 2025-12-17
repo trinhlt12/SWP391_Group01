@@ -143,18 +143,14 @@
                                     <div class="col-12">
                                         <form action="${pageContext.request.contextPath}/admin/providers" method="get">
                                             <div class="form-row">
-                                                <div class="col-md-6 mb-3">
-                                                    <div class="input-group input-group-alt">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text"><span class="oi oi-magnifying-glass"></span></span>
-                                                        </div>
-                                                        <input type="text" class="form-control" name="search"
-                                                               value="${param.search}"
-                                                               placeholder="Tìm kiếm nhà cung cấp...">
-                                                    </div>
+                                                <div class="col-md-3">
+                                                    <select class="form-control" name="status">
+                                                        <option value="">Tất cả trạng thái</option>
+                                                        <option value="1" ${status == '1' ? 'selected' : ''}>Đang hoạt động</option>
+                                                        <option value="0" ${status == '0' ? 'selected' : ''}>Ngừng hoạt động</option>
+                                                    </select>
                                                 </div>
-
-                                                <div class="col-md-2 mb-3 ml-auto">
+                                                <div class="col-md-2">
                                                     <button type="submit" class="btn btn-secondary w-100" title="Lọc">
                                                         <i class="fas fa-filter"></i> Lọc
                                                     </button>
@@ -163,7 +159,6 @@
                                         </form>
                                     </div>
                                 </div>
-
                                 <div class="table-responsive">
                                     <div class="mb-3 meta">
                                         Tổng: <strong>${totalItems}</strong> kết quả.
@@ -175,18 +170,19 @@
                                     <c:choose>
                                         <c:when test="${empty list}">
                                             <div class="text-center py-5">
-                                                <i class="fas fa-store fa-4x text-muted mb-3"></i>
-                                                <h5 class="text-muted">Không tìm thấy nhà cung cấp nào</h5>
-                                                <p class="text-muted">Hãy thêm nhà cung cấp mới để bắt đầu</p>
+                                                 <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+                                                 <h5 class="text-muted">Không tìm thấy sản phẩm nào</h5>
+                                                 <p class="text-muted">Hãy thêm sản phẩm mới để bắt đầu</p>
                                             </div>
                                         </c:when>
                                         <c:otherwise>
                                             <table class="table table-hover">
                                                 <thead class="thead-light">
                                                 <tr>
-                                                    <th style="width: 60px;">ID</th>
-                                                    <th>Tên nhà cung cấp</th>
-                                                    <th style="width: 160px;" class="text-right">Hành động</th>
+                                                    <th style="width: 15%;">ID</th>
+                                                    <th style="width: 45%;">Tên nhà cung cấp</th>
+                                                    <th style="width: 20%;">Trạng thái</th>
+                                                    <th style="width: 20%;" class="text-right">Hành động</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -194,13 +190,18 @@
                                                     <tr>
                                                         <td class="align-middle font-weight-bold">#${p.providerId}</td>
                                                         <td class="align-middle"><strong><c:out value="${p.providerName}"/></strong></td>
+                                                        <td class="align-middle">
+                                                            <span class="badge badge-${p.status == 1 ? 'success' : 'danger'}">
+                                                                ${p.status == 1 ? 'Active' : 'Inactive'}
+                                                            </span>
+                                                        </td>
                                                         <td class="align-middle text-right">
                                                             <a href="${pageContext.request.contextPath}/admin/providers/edit?id=${p.providerId}"
                                                                class="btn btn-sm btn-icon btn-secondary"
                                                                title="Cập nhật">
                                                                 <i class="fa fa-pencil-alt"></i>
                                                             </a>
-
+                                            
                                                             <a href="${pageContext.request.contextPath}/admin/providers/delete?id=${p.providerId}"
                                                                class="btn btn-sm btn-icon btn-secondary"
                                                                onclick="return confirm('Bạn có chắc muốn xóa nhà cung cấp này?');"

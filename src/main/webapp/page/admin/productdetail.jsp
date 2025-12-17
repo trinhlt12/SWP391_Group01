@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -47,7 +48,7 @@
         <h2>Chi tiết sản phẩm #<c:out value="${product.productId}" /></h2>
         <a href="${pageContext.request.contextPath}/admin/products" class="btn-back">⬅ Quay lại</a>
     </div>
-
+<fmt:setLocale value="vi_VN" />
     <div class="content">
         <!-- Left: Image -->
         <div class="left card">
@@ -75,13 +76,21 @@
             </div>
 
             <div class="field">
-                <span class="label">Danh mục</span>
+                <span class="label">Tên loại thẻ</span>
                 <div class="value"><c:out value="${categoryName}" /></div>
             </div>
 
             <div class="field">
+                <span class="label">Tên nhà mạng</span>
+                <div class="value"><c:out value="${providerName}" /></div>
+            </div>
+
+            <div class="field">
                 <span class="label">Giá bán</span>
-                <div class="value price"><c:out value="${product.price}" /> VNĐ</div>
+                <div class="value price">
+  <fmt:formatNumber value="${product.price}" type="number" maxFractionDigits="0" />
+  VND
+</div>
             </div>
 
             <div class="field">
@@ -89,10 +98,10 @@
                 <div>
                     <c:choose>
                         <c:when test="${product.quantity > 10}">
-                            <span class="badge badge-success">${product.quantity} sản phẩm</span>
+                            <span class="badge badge-success">${product.quantity} thẻ</span>
                         </c:when>
                         <c:when test="${product.quantity > 0}">
-                            <span class="badge badge-warning">${product.quantity} sản phẩm</span>
+                            <span class="badge badge-warning">${product.quantity} thẻ</span>
                         </c:when>
                         <c:otherwise>
                             <span class="badge badge-danger">Hết hàng</span>

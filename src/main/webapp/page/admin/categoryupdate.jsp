@@ -1,5 +1,8 @@
+<<<<<<< Updated upstream
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,10 +10,12 @@
     <title>Cập nhật loại thẻ</title>
     <style>
         /* Đồng bộ giao diện với addproduct/provideradd */
+        /* Match provideredit.jsp / provideradd.jsp styling */
         body { font-family: Arial, sans-serif; background: #f6f8fa; }
         .container { max-width: 600px; margin: 40px auto; background: white; padding: 32px; border-radius: 12px; box-shadow: 0 8px 30px #cfd8dc; }
         h2 { margin-bottom: 24px; color: #333; }
         label { margin-top: 10px; font-weight: 600; display:block; }
+<<<<<<< Updated upstream
         input, textarea { width: 100%; padding: 10px; margin: 5px 0 18px 0; border: 1px solid #bbb; border-radius: 5px; box-sizing: border-box; }
         textarea { min-height: 120px; resize: vertical; }
         .err-msg { color: red; font-size: 13px; margin-top: -12px; margin-bottom: 12px; }
@@ -23,6 +28,25 @@
         .btn-back { background: #e5e7eb; color: #334155; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; display: inline-block; }
         .btn-back:hover { background: #cbd5e1; }
         .id-badge { color: #6b7280; font-size: 14px; margin-left: 6px; }
+        input, select, textarea { width: 100%; padding: 10px; margin: 5px 0 18px 0; border: 1px solid #bbb; border-radius: 5px; box-sizing: border-box; font-family: inherit; }
+        textarea { min-height: 120px; resize: vertical; }
+        .err-msg { color: red; font-size: 13px; margin-top: -12px; margin-bottom: 12px; }
+        button { background: #667eea; color: white; padding: 10px 32px; border: none; border-radius: 6px; font-weight: bold; }
+        button:hover { background: #4051ad; cursor: pointer; }
+        .btn-group { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; gap:12px; }
+        .btn-reset { background: #94a3b8; color: white; padding: 10px 20px; border-radius: 6px; border: none; }
+        .btn-reset:hover { background: #64748b; cursor: pointer; }
+        .btn-back {
+            background: #e5e7eb;
+            color: #334155;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .btn-back:hover { background: #cbd5e1; }
+        .small-note { font-size: 13px; color: #6b7280; margin-top: -12px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -55,6 +79,36 @@
         <c:if test="${not empty validateErrors['description']}">
             <div class="err-msg"><c:out value="${validateErrors['description']}"/></div>
         </c:if>
+    <h2>Cập nhật loại thẻ</h2>
+
+    <form method="post" action="${pageContext.request.contextPath}/admin/category/update">
+        <input type="hidden" name="categoryId" value="${category.categoryId}">
+
+        <label>Tên loại thẻ *</label>
+        <input type="text" name="categoryName" value="${category.categoryName}" required />
+
+        <label>Mô tả</label>
+        <textarea name="description" placeholder="Nhập mô tả (không bắt buộc)">${category.description}</textarea>
+        <div class="small-note">Bạn có thể để trống mô tả nếu không cần.</div>
+
+        <label>Trạng thái</label>
+        <select class="form-control" name="status" required>
+            <option value="1" ${category.status == 1 ? 'selected' : ''}>Đang hoạt động</option>
+            <option value="0" ${category.status == 0 ? 'selected' : ''}>Ngừng hoạt động</option>
+        </select>
+
+        <div class="btn-group">
+            <a href="${pageContext.request.contextPath}/admin/category" class="btn-back">⬅ Quay về</a>
+
+            <div style="display:flex; gap:8px;">
+                <button type="reset" class="btn-reset">Reset</button>
+                <button type="submit">Cập nhật</button>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>
 
         <div class="btn-group">
             <a href="${pageContext.request.contextPath}/admin/category" class="btn-back">⬅ Quay về</a>
