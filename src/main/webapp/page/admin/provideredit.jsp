@@ -6,7 +6,6 @@
     <meta charset="UTF-8">
     <title>Cập nhật nhà cung cấp</title>
     <style>
-<<<<<<< Updated upstream
         /* Đồng bộ giao diện với addproduct/provideradd */
         /* Match categoryupdate.jsp styling */
         body { font-family: Arial, sans-serif; background: #f6f8fa; }
@@ -52,7 +51,6 @@
         <c:remove var="messageType" scope="session"/>
     </c:if>
 
-<<<<<<< Updated upstream
     <form action="${pageContext.request.contextPath}/admin/providers/edit?id=${provider.providerId}" method="post">
         <label>Tên nhà cung cấp *</label>
         <input type="text" name="providerName"
@@ -91,7 +89,6 @@
 
             <div style="display:flex; gap:8px;">
                 <button type="reset" class="btn-reset">Reset</button>
-<<<<<<< Updated upstream
                 <button type="submit">Lưu thay đổi</button>
                 <button type="submit">Cập nhật</button>
             </div>

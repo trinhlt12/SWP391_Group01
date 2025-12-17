@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
@@ -15,7 +14,6 @@
         .container { max-width: 600px; margin: 40px auto; background: white; padding: 32px; border-radius: 12px; box-shadow: 0 8px 30px #cfd8dc; }
         h2 { margin-bottom: 24px; color: #333; }
         label { margin-top: 10px; font-weight: 600; display:block; }
-<<<<<<< Updated upstream
         input, textarea { width: 100%; padding: 10px; margin: 5px 0 18px 0; border: 1px solid #bbb; border-radius: 5px; box-sizing: border-box; }
         textarea { min-height: 120px; resize: vertical; }
         .err-msg { color: red; font-size: 13px; margin-top: -12px; margin-bottom: 12px; }
