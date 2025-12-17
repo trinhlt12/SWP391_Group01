@@ -15,39 +15,49 @@ import java.util.List;
 public class UserServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
         UserDAO dao = new UserDAO();
 
 
-        int page = 1;
-        if (request.getParameter("page") != null) {
-            try {
-                int inputPage = Integer.parseInt(request.getParameter("page"));
-                if (inputPage < 1) {
-                    page = 1;
-                } else {
-                    page = inputPage;
-                }
-            } catch (NumberFormatException e) {
-                page = 1;
+        String keyword = request.getParameter("keyword"); // Cho cả name và email
+        String role = request.getParameter("role");
+        String status = request.getParameter("status");
+
+
+        if (keyword != null) {
+            if (keyword != null && (keyword.contains("%") || keyword.contains("_"))) {
+                keyword = "___NO_RESULT_FOUND___";
             }
         }
-
         int pageSize = 5;
+        int page = 1;
+        String pageRaw = request.getParameter("page");
+        try {
+            if (pageRaw != null && !pageRaw.isEmpty()) {
+                page = Integer.parseInt(pageRaw);
+            }
+        } catch (NumberFormatException e) {
+            page = 1;
+        }
 
-        // 3. Gọi hàm DAO đã có sẵn
-        List<Users> list = dao.getUsersPaging(page, pageSize);
-        int totalUsers = dao.countUsers();
+        int totalUsersFiltered = dao.countUsers(keyword, role, status);
+        int totalPages = (int) Math.ceil((double) totalUsersFiltered / pageSize);
+        if (page > totalPages && totalPages > 0) page = totalPages;
+        if (page < 1) page = 1;
 
-        // 4. Tính tổng số trang
-        // Công thức: (totalUsers / pageSize) làm tròn lên
-        int totalPages = (int) Math.ceil((double) totalUsers / pageSize);
 
-        // 5. Đẩy dữ liệu sang JSP
+        List<Users> list = dao.searchUsersPaging(keyword, role, status, page, pageSize);
+
         request.setAttribute("listUser", list);
-        request.setAttribute("currentPage", page);    // Trang đang đứng
-        request.setAttribute("totalPages", totalPages); // Tổng số trang để vẽ nút
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("keyword", keyword);
+        request.setAttribute("role", role);
+        request.setAttribute("status", status);
 
         request.getRequestDispatcher("/page/admin/ManagerUser.jsp").forward(request, response);
     }
 }
+

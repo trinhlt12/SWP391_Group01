@@ -308,18 +308,37 @@ public class UserDAO {
         return null; // Không tìm thấy thì trả về null
     }
 
-    public List<Users> getUsersPaging(int page, int pageSize) {
+    public List<Users> searchUsersPaging(String keyword, String role, String status, int page, int pageSize) {
         List<Users> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM Users WHERE 1=1 ");
+        List<Object> params = new ArrayList<>();
 
-        String sql = "SELECT * FROM Users ORDER BY created_at ASC LIMIT ? OFFSET ?";
+        // Logic Filter
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            sql.append("AND (full_name LIKE ? OR email LIKE ?) ");
+            params.add("%" + keyword.trim() + "%");
+            params.add("%" + keyword.trim() + "%");
+        }
+        if (role != null && !role.isEmpty()) {
+            sql.append("AND role = ? ");
+            params.add(role);
+        }
+        if (status != null && !status.isEmpty()) {
+            sql.append("AND status = ? ");
+            params.add(status);
+        }
 
-        int offset = (page - 1) * pageSize;
+        // Thêm sắp xếp và Phân trang
+        sql.append(" ORDER BY created_at ASC LIMIT ? OFFSET ?");
+        params.add(pageSize);
+        params.add((page - 1) * pageSize);
 
         try (Connection conn = DBContext.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
 
-            ps.setInt(1, pageSize);
-            ps.setInt(2, offset);
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
 
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -330,15 +349,48 @@ public class UserDAO {
         }
         return list;
     }
-    public int countUsers() {
-        String sql = "SELECT COUNT(*) FROM Users";
+    public int countUsers(String keyword, String role, String status) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM Users WHERE 1=1 ");
+        List<Object> params = new ArrayList<>();
 
+        // Logic Filter (Giống hệt hàm search bên dưới)
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            sql.append("AND (username LIKE ? OR full_name LIKE ? OR email LIKE ?) ");
+            String key = "%" + keyword.trim() + "%";
+            params.add(key); params.add(key); params.add(key);
+        }
+        if (role != null && !role.isEmpty()) {
+            sql.append("AND role = ? ");
+            params.add(role);
+        }
+        if (status != null && !status.isEmpty()) {
+            sql.append("AND status = ? ");
+            params.add(status);
+        }
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    public int getTotalUserCount() {
+        String sql = "SELECT COUNT(*) FROM Users";
         try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-
-            if (rs.next()) return rs.getInt(1);
-
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
