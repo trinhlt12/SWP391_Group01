@@ -18,7 +18,7 @@ public class ProviderEditServlet extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("id"));
         Providers p = providerDAO.getById(id);
         request.setAttribute("provider", p);
-        request.getRequestDispatcher("/page/admin/provideredit. jsp").forward(request, response);
+        request.getRequestDispatcher("/page/admin/provideredit.jsp").forward(request, response);
     }
 
     @Override

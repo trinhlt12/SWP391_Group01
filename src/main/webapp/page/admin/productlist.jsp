@@ -150,7 +150,7 @@
 
                                                 <div class="col-md-2 mb-3">
                                                     <select class="custom-select" name="categoryId">
-                                                        <option value="">-- Tất cả Category --</option>
+                                                        <option value="">-- Tất cả loại thẻ --</option>
                                                         <c:forEach var="c" items="${categories}">
                                                             <option value="${c.categoryId}" ${categoryId == c.categoryId ? 'selected' : ''}>${c.categoryName}</option>
                                                         </c:forEach>
@@ -159,7 +159,7 @@
 
                                                 <div class="col-md-2 mb-3">
                                                     <select class="custom-select" name="providerId">
-                                                        <option value="">-- Tất cả Provider --</option>
+                                                        <option value="">-- Tất cả nhà mạng --</option>
                                                         <c:forEach var="p" items="${providers}">
                                                             <option value="${p.providerId}" ${providerId == p.providerId ? 'selected' : ''}>${p.providerName}</option>
                                                         </c:forEach>
@@ -207,8 +207,8 @@
                                             <table class="table table-hover">
                                                 <thead class="thead-light">
                                                 <tr>
-                                                    <th style="width: 50px;">ID</th>
-                                                    <th style="width: 80px;">Hình ảnh</th>
+                                                    <th>ID</th>
+                                                    <th>Hình ảnh</th>
                                                     <th>Tên sản phẩm</th>
                                                     <th>Nhà mạng</th>
                                                     <th>Loại thẻ</th>

@@ -180,7 +180,6 @@
                                                 <tr>
                                                     <th style="width: 60px;">ID</th>
                                                     <th>Tên loại thẻ</th>
-                                                    <th>Mô tả</th>
                                                     <th style="width: 160px;" class="text-right">Hành động</th>
                                                 </tr>
                                                 </thead>
@@ -189,7 +188,6 @@
                                                     <tr>
                                                         <td class="align-middle font-weight-bold">#${c.categoryId}</td>
                                                         <td class="align-middle"><strong>${c.categoryName}</strong></td>
-                                                        <td class="align-middle">${c.description}</td>
                                                         <td class="align-middle text-right">
                                                             <a href="${pageContext.request.contextPath}/admin/category/update?id=${c.categoryId}"
                                                                class="btn btn-sm btn-icon btn-secondary"
