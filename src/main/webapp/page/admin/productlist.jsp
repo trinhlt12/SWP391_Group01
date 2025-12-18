@@ -81,7 +81,7 @@
                         </li>
                         <li class="menu-item has-active">
                             <a href="${pageContext.request.contextPath}/admin/products" class="menu-link">
-                                <span class="menu-icon fas fa-box"></span> <span class="menu-text">Quản lý Product</span>
+                                <span class="menu-icon fas fa-box"></span> <span class="menu-text">Quản lý Sản phẩm</span>
                             </a>
                         </li>
                         <li class="menu-item">
