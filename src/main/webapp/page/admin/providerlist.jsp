@@ -179,18 +179,29 @@
                                             <table class="table table-hover">
                                                 <thead class="thead-light">
                                                 <tr>
-                                                    <th style="width: 15%;">ID</th>
-                                                    <th style="width: 45%;">Tên nhà cung cấp</th>
+                                                    <th style="width: 10%;">ID</th>
+                                                    <th style="width: 15%;">Logo</th>
+                                                    <th style="width: 35%;">Tên nhà cung cấp</th>
                                                     <th style="width: 20%;">Trạng thái</th>
                                                     <th style="width: 20%;" class="text-right">Hành động</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
                                                 <c:forEach var="p" items="${list}">
-                                                    <tr>
-                                                        <td class="align-middle font-weight-bold">#${p.providerId}</td>
-                                                        <td class="align-middle"><strong><c:out value="${p.providerName}"/></strong></td>
-                                                        <td class="align-middle">
+                                                        <tr>
+                                                            <td class="align-middle font-weight-bold">#${p.providerId}</td>
+                                                            <td class="align-middle">
+                                                                <c:choose>
+                                                                    <c:when test="${not empty p.logoUrl}">
+                                                                        <img src="${p.logoUrl}" alt="${p.providerName}" style="max-height: 40px; max-width: 80px; object-fit: contain;">
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <span class="text-muted small">No logo</span>
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </td>
+                                                            <td class="align-middle"><strong><c:out value="${p.providerName}"/></strong></td>
+                                                            <td class="align-middle">
                                                             <span class="badge badge-${p.status == 1 ? 'success' : 'danger'}">
                                                                 ${p.status == 1 ? 'Active' : 'Inactive'}
                                                             </span>

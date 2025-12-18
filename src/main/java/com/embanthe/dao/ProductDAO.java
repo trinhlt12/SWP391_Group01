@@ -48,10 +48,6 @@ public class ProductDAO {
         return list;
     }
 
-    /**
-     * Lấy chi tiết sản phẩm theo ID
-     * Sử dụng model Products hiện tại (không có description/status/createdAt/updatedAt/categoryName/providerName)
-     */
     public Products getProductById(int productId) {
         String sql = """
                 SELECT p.product_id,
@@ -195,7 +191,6 @@ public class ProductDAO {
     }
 
     public Products getById(int id) {
-        // Alias of getProductById kept for compatibility
         return getProductById(id);
     }
 
@@ -241,10 +236,6 @@ public class ProductDAO {
         }
     }
 
-    /**
-     * Điều chỉnh quantity của product trong cùng Connection/transaction.
-     * Trả về true nếu cập nhật thành công, false nếu product không tồn tại hoặc quantity sau khi tăng < 0.
-     */
     public boolean adjustQuantityWithCheck(Connection con, int productId, int delta) throws SQLException {
         // 1) Lock hàng product để tránh race (SELECT ... FOR UPDATE)
         String selectSql = "SELECT quantity FROM products WHERE product_id = ? FOR UPDATE";
@@ -269,57 +260,7 @@ public class ProductDAO {
         }
     }
 
-    /**
-     * Convenience wrapper that opens its own connection.
-     */
-    public boolean adjustQuantity(int productId, int delta) {
-        try (Connection con = DBContext.getInstance().getConnection()) {
-            con.setAutoCommit(false);
-            boolean ok = adjustQuantityWithCheck(con, productId, delta);
-            if (ok) con.commit(); else con.rollback();
-            return ok;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-    /**
-     * Đếm số thẻ (card_items) đang tham chiếu tới product này.
-     */
-    public int countCardItems(int productId) {
-        String sql = "SELECT COUNT(*) FROM card_items WHERE product_id = ?";
-        try (Connection con = DBContext.getInstance().getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, productId);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return rs.getInt(1);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return 0;
-    }
 
-    /**
-     * Đếm tổng số orders tham chiếu tới product.
-     */
-    public int countOrders(int productId) {
-        String sql = "SELECT COUNT(*) FROM orders WHERE product_id = ?";
-        try (Connection con = DBContext.getInstance().getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, productId);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return rs.getInt(1);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return 0;
-    }
-
-    /**
-     * Đếm orders theo status (ví dụ 'COMPLETED', 'PENDING', 'CANCELLED').
-     */
     public int countOrdersByStatus(int productId, String status) {
         String sql = "SELECT COUNT(*) FROM orders WHERE product_id = ? AND status = ?";
         try (Connection con = DBContext.getInstance().getConnection();
@@ -349,9 +290,7 @@ public class ProductDAO {
         }
         return 0;
     }
-    /**
-     * Trả về tên category theo id, hoặc "-" nếu không tìm thấy / lỗi.
-     */
+
     public String getCategoryNameById(int categoryId) {
         String sql = "SELECT category_name FROM categories WHERE category_id = ?";
         try (Connection con = DBContext.getInstance().getConnection();
@@ -366,9 +305,6 @@ public class ProductDAO {
         return "-";
     }
 
-    /**
-     * Trả về tên provider theo id, hoặc "-" nếu không tìm thấy / lỗi.
-     */
     public String getProviderNameById(int providerId) {
         String sql = "SELECT provider_name FROM providers WHERE provider_id = ?";
         try (Connection con = DBContext.getInstance().getConnection();
@@ -383,10 +319,6 @@ public class ProductDAO {
         return "-";
     }
 
-    /**
-     * (Option B) Kiểm tra có sản phẩm nào đang dùng categoryId không.
-     * Trả về true nếu tồn tại ít nhất 1 product tham chiếu category này.
-     */
     public boolean existsProductByCategoryId(int categoryId) {
         String sql = "SELECT 1 FROM products WHERE category_id = ? LIMIT 1";
         try (Connection con = DBContext.getInstance().getConnection();
@@ -401,10 +333,6 @@ public class ProductDAO {
         }
     }
 
-    /**
-     * (Option B) Kiểm tra có sản phẩm nào đang dùng providerId không.
-     * Trả về true nếu tồn tại ít nhất 1 product tham chiếu provider này.
-     */
     public boolean existsProductByProviderId(int providerId) {
         String sql = "SELECT 1 FROM products WHERE provider_id = ? LIMIT 1";
         try (Connection con = DBContext.getInstance().getConnection();
@@ -417,5 +345,45 @@ public class ProductDAO {
             ex.printStackTrace();
             return false;
         }
+    }
+
+    public boolean adjustQuantity(int productId, int delta) {
+        try (Connection con = DBContext.getInstance().getConnection()) {
+            con.setAutoCommit(false);
+            boolean ok = adjustQuantityWithCheck(con, productId, delta);
+            if (ok) con.commit(); else con.rollback();
+            return ok;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public int countCardItems(int productId) {
+        String sql = "SELECT COUNT(*) FROM card_items WHERE product_id = ?";
+        try (Connection con = DBContext.getInstance().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, productId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int countOrders(int productId) {
+        String sql = "SELECT COUNT(*) FROM orders WHERE product_id = ?";
+        try (Connection con = DBContext.getInstance().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, productId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return 0;
     }
 }

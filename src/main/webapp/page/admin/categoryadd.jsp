@@ -6,22 +6,30 @@
     <meta charset="UTF-8">
     <title>Thêm loại thẻ</title>
     <style>
-        /* Đồng bộ giao diện với addproduct/provideradd */
+        /* Match categoryupdate.jsp styling */
         body { font-family: Arial, sans-serif; background: #f6f8fa; }
         .container { max-width: 600px; margin: 40px auto; background: white; padding: 32px; border-radius: 12px; box-shadow: 0 8px 30px #cfd8dc; }
         h2 { margin-bottom: 24px; color: #333; }
         label { margin-top: 10px; font-weight: 600; display:block; }
-        input, textarea { width: 100%; padding: 10px; margin: 5px 0 18px 0; border: 1px solid #bbb; border-radius: 5px; box-sizing: border-box; }
+        input, select, textarea { width: 100%; padding: 10px; margin: 5px 0 18px 0; border: 1px solid #bbb; border-radius: 5px; box-sizing: border-box; font-family: inherit; }
         textarea { min-height: 120px; resize: vertical; }
         .err-msg { color: red; font-size: 13px; margin-top: -12px; margin-bottom: 12px; }
-        .alert { background: #fee2e2; color: #991b1b; border: 1px solid #ef4444; padding: 10px 14px; border-radius: 6px; margin-bottom: 16px; }
         button { background: #667eea; color: white; padding: 10px 32px; border: none; border-radius: 6px; font-weight: bold; }
         button:hover { background: #4051ad; cursor: pointer; }
         .btn-group { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; gap:12px; }
         .btn-reset { background: #94a3b8; color: white; padding: 10px 20px; border-radius: 6px; border: none; }
         .btn-reset:hover { background: #64748b; cursor: pointer; }
-        .btn-back { background: #e5e7eb; color: #334155; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; display: inline-block; }
+        .btn-back {
+            background: #e5e7eb;
+            color: #334155;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            display: inline-block;
+        }
         .btn-back:hover { background: #cbd5e1; }
+        .small-note { font-size: 13px; color: #6b7280; margin-top: -12px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -47,6 +55,12 @@
         <c:if test="${not empty validateErrors['description']}">
             <div class="err-msg"><c:out value="${validateErrors['description']}"/></div>
         </c:if>
+
+        <label>Trạng thái</label>
+        <select name="status">
+            <option value="1" ${status == '1' || empty status ? 'selected' : ''}>Đang hoạt động</option>
+            <option value="0" ${status == '0' ? 'selected' : ''}>Ngừng hoạt động</option>
+        </select>
 
         <div class="btn-group">
             <a href="${pageContext.request.contextPath}/admin/category" class="btn-back">⬅ Quay về</a>
