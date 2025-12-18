@@ -43,10 +43,4 @@
         </nav>
 
     </div>
-
-    <div style="position: fixed; bottom: 0; right: 0; background: black; color: yellow; padding: 10px; opacity: 0.8; z-index: 9999;">
-        Time ID: <%= session.getId().substring(0, 5) %>... <br>
-        Timeout: <%= session.getMaxInactiveInterval() / 60 %> phút <br>
-        Created: <%= new java.util.Date(session.getCreationTime()) %>
-    </div>
 </header>
