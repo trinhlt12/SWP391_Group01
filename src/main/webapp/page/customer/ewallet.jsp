@@ -558,10 +558,21 @@
             <div class="transaction-section">
                 <div class="section-header">
                     <h2>Giao Dịch Gần Đây</h2>
-                    <div class="filter-group">
-                        <button class="filter-btn active" onclick="filterTransactions('all')">Tất cả</button>
-                        <button class="filter-btn" onclick="filterTransactions('deposit')">Nạp tiền</button>
-                        <button class="filter-btn" onclick="filterTransactions('purchase')">Mua hàng</button>
+                    <div class="filter-buttons">
+                        <a href="${pageContext.request.contextPath}/ewallet?type=ALL"
+                           class="filter-btn ${currentType == 'ALL' ? 'active' : ''}">
+                            <span>📊</span> Tất cả
+                        </a>
+
+                        <a href="${pageContext.request.contextPath}/ewallet?type=DEPOSIT"
+                           class="filter-btn ${currentType == 'DEPOSIT' ? 'active' : ''}">
+                            <span>💰</span> Nạp tiền
+                        </a>
+
+                        <a href="${pageContext.request.contextPath}/ewallet?type=PURCHASE"
+                           class="filter-btn ${currentType == 'PURCHASE' ? 'active' : ''}">
+                            <span>🛒</span> Mua hàng
+                        </a>
                     </div>
                 </div>
 
@@ -642,7 +653,8 @@
 
                             <!-- Nút Previous -->
                             <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-                                <a class="page-link" href="ewallet?page=${currentPage - 1}" aria-label="Previous">
+                                <a class="page-link" href="${pageContext.request.contextPath}/ewallet?type=${currentType}&page=${currentPage - 1}"
+                                   aria-label="Previous">
                                     <span aria-hidden="true">&laquo;</span>
                                 </a>
                             </li>
@@ -650,13 +662,14 @@
                             <!-- Các nút số trang -->
                             <c:forEach begin="1" end="${totalPages}" var="i">
                                 <li class="page-item ${currentPage == i ? 'active' : ''}">
-                                    <a class="page-link" href="ewallet?page=${i}">${i}</a>
+                                    <a class="page-link" href="${pageContext.request.contextPath}/ewallet?type=${currentType}&page=${i}">${i}</a>
                                 </li>
                             </c:forEach>
 
                             <!-- Nút Next -->
                             <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                                <a class="page-link" href="ewallet?page=${currentPage + 1}" aria-label="Next">
+                                <a class="page-link" href="${pageContext.request.contextPath}/ewallet?type=${currentType}&page=${currentPage + 1}"
+                                   aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>
                                 </a>
                             </li>
@@ -714,25 +727,6 @@
                 document.getElementById('modal-content-placeholder').innerHTML =
                     '<p class="text-danger text-center">Không thể tải thông tin giao dịch.</p>';
             });
-    }
-
-    // Filter transactions
-    function filterTransactions(type) {
-        const items = document.querySelectorAll('.transaction-item');
-        const buttons = document.querySelectorAll('.filter-btn');
-
-        // Update active button
-        buttons.forEach(btn => btn.classList.remove('active'));
-        event.target.classList.add('active');
-
-        // Show/hide transactions
-        items.forEach(item => {
-            if (type === 'all' || item.dataset.type === type) {
-                item.style.display = 'flex';
-            } else {
-                item.style.display = 'none';
-            }
-        });
     }
 
     // Animation on load

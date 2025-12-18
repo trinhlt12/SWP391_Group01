@@ -45,14 +45,14 @@ public class EwalletServlet extends HttpServlet {
         }
 
         if (currentUser != null) {
-            Users updatedUser = userDAO.getUserById((int) currentUser.getUserId()); // 1
+            Users updatedUser = userDAO.getUserById(currentUser.getUserId()); // 1
             if (updatedUser != null) {
                 session.setAttribute("user", updatedUser);
                 currentUser = updatedUser;
             }
-            String status = req.getParameter("status");
-            if (status == null || status.isEmpty()) {
-                status = "ALL";
+            String type = req.getParameter("type");
+            if (type == null || type.isEmpty()) {
+                type = "ALL";
             }
             int page = 1;
             int pageSize = 10;
@@ -65,16 +65,16 @@ public class EwalletServlet extends HttpServlet {
                 }
             }
 
-            int totalTransactions = transactionDAO.countTransactionsByUserId((int) currentUser.getUserId()); //2
+            int totalTransactions = transactionDAO.countTransactionsByUserId((int) currentUser.getUserId(), type); //2
             int totalPages = (int) Math.ceil((double) totalTransactions / pageSize);
 
             //3
-            List<Transactions> transactionList = transactionDAO.getRecentTransactions((int) currentUser.getUserId(), status, page, pageSize);
+            List<Transactions> transactionList = transactionDAO.getRecentTransactions((int) currentUser.getUserId(), type, page, pageSize);
 
             req.setAttribute("transactionList", transactionList);
             req.setAttribute("currentPage", page);
             req.setAttribute("totalPages", totalPages);
-            req.setAttribute("currentStatus", status);
+            req.setAttribute("currentType", type);
 
         } else {
             resp.sendRedirect(req.getContextPath() + "/login");
