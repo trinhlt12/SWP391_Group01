@@ -38,6 +38,12 @@ public class EwalletServlet extends HttpServlet {
         HttpSession session = req.getSession();
         Users currentUser = (Users) session.getAttribute("user");
 
+        String flashError = (String) session.getAttribute("flashError");
+        if(flashError != null){
+            req.setAttribute("errorMessage", flashError);
+            session.removeAttribute("flashError");
+        }
+
         if (currentUser != null) {
             Users updatedUser = userDAO.getUserById((int) currentUser.getUserId()); // 1
             if (updatedUser != null) {
@@ -129,8 +135,10 @@ public class EwalletServlet extends HttpServlet {
             response.sendRedirect(paymentUrl);
 
         } catch (NumberFormatException e) {
-            request.setAttribute("errorMessage", "Số tiền không hợp lệ.");
-            request.getRequestDispatcher(walletPath).forward(request, response);
+            request.getSession().setAttribute("flashError", "Lỗi: Số tiền không hợp lệ");
+            response.sendRedirect(request.getContextPath() + "/ewallet");
+            /*request.setAttribute("errorMessage", "Số tiền không hợp lệ.");
+            request.getRequestDispatcher(walletPath).forward(request, response);*/
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("errorMessage", "Lỗi: " + e.getMessage());

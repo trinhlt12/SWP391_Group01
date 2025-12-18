@@ -72,6 +72,7 @@
             margin-bottom: 30px;
             position: relative;
             overflow: hidden;
+            container-type: inline-size;
         }
 
         .balance-card::before {
@@ -92,7 +93,7 @@
         }
 
         .balance-amount {
-            font-size: 3rem;
+            font-size: clamp(2rem, 13cqw, 3rem);
             font-weight: 700;
             margin-bottom: 20px;
             position: relative;
@@ -397,12 +398,12 @@
         }
 
         .transaction-amount {
-            display: flex;              /* Quan trọng: Để Tiền và Badge nằm ngang */
-            flex-direction: row;        /* Xếp theo hàng ngang */
+            display: flex; /* Quan trọng: Để Tiền và Badge nằm ngang */
+            flex-direction: row; /* Xếp theo hàng ngang */
             align-items: end;
-            justify-content: flex-end;  /* Đẩy hết sang bên phải */
-            gap: 15px;                  /* Khoảng cách giữa Số tiền và Badge */
-            min-width: 200px;           /* Đảm bảo đủ rộng để không bị xuống dòng */
+            justify-content: flex-end; /* Đẩy hết sang bên phải */
+            gap: 15px; /* Khoảng cách giữa Số tiền và Badge */
+            min-width: 200px; /* Đảm bảo đủ rộng để không bị xuống dòng */
         }
 
         .amount-value {
@@ -425,7 +426,7 @@
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
-            white-space: nowrap;         /* Không cho badge bị xuống dòng */
+            white-space: nowrap; /* Không cho badge bị xuống dòng */
             height: fit-content;
         }
 
@@ -524,8 +525,10 @@
                     </div>
 
                     <c:if test="${not empty errorMessage}">
-                        <div style="background-color: #fee2e2; color: #dc2626; padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #fca5a5;">
-                            ⚠️ ${errorMessage}
+                        <div id="error-alert" class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i> <!-- Icon cảnh báo -->
+                            <strong>Lỗi:</strong> ${errorMessage}
+
                         </div>
                     </c:if>
 
@@ -538,34 +541,9 @@
                                     name="amount"
                                     class="amount-input"
                                     placeholder="Nhập số tiền..."
-                                    oninput="formatCurrency(this)"
+                                    oninput="formatCurrency(this); clearError()"
                                     required
                             />
-                        </div>
-
-                        <!-- Quick Amount Selection -->
-                        <div class="form-group">
-                            <label>Hoặc chọn nhanh:</label>
-                            <div class="quick-amounts">
-                                <button type="button" class="quick-amount-btn" onclick="selectAmount(50000)">
-                                    50.000₫
-                                </button>
-                                <button type="button" class="quick-amount-btn" onclick="selectAmount(100000)">
-                                    100.000₫
-                                </button>
-                                <button type="button" class="quick-amount-btn" onclick="selectAmount(200000)">
-                                    200.000₫
-                                </button>
-                                <button type="button" class="quick-amount-btn" onclick="selectAmount(500000)">
-                                    500.000₫
-                                </button>
-                                <button type="button" class="quick-amount-btn" onclick="selectAmount(1000000)">
-                                    1.000.000₫
-                                </button>
-                                <button type="button" class="quick-amount-btn" onclick="selectAmount(2000000)">
-                                    2.000.000₫
-                                </button>
-                            </div>
                         </div>
 
                         <button type="submit" class="submit-btn">
@@ -618,7 +596,8 @@
                                     <div class="transaction-date">
                                         <!-- Format ngày tháng -->
                                         <fmt:formatDate value="${trans.createdAt}" pattern="dd/MM/yyyy HH:mm"/>
-                                        <a href="transaction-detail?id=${trans.transactionId}" style="color: #059669; text-decoration: underline; font-weight: bold;">
+                                        <a href="transaction-detail?id=${trans.transactionId}"
+                                           style="color: #059669; text-decoration: underline; font-weight: bold;">
                                             Xem chi tiết
                                         </a>
                                     </div>
@@ -736,6 +715,7 @@
                     '<p class="text-danger text-center">Không thể tải thông tin giao dịch.</p>';
             });
     }
+
     // Filter transactions
     function filterTransactions(type) {
         const items = document.querySelectorAll('.transaction-item');
@@ -825,6 +805,23 @@
         input.value = value;
         return true;
     }
+
+    function clearError() {
+        const errorAlert = document.getElementById('error-alert');
+        if(errorAlert){
+            errorAlert.remove();
+        }
+    }
+
+    <c:if test="${not empty errorMessage}">
+    document.addEventListener('DOMContentLoaded', function () {
+        const container = document.getElementById('depositFormContainer');
+        container.classList.add('active');
+
+        container.scrollIntoView({behavior: 'smooth', block: 'center'});
+    });
+    </c:if>
 </script>
+<script src="assetsHome/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
