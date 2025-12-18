@@ -39,7 +39,7 @@ public class EwalletServlet extends HttpServlet {
         Users currentUser = (Users) session.getAttribute("user");
 
         if (currentUser != null) {
-            Users updatedUser = userDAO.getUserById((int) currentUser.getUserId());
+            Users updatedUser = userDAO.getUserById((int) currentUser.getUserId()); // 1
             if (updatedUser != null) {
                 session.setAttribute("user", updatedUser);
                 currentUser = updatedUser;
@@ -59,10 +59,10 @@ public class EwalletServlet extends HttpServlet {
                 }
             }
 
-            int totalTransactions = transactionDAO.countTransactionsByUserId((int) currentUser.getUserId());
+            int totalTransactions = transactionDAO.countTransactionsByUserId((int) currentUser.getUserId()); //2
             int totalPages = (int) Math.ceil((double) totalTransactions / pageSize);
 
-
+            //3
             List<Transactions> transactionList = transactionDAO.getRecentTransactions((int) currentUser.getUserId(), status, page, pageSize);
 
             req.setAttribute("transactionList", transactionList);
@@ -115,13 +115,14 @@ public class EwalletServlet extends HttpServlet {
             trans.setMessage("Nạp tiền vào ví qua VNPay");
             trans.setOrderId(0);
 
-            int transactionId = transactionDAO.createDepositTransaction(trans);
+            int transactionId = transactionDAO.createDepositTransaction(trans); //4
 
             if (transactionId == -1) {
                 request.setAttribute("errorMessage", "Lỗi hệ thống: Không thể tạo giao dịch.");
                 request.getRequestDispatcher(walletPath).forward(request, response);
                 return;
             }
+            //5
             String paymentUrl = paymentService.createDepositUrl((int) user.getUserId(), amount, ipAddr, String.valueOf(transactionId));
 
             response.sendRedirect(paymentUrl);

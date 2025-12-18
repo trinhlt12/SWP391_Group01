@@ -396,13 +396,19 @@
         }
 
         .transaction-amount {
-            text-align: right;
+            display: flex;              /* Quan trọng: Để Tiền và Badge nằm ngang */
+            flex-direction: row;        /* Xếp theo hàng ngang */
+            align-items: end;
+            justify-content: flex-end;  /* Đẩy hết sang bên phải */
+            gap: 15px;                  /* Khoảng cách giữa Số tiền và Badge */
+            min-width: 200px;           /* Đảm bảo đủ rộng để không bị xuống dòng */
         }
 
         .amount-value {
             font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 5px;
+            font-weight: 700;
+            margin-bottom: 0 !important;
+            white-space: nowrap;
         }
 
         .amount-value.positive {
@@ -414,10 +420,12 @@
         }
 
         .transaction-status {
-            padding: 5px 12px;
+            padding: 6px 12px;
             border-radius: 20px;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: 600;
+            white-space: nowrap;         /* Không cho badge bị xuống dòng */
+            height: fit-content;
         }
 
         .status-success {
@@ -632,12 +640,15 @@
                             </c:otherwise>
                         </c:choose>
                     </div>
+<%--
                     <div class="transaction-details">
+&lt;%&ndash;
                         <h4>${trans.message}</h4>
+&ndash;%&gt;
                         <div class="transaction-date">
 
                         </div>
-                    </div>
+                    </div>--%>
                 </div>
             </c:forEach>
 
@@ -789,7 +800,6 @@
         input.value = value;
     }
 
-    // Validate amount before submit
     function validateAmount() {
         const input = document.getElementById('amount');
         const value = parseInt(input.value.replace(/\D/g, ''));
