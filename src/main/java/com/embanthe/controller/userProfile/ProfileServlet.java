@@ -78,11 +78,11 @@ public class ProfileServlet extends HttpServlet {
             }
 
             // Kiểm tra trùng fullName
-            if (!fullName.equals(user.getFullName()) && authDAO.isFullNameExists(fullName)) {
-                request.setAttribute("error", "FullName đã tồn tại!");
-                request.getRequestDispatcher("page/userProfile/userProfile.jsp").forward(request, response);
-                return;
-            }
+//            if (!fullName.equals(user.getFullName()) && authDAO.isFullNameExists(fullName)) {
+//                request.setAttribute("error", "FullName đã tồn tại!");
+//                request.getRequestDispatcher("page/userProfile/userProfile.jsp").forward(request, response);
+//                return;
+//            }
 
             // Kiểm tra độ dài
             if (fullName.length() > 30) {

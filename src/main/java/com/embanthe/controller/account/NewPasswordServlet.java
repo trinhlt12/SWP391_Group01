@@ -11,12 +11,21 @@ import javax.servlet.http.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+
+import com.embanthe.dao.UserDAO;
+import com.embanthe.model.Users;
 import org.mindrot.jbcrypt.BCrypt;
 
 @WebServlet(name = "NewPassword", urlPatterns = {"/newpassword"})
 
 
 public class NewPasswordServlet extends HttpServlet {
+
+    private final UserDAO userDAO;
+
+    public NewPasswordServlet() {
+        this.userDAO = new UserDAO(); // Khởi tạo một lần
+    }
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -31,6 +40,7 @@ public class NewPasswordServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        String email = (String) session.getAttribute("email");
         String newPassword = request.getParameter("password");
         String confPassword = request.getParameter("confPassword");
 
@@ -49,33 +59,29 @@ public class NewPasswordServlet extends HttpServlet {
             request.getRequestDispatcher("page/system/newPassword.jsp").forward(request, response);
 
         } else {
+            String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt(12));
             try {
-                String url = "jdbc:mysql://127.0.0.1:3306/swp391?useSSL=false&serverTimezone=UTC";
-
-                String username = "root";
-                String password = "Macuongthi444.";
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                Connection connection = DriverManager.getConnection(url, username, password);
-
-                String sql = "UPDATE Users SET password_hash = ? WHERE email = ?";
-                PreparedStatement pst = connection.prepareStatement(sql);
-                pst.setString(1, hashed);
-                pst.setString(2, (String) session.getAttribute("email"));
-                int rowCount = pst.executeUpdate();
-                if (rowCount ==1) {
-                    request.setAttribute("message", "Reset Success");
-
-                    request.getRequestDispatcher("page/system/login.jsp").forward(request, response);
+                Users user = userDAO.getUserByEmail(email);
+                if (user == null) {
+                    request.setAttribute("message", "Không tìm thấy tài khoản với email này.");
+                    dispatcher = request.getRequestDispatcher("page/system/login.jsp");
                 } else {
-                    request.setAttribute("message", "Reset Failed");
+                    // Dùng phương thức changePassword đã có trong UserDAO (theo userId)
+                    boolean success = userDAO.changePassword(user.getUserId(), hashedPassword);
 
-
-                    request.getRequestDispatcher("page/system/login.jsp").forward(request, response);
+                    if (success) {
+                        request.setAttribute("success", "Đặt lại mật khẩu thành công! Bạn có thể đăng nhập ngay.");
+                    } else {
+                        request.setAttribute("message", "Đặt lại mật khẩu thất bại. Vui lòng thử lại.");
+                    }
+                    dispatcher = request.getRequestDispatcher("page/system/login.jsp");
                 }
-
+                // Quan trọng: Xóa session sau khi hoàn tất (tránh reuse OTP/email)
+                session.invalidate();
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            dispatcher.forward(request, response);
         }
     }
     private boolean isValidPassword(String password) {

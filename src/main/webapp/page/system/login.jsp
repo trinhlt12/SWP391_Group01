@@ -53,7 +53,9 @@
                                 <div class="mb-4">
                                     <label for="exampleInputPassword1" class="form-label">Mật khẩu</label>
                                     <input type="password" name="password" class="form-control"
-                                           id="exampleInputPassword1" value="${cookie.password.value}">
+                                           id="exampleInputPassword1"
+<%--                                           value="${cookie.password.value}"--%>
+                                    >
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between mb-4">
                                     <div class="form-check">
@@ -72,14 +74,14 @@
                                     <span class="px-3 text-muted fw-bold">HOẶC</span>
                                     <hr class="flex-grow-1 bg-secondary">
                                 </div>
-                                <div class="d-grid">
-                                    <a href="https://accounts.google.com/o/oauth2/auth?scope=email profile openid&redirect_uri=http://localhost:8080/SWP391_Group01/login&response_type=code&client_id=866767645826-0drlmutip5cpi5ap5fjn6uus7mfktltp.apps.googleusercontent.com&approval_prompt=force"
-                                       class="btn btn-outline-primary w-100 py-8 fs-4 rounded-2 d-flex align-items-center justify-content-center gap-3">
-                                        <img src="https://www.google.com/favicon.ico" width="20" height="20"
-                                             alt="Google">
-                                        <span>Tạo tài khoản nhanh với Google</span>
-                                    </a>
-                                </div>
+<%--                                <div class="d-grid">--%>
+<%--                                    <a href="https://accounts.google.com/o/oauth2/auth?scope=email profile openid&redirect_uri=http://localhost:8080/SWP391_Group01/login&response_type=code&client_id=866767645826-0drlmutip5cpi5ap5fjn6uus7mfktltp.apps.googleusercontent.com&approval_prompt=force"--%>
+<%--                                       class="btn btn-outline-primary w-100 py-8 fs-4 rounded-2 d-flex align-items-center justify-content-center gap-3">--%>
+<%--                                        <img src="https://www.google.com/favicon.ico" width="20" height="20"--%>
+<%--                                             alt="Google">--%>
+<%--                                        <span>Tạo tài khoản nhanh với Google</span>--%>
+<%--                                    </a>--%>
+<%--                                </div>--%>
                                 <div class="d-flex align-items-center justify-content-center">
                                     <p class="fs-4 mb-0 fw-bold">Chưa có tài khoản?</p>
                                     <a class="text-primary fw-bold ms-2" href="register">Tạo tài khoản mới</a>

@@ -106,9 +106,10 @@ public class RegisterServlet extends HttpServlet {
                     request.setAttribute("message", "Email này đã được sử dụng!");
                 } else if (usernameExist) {
                     request.setAttribute("message", "Username đã tồn tại!");
-                } else if (fullnameExist) {
-                    request.setAttribute("message", "Fullname đã tồn tại!");
                 }
+//                else if (fullnameExist) {
+//                    request.setAttribute("message", "Fullname đã tồn tại!");
+//                }
 //                else
 //                    if (phoneExist) {
 //                    request.setAttribute("message", "Số điện thoại này đã được sử dụng!");

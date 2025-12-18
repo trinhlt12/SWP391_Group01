@@ -152,8 +152,8 @@
                                     <!-- Personal Information -->
                                     <div class="mb-4">
                                         <h5 class="mb-4">Thông tin cá nhân</h5>
-                                        <label class="form-label">Username:</label>
-                                        <span class="fw-bold text-primary"> ${sessionScope.user.username} </span>
+<%--                                        <label class="form-label">Username:</label>--%>
+<%--                                        <span class="fw-bold text-primary"> ${sessionScope.user.username} </span>--%>
                                         <form action="userprofile" method="post" id="profileForm">
                                             <div class="position-absolute top-0 end-0 p-3">
                                                 <!-- Nút Edit -->

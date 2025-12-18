@@ -19,16 +19,16 @@ public class LoginServlet extends HttpServlet {
         String code = request.getParameter("code");
         Cookie[] cookies = request.getCookies();
         String username = null;
-        String password = null;
+//        String password = null;
 
         if (cookies != null) {
             for (Cookie c : cookies) {
                 if ("username".equals(c.getName())) {
                     username = c.getValue();
                 }
-                if ("password".equals(c.getName())) {
-                    password = c.getValue();
-                }
+//                if ("password".equals(c.getName())) {
+//                    password = c.getValue();
+//                }
             }
         }
         // Nếu không có code → Google từ chối hoặc lỗi
@@ -98,27 +98,27 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("username", user.getUsername());
                 if (remember != null) {
                     Cookie cookieUser = new Cookie("username", username);
-                    Cookie cookiePass = new Cookie("password", password);
+//                    Cookie cookiePass = new Cookie("password", password);
                     cookieUser.setPath("/");
-                    cookiePass.setPath("/");
+//                    cookiePass.setPath("/");
 
                     cookieUser.setMaxAge(2 * 60 * 60);
-                    cookiePass.setMaxAge(2 * 60 * 60);
+//                    cookiePass.setMaxAge(2 * 60 * 60);
 
                     response.addCookie(cookieUser);
-                    response.addCookie(cookiePass);
+//                    response.addCookie(cookiePass);
                 }else {
                     Cookie cookieUser = new Cookie("username", "");
-                    Cookie cookiePass = new Cookie("password", "");
+//                    Cookie cookiePass = new Cookie("password", "");
 
                     cookieUser.setPath("/");
-                    cookiePass.setPath("/");
+//                    cookiePass.setPath("/");
 
                     cookieUser.setMaxAge(0);
-                    cookiePass.setMaxAge(0);
+//                    cookiePass.setMaxAge(0);
 
                     response.addCookie(cookieUser);
-                    response.addCookie(cookiePass);
+//                    response.addCookie(cookiePass);
                 }
                 // Kiểm tra role (CUSTOMER/ADMIN)
                 if ("CUSTOMER".equalsIgnoreCase(user.getRole())) {
@@ -133,7 +133,7 @@ public class LoginServlet extends HttpServlet {
 
             } else {
                 // Sai thông tin đăng nhập
-                request.setAttribute("message", "Email hoặc mật khẩu không đúng!");
+                request.setAttribute("message", "Username hoặc mật khẩu không đúng!");
                 request.getRequestDispatcher("page/system/login.jsp").forward(request, response);
             }
         } catch (SQLException e) {
