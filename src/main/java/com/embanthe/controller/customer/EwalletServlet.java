@@ -77,6 +77,7 @@ public class EwalletServlet extends HttpServlet {
 
         req.getRequestDispatcher(walletPath).forward(req, resp);
     }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");

@@ -8,7 +8,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-length, initial-scale=1.0">
     <title>Ví Điện Tử - Em Bán Thẻ</title>
     <base href="${pageContext.request.contextPath}/">
 
@@ -497,191 +497,198 @@
         <p>Quản lý tài chính của bạn một cách dễ dàng</p>
     </div>
 
-    <!-- Balance Card -->
-    <div class="balance-card">
-        <div class="balance-label">Số dư hiện tại</div>
-        <div class="balance-amount">
-            <fmt:formatNumber value="${sessionScope.user.balance}" type="currency" currencySymbol="₫"/></div>
-        <div class="wallet-id">ID Ví: <strong>EBT-${sessionScope.user.userId}</strong></div>
+    <div class="row">
+        <div class="col-lg-4 col-md-5 mb-4">
+            <!-- Balance Card -->
+            <div class="balance-card">
+                <div class="balance-label">Số dư hiện tại</div>
+                <div class="balance-amount">
+                    <fmt:formatNumber value="${sessionScope.user.balance}" type="currency" currencySymbol="₫"/></div>
+                <div class="wallet-id">ID Ví: <strong>EBT-${sessionScope.user.userId}</strong></div>
 
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="quick-actions">
-        <a href="javascript:void(0)" class="action-btn" onclick="toggleDepositForm()">
-            <div class="icon">💰</div>
-            <div class="label">Nạp Tiền</div>
-        </a>
-    </div>
-    <!-- Deposit Form - Hidden by default -->
-    <div class="deposit-form-container" id="depositFormContainer">
-        <div class="deposit-form">
-            <div class="form-header">
-                <h3>💰 Nạp Tiền Vào Ví</h3>
-                <button class="close-btn" onclick="toggleDepositForm()">×</button>
             </div>
 
-            <c:if test="${not empty errorMessage}">
-                <div style="background-color: #fee2e2; color: #dc2626; padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #fca5a5;">
-                    ⚠️ ${errorMessage}
-                </div>
-            </c:if>
-
-            <form action="<%= request.getContextPath() %>/ewallet" method="POST" onsubmit="return validateAmount()">
-                <div class="form-group">
-                    <label for="amount">Số tiền muốn nạp (VNĐ)</label>
-                    <input
-                            type="text"
-                            id="amount"
-                            name="amount"
-                            class="amount-input"
-                            placeholder="Nhập số tiền..."
-                            oninput="formatCurrency(this)"
-                            required
-                    />
-                </div>
-
-                <!-- Quick Amount Selection -->
-                <div class="form-group">
-                    <label>Hoặc chọn nhanh:</label>
-                    <div class="quick-amounts">
-                        <button type="button" class="quick-amount-btn" onclick="selectAmount(50000)">
-                            50.000₫
-                        </button>
-                        <button type="button" class="quick-amount-btn" onclick="selectAmount(100000)">
-                            100.000₫
-                        </button>
-                        <button type="button" class="quick-amount-btn" onclick="selectAmount(200000)">
-                            200.000₫
-                        </button>
-                        <button type="button" class="quick-amount-btn" onclick="selectAmount(500000)">
-                            500.000₫
-                        </button>
-                        <button type="button" class="quick-amount-btn" onclick="selectAmount(1000000)">
-                            1.000.000₫
-                        </button>
-                        <button type="button" class="quick-amount-btn" onclick="selectAmount(2000000)">
-                            2.000.000₫
-                        </button>
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <a href="javascript:void(0)" class="action-btn" onclick="toggleDepositForm()">
+                    <div class="icon">💰</div>
+                    <div class="label">Nạp Tiền</div>
+                </a>
+            </div>
+            <!-- Deposit Form - Hidden by default -->
+            <div class="deposit-form-container" id="depositFormContainer">
+                <div class="deposit-form">
+                    <div class="form-header">
+                        <h3>💰 Nạp Tiền Vào Ví</h3>
+                        <button class="close-btn" onclick="toggleDepositForm()">×</button>
                     </div>
-                </div>
 
-                <button type="submit" class="submit-btn">
-                    Tiếp Tục Thanh Toán →
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Transaction History -->
-    <div class="transaction-section">
-        <div class="section-header">
-            <h2>Giao Dịch Gần Đây</h2>
-            <div class="filter-group">
-                <button class="filter-btn active" onclick="filterTransactions('all')">Tất cả</button>
-                <button class="filter-btn" onclick="filterTransactions('deposit')">Nạp tiền</button>
-                <button class="filter-btn" onclick="filterTransactions('purchase')">Mua hàng</button>
-            </div>
-        </div>
-
-        <div class="transaction-list">
-
-            <!-- Kiểm tra nếu list rỗng -->
-            <c:if test="${empty transactionList}">
-                <div class="empty-state">
-                    <div class="icon">📭</div>
-                    <p>Chưa có giao dịch nào.</p>
-                </div>
-            </c:if>
-
-            <!-- Vòng lặp duyệt danh sách -->
-            <c:forEach var="trans" items="${transactionList}">
-
-                <!-- Logic xác định loại giao dịch để hiển thị màu sắc/icon -->
-                <c:set var="isDeposit" value="${trans.type == 'DEPOSIT'}"/>
-                <c:set var="iconClass" value="${isDeposit ? 'deposit' : 'purchase'}"/>
-                <c:set var="iconSymbol" value="${isDeposit ? '⬇️' : '🛒'}"/>
-                <c:set var="amountSign" value="${isDeposit ? '+' : '-'}"/>
-                <c:set var="amountClass" value="${isDeposit ? 'positive' : 'negative'}"/>
-
-                <!-- data-type dùng cho bộ lọc JS (deposit/purchase) -->
-                <div class="transaction-item" data-type="${isDeposit ? 'deposit' : 'purchase'}">
-                    <div class="transaction-info">
-                        <div class="transaction-icon ${iconClass}">
-                                ${iconSymbol}
+                    <c:if test="${not empty errorMessage}">
+                        <div style="background-color: #fee2e2; color: #dc2626; padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #fca5a5;">
+                            ⚠️ ${errorMessage}
                         </div>
-                        <div class="transaction-details">
-                            <h4>${trans.message}</h4>
-                            <div class="transaction-date">
-                                <!-- Format ngày tháng -->
-                                <fmt:formatDate value="${trans.createdAt}" pattern="dd/MM/yyyy HH:mm"/>
-                                <a href="transaction-detail?id=${trans.transactionId}" style="color: #059669; text-decoration: underline; font-weight: bold;">
-                                    Xem chi tiết
-                                </a>
+                    </c:if>
+
+                    <form action="<%= request.getContextPath() %>/ewallet" method="POST" onsubmit="return validateAmount()">
+                        <div class="form-group">
+                            <label for="amount">Số tiền muốn nạp (VNĐ)</label>
+                            <input
+                                    type="text"
+                                    id="amount"
+                                    name="amount"
+                                    class="amount-input"
+                                    placeholder="Nhập số tiền..."
+                                    oninput="formatCurrency(this)"
+                                    required
+                            />
+                        </div>
+
+                        <!-- Quick Amount Selection -->
+                        <div class="form-group">
+                            <label>Hoặc chọn nhanh:</label>
+                            <div class="quick-amounts">
+                                <button type="button" class="quick-amount-btn" onclick="selectAmount(50000)">
+                                    50.000₫
+                                </button>
+                                <button type="button" class="quick-amount-btn" onclick="selectAmount(100000)">
+                                    100.000₫
+                                </button>
+                                <button type="button" class="quick-amount-btn" onclick="selectAmount(200000)">
+                                    200.000₫
+                                </button>
+                                <button type="button" class="quick-amount-btn" onclick="selectAmount(500000)">
+                                    500.000₫
+                                </button>
+                                <button type="button" class="quick-amount-btn" onclick="selectAmount(1000000)">
+                                    1.000.000₫
+                                </button>
+                                <button type="button" class="quick-amount-btn" onclick="selectAmount(2000000)">
+                                    2.000.000₫
+                                </button>
                             </div>
                         </div>
-                    </div>
-                    <div class="transaction-amount">
-                        <div class="amount-value ${amountClass}">
-                                ${amountSign}
-                                <fmt:formatNumber value="${trans.amount}" type="currency" currencySymbol="₫"/>
-                        </div>
 
-                        <!-- Hiển thị trạng thái (Badge) -->
-                        <c:choose>
-                            <c:when test="${trans.status == 'SUCCESS'}">
-                                <span class="transaction-status status-success">Thành công</span>
-                            </c:when>
-                            <c:when test="${trans.status == 'PENDING'}">
-                                <span class="transaction-status status-pending">Đang xử lý</span>
-                            </c:when>
-                            <c:otherwise>
-                                <span class="transaction-status status-failed">Thất bại</span>
-                            </c:otherwise>
-                        </c:choose>
-                    </div>
-<%--
-                    <div class="transaction-details">
-&lt;%&ndash;
-                        <h4>${trans.message}</h4>
-&ndash;%&gt;
-                        <div class="transaction-date">
-
-                        </div>
-                    </div>--%>
+                        <button type="submit" class="submit-btn">
+                            Tiếp Tục Thanh Toán →
+                        </button>
+                    </form>
                 </div>
-            </c:forEach>
-
+            </div>
         </div>
-        <!-- Pagination -->
-        <c:if test="${totalPages > 1}">
-            <nav aria-label="Page navigation" class="mt-4">
-                <ul class="pagination justify-content-center">
+        <div class="col-lg-8 col-md-7">
+            <!-- Transaction History -->
+            <div class="transaction-section">
+                <div class="section-header">
+                    <h2>Giao Dịch Gần Đây</h2>
+                    <div class="filter-group">
+                        <button class="filter-btn active" onclick="filterTransactions('all')">Tất cả</button>
+                        <button class="filter-btn" onclick="filterTransactions('deposit')">Nạp tiền</button>
+                        <button class="filter-btn" onclick="filterTransactions('purchase')">Mua hàng</button>
+                    </div>
+                </div>
 
-                    <!-- Nút Previous -->
-                    <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-                        <a class="page-link" href="ewallet?page=${currentPage - 1}" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
+                <div class="transaction-list">
 
-                    <!-- Các nút số trang -->
-                    <c:forEach begin="1" end="${totalPages}" var="i">
-                        <li class="page-item ${currentPage == i ? 'active' : ''}">
-                            <a class="page-link" href="ewallet?page=${i}">${i}</a>
-                        </li>
+                    <!-- Kiểm tra nếu list rỗng -->
+                    <c:if test="${empty transactionList}">
+                        <div class="empty-state">
+                            <div class="icon">📭</div>
+                            <p>Chưa có giao dịch nào.</p>
+                        </div>
+                    </c:if>
+
+                    <!-- Vòng lặp duyệt danh sách -->
+                    <c:forEach var="trans" items="${transactionList}">
+
+                        <!-- Logic xác định loại giao dịch để hiển thị màu sắc/icon -->
+                        <c:set var="isDeposit" value="${trans.type == 'DEPOSIT'}"/>
+                        <c:set var="iconClass" value="${isDeposit ? 'deposit' : 'purchase'}"/>
+                        <c:set var="iconSymbol" value="${isDeposit ? '⬇️' : '🛒'}"/>
+                        <c:set var="amountSign" value="${isDeposit ? '+' : '-'}"/>
+                        <c:set var="amountClass" value="${isDeposit ? 'positive' : 'negative'}"/>
+
+                        <!-- data-type dùng cho bộ lọc JS (deposit/purchase) -->
+                        <div class="transaction-item" data-type="${isDeposit ? 'deposit' : 'purchase'}">
+                            <div class="transaction-info">
+                                <div class="transaction-icon ${iconClass}">
+                                        ${iconSymbol}
+                                </div>
+                                <div class="transaction-details">
+                                    <h4>${trans.message}</h4>
+                                    <div class="transaction-date">
+                                        <!-- Format ngày tháng -->
+                                        <fmt:formatDate value="${trans.createdAt}" pattern="dd/MM/yyyy HH:mm"/>
+                                        <a href="transaction-detail?id=${trans.transactionId}" style="color: #059669; text-decoration: underline; font-weight: bold;">
+                                            Xem chi tiết
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="transaction-amount">
+                                <div class="amount-value ${amountClass}">
+                                        ${amountSign}
+                                    <fmt:formatNumber value="${trans.amount}" type="currency" currencySymbol="₫"/>
+                                </div>
+
+                                <!-- Hiển thị trạng thái (Badge) -->
+                                <c:choose>
+                                    <c:when test="${trans.status == 'SUCCESS'}">
+                                        <span class="transaction-status status-success">Thành công</span>
+                                    </c:when>
+                                    <c:when test="${trans.status == 'PENDING'}">
+                                        <span class="transaction-status status-pending">Đang xử lý</span>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="transaction-status status-failed">Thất bại</span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                                <%--
+                                                    <div class="transaction-details">
+                                &lt;%&ndash;
+                                                        <h4>${trans.message}</h4>
+                                &ndash;%&gt;
+                                                        <div class="transaction-date">
+
+                                                        </div>
+                                                    </div>--%>
+                        </div>
                     </c:forEach>
 
-                    <!-- Nút Next -->
-                    <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                        <a class="page-link" href="ewallet?page=${currentPage + 1}" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </c:if>
+                </div>
+                <!-- Pagination -->
+                <c:if test="${totalPages > 1}">
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center">
+
+                            <!-- Nút Previous -->
+                            <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                                <a class="page-link" href="ewallet?page=${currentPage - 1}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+
+                            <!-- Các nút số trang -->
+                            <c:forEach begin="1" end="${totalPages}" var="i">
+                                <li class="page-item ${currentPage == i ? 'active' : ''}">
+                                    <a class="page-link" href="ewallet?page=${i}">${i}</a>
+                                </li>
+                            </c:forEach>
+
+                            <!-- Nút Next -->
+                            <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                <a class="page-link" href="ewallet?page=${currentPage + 1}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </c:if>
+            </div>
+        </div>
     </div>
+
+
 </div>
 
 <!-- Transaction Detail Modal -->
@@ -692,13 +699,13 @@
                 <h5 class="modal-title">Chi Tiết Giao Dịch</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" id="modal-content-placeholder">
+            <%--<div class="modal-body" id="modal-content-placeholder">
                 <!-- Nội dung sẽ được AJAX load vào đây -->
                 <div class="text-center">
                     <div class="spinner-border text-success" role="status"></div>
                     <p>Đang tải dữ liệu...</p>
                 </div>
-            </div>
+            </div>--%>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
             </div>
