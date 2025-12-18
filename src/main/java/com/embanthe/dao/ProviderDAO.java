@@ -85,7 +85,7 @@ public class ProviderDAO {
     // Lấy provider theo ID
     public Providers getById(int id) {
         String sql = "SELECT * FROM providers WHERE provider_id = ?";
-        try (Connection con = DBContext. getInstance().getConnection();
+        try (Connection con = DBContext.getInstance().getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -94,6 +94,7 @@ public class ProviderDAO {
                     p.setProviderId(rs.getInt("provider_id"));
                     p.setProviderName(rs.getString("provider_name"));
                     p.setLogoUrl(rs.getString("logo_url"));
+                    p.setStatus(rs.getInt("status"));
                     return p;
                 }
             }
@@ -119,13 +120,13 @@ public class ProviderDAO {
 
     // Cập nhật provider
     public void update(Providers p) {
-        String sql = "UPDATE providers SET provider_name = ?, logo_url = ? WHERE provider_id = ?";
+        String sql = "UPDATE providers SET provider_name = ?, logo_url = ?, status = ? WHERE provider_id = ?";
         try (Connection con = DBContext.getInstance().getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, p.getProviderName());
             ps.setString(2, p.getLogoUrl());
-            ps.setInt(3, p.getProviderId());
-            ps.setInt(4, p.getStatus());
+            ps.setInt(3, p.getStatus());
+            ps.setInt(4, p.getProviderId());
             ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();

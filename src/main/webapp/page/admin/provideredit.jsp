@@ -40,18 +40,20 @@
     <h2>Cập nhật nhà cung cấp <span class="id-badge">#<c:out value="${provider.providerId}"/></span></h2>
 
     <c:if test="${not empty sessionScope.message}">
-        <div class="alert alert-${sessionScope.messageType == 'success' ? 'success' : 'danger'}" role="alert" style="margin-bottom:16px;">
-    <h2>Cập nhật nhà cung cấp</h2>
+        <div class="alert alert-${sessionScope.messageType}" 
+                 style="padding: 10px; margin-bottom: 16px; border-radius: 6px; 
+                        background-color: ${sessionScope.messageType == 'success' ? '#dcfce7' : '#fee2e2'}; 
+                        color: ${sessionScope.messageType == 'success' ? '#166534' : '#991b1b'}; 
+                        border: 1px solid ${sessionScope.messageType == 'success' ? '#86efac' : '#fecaca'};">
+                <c:out value="${sessionScope.message}"/>
+            </div>
+            <c:remove var="message" scope="session"/>
+            <c:remove var="messageType" scope="session"/>
+        </c:if>
 
-    <c:if test="${not empty sessionScope.message}">
-        <div class="err-msg" style="margin-bottom:16px;">
-            <c:out value="${sessionScope.message}"/>
-        </div>
-        <c:remove var="message" scope="session"/>
-        <c:remove var="messageType" scope="session"/>
-    </c:if>
+    <form method="post" action="${pageContext.request.contextPath}/admin/providers/edit">
+        <input type="hidden" name="providerId" value="${provider.providerId}" />
 
-    <form action="${pageContext.request.contextPath}/admin/providers/edit?id=${provider.providerId}" method="post">
         <label>Tên nhà cung cấp *</label>
         <input type="text" name="providerName"
                value="${not empty inputProviderName ? inputProviderName : provider.providerName}" required />
@@ -67,19 +69,9 @@
         <c:if test="${not empty validateErrors['logoUrl']}">
             <div class="err-msg"><c:out value="${validateErrors['logoUrl']}"/></div>
         </c:if>
-    <form method="post" action="${pageContext.request.contextPath}/admin/providers/edit">
-        <input type="hidden" name="providerId" value="${provider.providerId}" />
-
-        <label>Tên nhà cung cấp *</label>
-        <input type="text" name="providerName" value="${provider.providerName}" required />
-
-        <label>Logo URL</label>
-        <input type="text" name="logoUrl" value="${provider.logoUrl}"
-               placeholder="/assetAdmin/assets/images/providers/logo.png" />
-        <div class="small-note">Bạn có thể nhập đường dẫn tương đối (ví dụ: /assetAdmin/assets/images/xxx.png) hoặc URL đầy đủ.</div>
 
         <label>Trạng thái</label>
-        <select class="form-control" name="status" required>
+        <select name="status" required>
             <option value="1" ${provider.status == 1 ? 'selected' : ''}>Đang hoạt động</option>
             <option value="0" ${provider.status == 0 ? 'selected' : ''}>Ngừng hoạt động</option>
         </select>
@@ -89,7 +81,6 @@
 
             <div style="display:flex; gap:8px;">
                 <button type="reset" class="btn-reset">Reset</button>
-                <button type="submit">Lưu thay đổi</button>
                 <button type="submit">Cập nhật</button>
             </div>
         </div>
