@@ -133,7 +133,9 @@ public class UpdateProductServlet extends HttpServlet {
         product.setImageUrl(fileName);
 
         productDAO.update(product);
-
+        String uploadDir = request.getServletContext().getRealPath("/image");
+        System.out.println("[UPLOAD] realPath(/image) = " + uploadDir);
+        System.out.println("[UPLOAD] fileName = " + fileName);
         response.sendRedirect(request.getContextPath() + "/admin/products");
     }
 }

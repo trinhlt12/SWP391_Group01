@@ -18,6 +18,14 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assetAdmin/assets/stylesheets/theme-dark.min.css" data-skin="dark">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assetAdmin/assets/stylesheets/custom.css">
 
+    <style>
+        /* Responsive filter: khi thu nhỏ màn hình sẽ tự xuống dòng để không bị cắt chữ ( ... ) */
+        .product-filter .custom-select,
+        .product-filter .form-control {
+            width: 100%;
+        }
+    </style>
+
     <script>
         var skin = localStorage.getItem('skin') || 'default';
         var disabledSkinStylesheet = document.querySelector('link[data-skin]:not([data-skin="' + skin + '"])');
@@ -137,9 +145,9 @@
                                 <!-- Filter Section -->
                                 <div class="row mb-3">
                                     <div class="col-12">
-                                        <form action="${pageContext.request.contextPath}/admin/products" method="get">
+                                        <form action="${pageContext.request.contextPath}/admin/products" method="get" class="product-filter">
                                             <div class="form-row">
-                                                <div class="col-md-3 mb-3">
+                                                <div class="col-12 col-md-3 mb-3">
                                                     <div class="input-group input-group-alt">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text"><span class="oi oi-magnifying-glass"></span></span>
@@ -150,7 +158,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-2 mb-3">
+                                                <div class="col-12 col-md-3 mb-3">
                                                     <select class="custom-select" name="categoryId">
                                                         <option value="">-- Tất cả loại thẻ --</option>
                                                         <c:forEach var="c" items="${categories}">
@@ -159,7 +167,7 @@
                                                     </select>
                                                 </div>
 
-                                                <div class="col-md-2 mb-3">
+                                                <div class="col-12 col-md-3 mb-3">
                                                     <select class="custom-select" name="providerId">
                                                         <option value="">-- Tất cả nhà mạng --</option>
                                                         <c:forEach var="p" items="${providers}">
@@ -168,7 +176,7 @@
                                                     </select>
                                                 </div>
 
-                                                <div class="col-md-2 mb-3">
+                                                <div class="col-12 col-md-2 mb-3">
                                                     <select class="custom-select" name="sort">
                                                         <option value="">Sắp xếp</option>
                                                         <option value="price_asc" ${sort == 'price_asc' ? 'selected' : ''}>Giá tăng dần</option>
@@ -176,19 +184,19 @@
                                                     </select>
                                                 </div>
 
-                                                <div class="col-md-2 mb-3">
+                                                <div class="col-12 col-md-1 mb-3">
+                                                    <button type="submit" class="btn btn-secondary w-100" title="Lọc">
+                                                        <i class="fas fa-filter"></i>
+                                                    </button>
+                                                </div>
+
+                                                <div class="col-12 col-md-2 mb-3">
                                                     <select class="custom-select" name="pageSize">
                                                         <option value="5" ${pageSize == 5 ? 'selected' : ''}>5/trang</option>
                                                         <option value="10" ${pageSize == 10 ? 'selected' : ''}>10/trang</option>
                                                         <option value="25" ${pageSize == 25 ? 'selected' : ''}>25/trang</option>
                                                         <option value="50" ${pageSize == 50 ? 'selected' : ''}>50/trang</option>
                                                     </select>
-                                                </div>
-
-                                                <div class="col-md-1 mb-3">
-                                                    <button type="submit" class="btn btn-secondary w-100" title="Lọc">
-                                                        <i class="fas fa-filter"></i>
-                                                    </button>
                                                 </div>
                                             </div>
                                         </form>

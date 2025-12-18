@@ -19,7 +19,7 @@ public class ProviderListServlet extends HttpServlet {
         String pageStr = request.getParameter("page");
         String statusStr = request.getParameter("status");
 
-        int page = 1, pageSize = 5;
+        int page = 1, pageSize = 5  ;
         Integer status = null;
         try { if (pageStr != null) page = Integer.parseInt(pageStr); } catch (Exception ignored) {}
         if (page < 1) page = 1;
