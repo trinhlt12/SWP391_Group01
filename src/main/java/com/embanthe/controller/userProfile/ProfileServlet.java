@@ -53,13 +53,20 @@ public class ProfileServlet extends HttpServlet {
         String email = request.getParameter("email");
 
         if (fullName == null || fullName.trim().isEmpty()
-                || phone == null || phone.trim().isEmpty()
+//                || phone == null || phone.trim().isEmpty()
                 || email == null || email.trim().isEmpty()) {
             request.setAttribute("error", "Các trường không được để trống!");
             request.getRequestDispatcher("page/userProfile/userProfile.jsp").forward(request, response);
             return;
         }
-
+        if (phone != null) {
+            phone = phone.trim();
+        }
+        if (phone != null && !phone.isEmpty() && !isValidVietnamPhone(phone)) {
+            request.setAttribute("error", "Số điện thoại không hợp lệ! Vui lòng nhập số Việt Nam bắt đầu bằng 0 và có 10 chữ số.");
+            request.getRequestDispatcher("page/userProfile/userProfile.jsp").forward(request, response);
+            return;
+        }
         try {
             UserDAO userDAO = new UserDAO();
             AuthDAO authDAO = new AuthDAO();
@@ -84,12 +91,7 @@ public class ProfileServlet extends HttpServlet {
                 return;
             }
 
-            // Kiểm tra định dạng số điện thoại Việt Nam
-            if (!isValidVietnamPhone(phone)) {
-                request.setAttribute("error", "Số điện thoại không hợp lệ! Vui lòng nhập số Việt Nam (0xxxxxxxxx).");
-                request.getRequestDispatcher("page/userProfile/userProfile.jsp").forward(request, response);
-                return;
-            }
+
             if (!testUsingStrictRegex(email)) {
                 request.setAttribute("error", "Email không hợp lệ!");
                 request.getRequestDispatcher("page/userProfile/userProfile.jsp").forward(request, response);
@@ -97,8 +99,9 @@ public class ProfileServlet extends HttpServlet {
             }
 
             // Kiểm tra trùng phone
-            if (!phone.equals(user.getPhone()) && authDAO.isPhoneExists(phone)) {
-                request.setAttribute("error", "Số điện thoại đã tồn tại!");
+            if (phone != null && !phone.isEmpty()
+                    && !phone.equals(user.getPhone()) && authDAO.isPhoneExists(phone)) {
+                request.setAttribute("error", "Số điện thoại đã được sử dụng bởi tài khoản khác!");
                 request.getRequestDispatcher("page/userProfile/userProfile.jsp").forward(request, response);
                 return;
             }
@@ -112,7 +115,11 @@ public class ProfileServlet extends HttpServlet {
 
             // Cập nhật thông tin
             user.setFullName(fullName);
-            user.setPhone(phone);
+            if (phone == null || phone.isEmpty()) {
+                user.setPhone(null);
+            } else {
+                user.setPhone(phone);
+            }
             user.setEmail(email);
             boolean updated = userDAO.updateUserProfile(user);
             if (updated) {

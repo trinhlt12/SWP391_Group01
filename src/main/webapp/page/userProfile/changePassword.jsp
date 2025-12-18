@@ -115,7 +115,7 @@
                     <ul class="flex items-center space-x-2 text-base ">
                         <li><a href="home" class="active">Home</a></li>
                         <li class="flex items-center"><span class=" text-[#000000]">&gt;</span><span
-                                class="text-[#000000] font-medium">Tài khoản</span></li>
+                                class="text-[#000000] font-medium">Đổi Mật Khẩu</span></li>
                     </ul>
                 </nav>
                 <div class="card border-0 shadow-sm">
@@ -129,7 +129,7 @@
                                             Tin Cá Nhân</a>
                                         <a class="nav-link active" href="changePassword"><i
                                                 class="fas fa-lock me-2"></i>Đổi Mật Khẩu</a>
-                                        <a class="nav-link" href="discounts"><i class="fas fa-credit-card me-2"></i>Billing</a>
+                                        <a class="nav-link" href="listSupport"><i class="fas fa-credit-card me-2"></i>Support</a>
                                         <a class="nav-link" href="#"><i class="fas fa-chart-line me-2"></i>Activity</a>
                                     </div>
                                 </div>

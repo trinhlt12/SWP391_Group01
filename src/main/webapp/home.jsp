@@ -60,7 +60,7 @@
                     <li><a href="${pageContext.request.contextPath}/ewallet">Ewallet</a></li>
                     <li><a href="#portfolio">Thống Kê</a></li>
                     <li><a href="#team">Link Thanh Toán</a></li>
-                    <li><a href="#policy">Chính Sách</a></li>
+                    <li><a href="sendSupport">Hỗ Trợ</a></li>
                     <li class="dropdown">
                         <img src="image/icons8-user-male-16.png" alt="User Icon"
                              style="width:20px; height:20px; margin-right:5px;">

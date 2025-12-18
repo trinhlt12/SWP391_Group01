@@ -10,7 +10,7 @@ import com.embanthe.constant.Iconstant;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class GoogleLoginController {
+public class GoogleController {
     public static String getToken(String code) throws ClientProtocolException, IOException {
     String response = Request.Post(Iconstant.GOOGLE_LINK_GET_TOKEN)
             .bodyForm(
@@ -23,7 +23,6 @@ public class GoogleLoginController {
                             .build()
             )
             .execute().returnContent().asString();
-
     JsonObject jobj = new Gson().fromJson(response, JsonObject.class);
     String accessToken = jobj.get("access_token").toString().replaceAll("\"", "");
     return accessToken;

@@ -45,7 +45,7 @@ public class NewPasswordServlet extends HttpServlet {
             request.getRequestDispatcher("page/system/newPassword.jsp").forward(request, response);
 
         } else if (!isValidPassword(newPassword)) {
-            request.setAttribute("message", "Password không hợp lệ. Yêu cầu ít nhất 8 ký tự, có chữ hoa, số và ký tự đặc biệt");
+            request.setAttribute("message", "Password không hợp lệ. Yêu cầu 8-20 ký tự, có chữ hoa, số và ký tự đặc biệt");
             request.getRequestDispatcher("page/system/newPassword.jsp").forward(request, response);
 
         } else {
@@ -79,7 +79,7 @@ public class NewPasswordServlet extends HttpServlet {
         }
     }
     private boolean isValidPassword(String password) {
-        String regex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+        String regex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,20}$";
         return password != null && password.matches(regex);
     }
 

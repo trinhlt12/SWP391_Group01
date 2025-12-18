@@ -39,8 +39,8 @@ public class LoginServlet extends HttpServlet {
 
         try {
             // B1: Lấy access token + thông tin từ Google
-            String accessToken = GoogleLoginController.getToken(code);
-            Users googleUser  = GoogleLoginController.getUserInfo(accessToken);
+            String accessToken = GoogleController.getToken(code);
+            Users googleUser  = GoogleController.getUserInfo(accessToken);
             UserDAO userDAO = new UserDAO();
             Users existingUser = userDAO.getUserByEmail(googleUser.getEmail());
 
