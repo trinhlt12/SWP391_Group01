@@ -12,7 +12,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Flexy Free Bootstrap Admin Template by WrapPixel</title>
+    <title>Em Ban The</title>
     <link rel="shortcut icon" type="image/png" href="${pageContext.request.contextPath}/assets/images/logos/favicon.png" />
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/styles.min.css" />
     <base href="${pageContext.request.contextPath}/">
@@ -23,32 +23,29 @@
 <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
      data-sidebar-position="fixed" data-header-position="fixed">
 
-    <!--  App Topstrip -->
-    <div class="app-topstrip bg-dark py-6 px-3 w-100 d-lg-flex align-items-center justify-content-between">
-        <div class="d-flex align-items-center justify-content-center gap-5 mb-2 mb-lg-0">
-            <a class="d-flex justify-content-center" href="#">
-                <img src="assets/images/logos/logo-wrappixel.svg" alt="" width="150">
-            </a>
+    <!--  App Topstrip --><div class="app-topstrip bg-dark py-6 px-3 w-100 d-lg-flex align-items-center justify-content-between">
 
+    <div class="d-flex align-items-center justify-content-center gap-5 mb-2 mb-lg-0">
+        <a class="d-flex align-items-center text-decoration-none" href="${pageContext.request.contextPath}/admin">
+            <span style="
+                font-size: 24px;
+                font-weight: 800;
+                color: #ffc107;
+                text-transform: uppercase;
+                letter-spacing: 1px;">
+                EMBANTHE
+            </span>
+        </a>
+    </div>
 
-        </div>
-
-        <div class="d-lg-flex align-items-center gap-2">
-            <h3 class="text-white mb-2 mb-lg-0 fs-5 text-center">Check Flexy Premium Version</h3>
-            <div class="d-flex align-items-center justify-content-center gap-2">
-
-                <div class="dropdown d-flex">
-                    <a class="btn btn-primary d-flex align-items-center gap-1 " href="javascript:void(0)" id="drop4"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="ti ti-shopping-cart fs-5"></i>
-                        Buy Now
-                        <i class="ti ti-chevron-down fs-5"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
+    <div class="d-lg-flex align-items-center gap-2">
+        <h3 class="text-white mb-2 mb-lg-0 fs-4 text-center" style="opacity: 0.8;">
+            Admin Dashboard
+        </h3>
 
     </div>
+
+</div>
     <!-- Sidebar Start -->
     <aside class="left-sidebar">
         <!-- Sidebar scroll-->
@@ -69,9 +66,12 @@
                         <span class="hide-menu">Home</span>
                     </li>
                     <li class="sidebar-item">
-                        <a class="sidebar-link" href="../index.html" aria-expanded="false">
+                        <a class="sidebar-link" href="${pageContext.request.contextPath}/admin/products" aria-expanded="false">
                             <i class="ti ti-atom"></i>
-                            <span class="hide-menu">Dashboard</span>
+                            <span class="hide-menu">Manage Product</span>
+                        <a class="sidebar-link" href="${pageContext.request.contextPath}/admin/user-list" aria-expanded="false">
+                            <i class="ti ti-atom"></i>
+                            <span class="hide-menu">User</span>
                         </a>
                     </li>
                     <!-- ---------------------------------- -->
@@ -1849,10 +1849,10 @@
                     <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
 
                         <li class="nav-item dropdown">
-                            <a class="nav-link " href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
-                               aria-expanded="false">
-                                <img src="../../assets/images/profile/user-1.jpg" alt="" width="35" height="35" class="rounded-circle">
-                            </a>
+<%--                            <a class="nav-link " href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"--%>
+<%--                               aria-expanded="false">--%>
+<%--                                <img src="../../assets/images/profile/user-1.jpg" alt="" width="35" height="35" class="rounded-circle">--%>
+<%--                            </a>--%>
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
                                 <div class="message-body">
                                     <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
@@ -2357,7 +2357,7 @@
                 </div>
                 <div class="py-6 px-6 text-center">
                     <p class="mb-0 fs-4">Design and Developed by <a href="#"
-                                                                    class="pe-1 text-primary text-decoration-underline">Wrappixel.com</a> Distributed by <a href="https://themewagon.com" target="_blank" >ThemeWagon</a></p>
+                                                                    class="pe-1 text-primary text-decoration-underline">Group 1</a> Distributed by <a href="https://themewagon.com" target="_blank" >ThemeWagon</a></p>
                 </div>
             </div>
         </div>

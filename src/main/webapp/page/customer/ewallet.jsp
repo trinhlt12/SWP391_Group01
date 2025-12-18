@@ -396,13 +396,19 @@
         }
 
         .transaction-amount {
-            text-align: right;
+            display: flex;              /* Quan trọng: Để Tiền và Badge nằm ngang */
+            flex-direction: row;        /* Xếp theo hàng ngang */
+            align-items: end;
+            justify-content: flex-end;  /* Đẩy hết sang bên phải */
+            gap: 15px;                  /* Khoảng cách giữa Số tiền và Badge */
+            min-width: 200px;           /* Đảm bảo đủ rộng để không bị xuống dòng */
         }
 
         .amount-value {
             font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 5px;
+            font-weight: 700;
+            margin-bottom: 0 !important;
+            white-space: nowrap;
         }
 
         .amount-value.positive {
@@ -414,10 +420,12 @@
         }
 
         .transaction-status {
-            padding: 5px 12px;
+            padding: 6px 12px;
             border-radius: 20px;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: 600;
+            white-space: nowrap;         /* Không cho badge bị xuống dòng */
+            height: fit-content;
         }
 
         .status-success {
@@ -503,11 +511,6 @@
         <a href="javascript:void(0)" class="action-btn" onclick="toggleDepositForm()">
             <div class="icon">💰</div>
             <div class="label">Nạp Tiền</div>
-        </a>
-
-        <a href="<%= request.getContextPath() %>/history" class="action-btn">
-            <div class="icon">📊</div>
-            <div class="label">Lịch Sử</div>
         </a>
     </div>
     <!-- Deposit Form - Hidden by default -->
@@ -612,6 +615,9 @@
                             <div class="transaction-date">
                                 <!-- Format ngày tháng -->
                                 <fmt:formatDate value="${trans.createdAt}" pattern="dd/MM/yyyy HH:mm"/>
+                                <a href="transaction-detail?id=${trans.transactionId}" style="color: #059669; text-decoration: underline; font-weight: bold;">
+                                    Xem chi tiết
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -634,15 +640,95 @@
                             </c:otherwise>
                         </c:choose>
                     </div>
+<%--
+                    <div class="transaction-details">
+&lt;%&ndash;
+                        <h4>${trans.message}</h4>
+&ndash;%&gt;
+                        <div class="transaction-date">
+
+                        </div>
+                    </div>--%>
                 </div>
             </c:forEach>
 
         </div>
+        <!-- Pagination -->
+        <c:if test="${totalPages > 1}">
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+
+                    <!-- Nút Previous -->
+                    <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                        <a class="page-link" href="ewallet?page=${currentPage - 1}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+
+                    <!-- Các nút số trang -->
+                    <c:forEach begin="1" end="${totalPages}" var="i">
+                        <li class="page-item ${currentPage == i ? 'active' : ''}">
+                            <a class="page-link" href="ewallet?page=${i}">${i}</a>
+                        </li>
+                    </c:forEach>
+
+                    <!-- Nút Next -->
+                    <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                        <a class="page-link" href="ewallet?page=${currentPage + 1}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </c:if>
     </div>
 </div>
 
+<!-- Transaction Detail Modal -->
+<div class="modal fade" id="transactionDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chi Tiết Giao Dịch</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-content-placeholder">
+                <!-- Nội dung sẽ được AJAX load vào đây -->
+                <div class="text-center">
+                    <div class="spinner-border text-success" role="status"></div>
+                    <p>Đang tải dữ liệu...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
+
+    function viewTransactionDetail(transactionId) {
+        const modalElement = document.getElementById('transactionDetailModal');
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+
+        document.getElementById('modal-content-placeholder').innerHTML =
+            '<div class="text-center py-3"><div class="spinner-border text-success"></div></div>';
+
+        fetch('ewallet?mode=detail&id=' + transactionId)
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to load');
+                return response.text();
+            })
+            .then(html => {
+                document.getElementById('modal-content-placeholder').innerHTML = html;
+            })
+            .catch(error => {
+                document.getElementById('modal-content-placeholder').innerHTML =
+                    '<p class="text-danger text-center">Không thể tải thông tin giao dịch.</p>';
+            });
+    }
     // Filter transactions
     function filterTransactions(type) {
         const items = document.querySelectorAll('.transaction-item');
@@ -714,7 +800,6 @@
         input.value = value;
     }
 
-    // Validate amount before submit
     function validateAmount() {
         const input = document.getElementById('amount');
         const value = parseInt(input.value.replace(/\D/g, ''));

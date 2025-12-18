@@ -25,7 +25,7 @@ public class Users {
   private java.sql.Timestamp createdAt;
 
 
-  public long getUserId() {
+  public int getUserId() {
     return userId;
   }
 

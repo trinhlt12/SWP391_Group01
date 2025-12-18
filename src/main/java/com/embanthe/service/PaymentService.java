@@ -46,43 +46,6 @@ public class PaymentService {
         return VNPayConfig.vnp_PayUrl + "?" + queryUrl;
     }
 
-    public int processPaymentReturn(Map<String, String[]> requestParams) {
-        try {
-            Map<String, String> fields = new HashMap<>();
-            for (Map.Entry<String, String[]> entry : requestParams.entrySet()) {
-                String fieldName = URLEncoder.encode(entry.getKey(), StandardCharsets.US_ASCII.toString());
-                String fieldValue = URLEncoder.encode(entry.getValue()[0], StandardCharsets.US_ASCII.toString());
-                if ((fieldValue != null) && (fieldValue.length() > 0)) {
-                    fields.put(fieldName, fieldValue);
-                }
-            }
-
-            String vnp_SecureHash = fields.get("vnp_SecureHash");
-            if (fields.containsKey("vnp_SecureHashType")) {
-                fields.remove("vnp_SecureHashType");
-            }
-            fields.remove("vnp_SecureHash");
-
-            String signValue = VNPayUtils.hashAllFields(fields, VNPayConfig.vnp_HashSecret);
-
-            if (signValue.equals(vnp_SecureHash)) {
-                String vnp_ResponseCode = fields.get("vnp_ResponseCode");
-                String transactionId = fields.get("vnp_TxnRef");
-
-                if ("00".equals(vnp_ResponseCode)) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            } else {
-                return -1;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
     public int verifyPaymentUrl(Map<String, String[]> requestParams) {
         try {
             Map<String, String> fields = new HashMap<>();
