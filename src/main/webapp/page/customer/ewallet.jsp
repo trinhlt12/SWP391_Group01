@@ -46,6 +46,7 @@
 
         /* Header Section */
         .page-header {
+            margin-top: 60px;
             text-align: center;
             margin-bottom: 30px;
         }
@@ -493,8 +494,7 @@
     <jsp:include page="/header.jsp"/>
     <!-- Page Header -->
     <div class="page-header">
-        <h1>💳 Ví Điện Tử</h1>
-        <p>Quản lý tài chính của bạn một cách dễ dàng</p>
+        <h1>💳 Em Bán Thẻ E-Wallet</h1>
     </div>
 
     <div class="row">
