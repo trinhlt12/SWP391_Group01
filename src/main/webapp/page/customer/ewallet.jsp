@@ -515,6 +515,10 @@
                     <div class="icon">💰</div>
                     <div class="label">Nạp Tiền</div>
                 </a>
+                <a href="${pageContext.request.contextPath}/purchased-cards" class="action-btn" style="border-color: #3b82f6; color: #2563eb;">
+                    <div class="icon">📦</div>
+                    <div class="label">Thẻ Đã Mua</div>
+                </a>
             </div>
             <!-- Deposit Form - Hidden by default -->
             <div class="deposit-form-container" id="depositFormContainer">

@@ -304,4 +304,43 @@ public class CardItemDAO {
             ps.executeUpdate();
         }
     }
+
+    public List<CardItems> getPurchasedCardsByUserId(int userId) {
+        List<CardItems> list = new ArrayList<>();
+        // Join 3 bảng để lấy đầy đủ thông tin
+        String sql = "SELECT c.card_item_id, c.serial_number, c.card_code, c.created_at, c.expiration_date, " +
+                "p.product_name, p.price, c.order_id " +
+                "FROM card_items c " +
+                "JOIN orders o ON c.order_id = o.order_id " +
+                "JOIN products p ON c.product_id = p.product_id " +
+                "WHERE o.user_id = ? AND c.status = 'SOLD' " +
+                "ORDER BY c.created_at DESC";
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    CardItems c = new CardItems();
+                    c.setCardItemId(rs.getInt("card_item_id"));
+                    c.setSerialNumber(rs.getString("serial_number"));
+                    c.setCardCode(rs.getString("card_code"));
+                    c.setCreatedAt(rs.getTimestamp("created_at"));
+                    c.setExpirationDate(rs.getDate("expiration_date"));
+                    c.setOrderId(rs.getInt("order_id"));
+
+                    // Set các trường bổ sung
+                    c.setProductName(rs.getString("product_name"));
+                    c.setPrice(rs.getDouble("price"));
+
+                    list.add(c);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

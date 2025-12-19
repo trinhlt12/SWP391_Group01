@@ -86,11 +86,6 @@
                 <input type="hidden" name="productId" value="${product.productId}">
                 <input type="hidden" name="quantity" value="${quantity}">
 
-                <div class="mb-3">
-                    <label class="mb-2 fw-bold">Mật khẩu giao dịch (Tạm thời bỏ trống)</label>
-                    <input type="password" name="transactionPassword" class="payment-input" placeholder="Nhập mật khẩu xác thực...">
-                </div>
-
                 <button type="submit" class="btn-confirm">
                     Thanh toán
                 </button>
