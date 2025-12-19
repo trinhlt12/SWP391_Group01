@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.text.NumberFormat" %>
 <%@ page import="java.util.Locale" %>
@@ -509,174 +511,46 @@
 
             <!-- Phone Cards Grid -->
             <div class="product-grid" id="phoneProducts">
-                <!-- Viettel Cards -->
-                <div class="product-card" data-provider="viettel" onclick="selectProduct('Thẻ Viettel 10.000đ', 10000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #e30613;">📞</div>
-                    <div class="product-name">Viettel</div>
-                    <div class="product-value">10.000₫</div>
-                    <div class="product-price">10.000₫</div>
-                </div>
+                <c:forEach var="p" items="${phoneCards}">
+                    <div class="product-card"
+                         data-provider="${p.providerName.toLowerCase()}"
+                         onclick="selectProduct('${p.productId}','${p.productName}', ${p.price})">
 
-                <div class="product-card" data-provider="viettel" onclick="selectProduct('Thẻ Viettel 20.000đ', 20000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #e30613;">📞</div>
-                    <div class="product-name">Viettel</div>
-                    <div class="product-value">20.000₫</div>
-                    <div class="product-price">20.000₫</div>
-                </div>
+                        <div class="selected-badge">✓</div>
 
-                <div class="product-card" data-provider="viettel" onclick="selectProduct('Thẻ Viettel 50.000đ', 50000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #e30613;">📞</div>
-                    <div class="product-name">Viettel</div>
-                    <div class="product-value">50.000₫</div>
-                    <div class="product-price">50.000₫</div>
-                </div>
+                        <div class="product-logo" style="color: #e30613;">
+                                ${p.providerName == 'Viettel' ? '📞' : '📱'}
+                        </div>
 
-                <div class="product-card" data-provider="viettel" onclick="selectProduct('Thẻ Viettel 100.000đ', 100000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #e30613;">📞</div>
-                    <div class="product-name">Viettel</div>
-                    <div class="product-value">100.000₫</div>
-                    <div class="product-price">100.000₫</div>
-                </div>
+                        <div class="product-name">${p.providerName}</div>
 
-                <!-- Mobifone Cards -->
-                <div class="product-card" data-provider="mobifone" onclick="selectProduct('Thẻ Mobifone 10.000đ', 10000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #1c4c9e;">📱</div>
-                    <div class="product-name">Mobifone</div>
-                    <div class="product-value">10.000₫</div>
-                    <div class="product-price">10.000₫</div>
-                </div>
-
-                <div class="product-card" data-provider="mobifone" onclick="selectProduct('Thẻ Mobifone 20.000đ', 20000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #1c4c9e;">📱</div>
-                    <div class="product-name">Mobifone</div>
-                    <div class="product-value">20.000₫</div>
-                    <div class="product-price">20.000₫</div>
-                </div>
-
-                <div class="product-card" data-provider="mobifone" onclick="selectProduct('Thẻ Mobifone 50.000đ', 50000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #1c4c9e;">📱</div>
-                    <div class="product-name">Mobifone</div>
-                    <div class="product-value">50.000₫</div>
-                    <div class="product-price">50.000₫</div>
-                </div>
-
-                <!-- Vinaphone Cards -->
-                <div class="product-card" data-provider="vinaphone" onclick="selectProduct('Thẻ Vinaphone 10.000đ', 10000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #8b1f8a;">📞</div>
-                    <div class="product-name">Vinaphone</div>
-                    <div class="product-value">10.000₫</div>
-                    <div class="product-price">10.000₫</div>
-                </div>
-
-                <div class="product-card" data-provider="vinaphone" onclick="selectProduct('Thẻ Vinaphone 20.000đ', 20000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #8b1f8a;">📞</div>
-                    <div class="product-name">Vinaphone</div>
-                    <div class="product-value">20.000₫</div>
-                    <div class="product-price">20.000₫</div>
-                </div>
-
-                <div class="product-card" data-provider="vinaphone" onclick="selectProduct('Thẻ Vinaphone 50.000đ', 50000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #8b1f8a;">📞</div>
-                    <div class="product-name">Vinaphone</div>
-                    <div class="product-value">50.000₫</div>
-                    <div class="product-price">50.000₫</div>
-                </div>
-
-                <!-- Vietnam Mobile Cards -->
-                <div class="product-card" data-provider="vietnammobile" onclick="selectProduct('Thẻ Vietnam Mobile 10.000đ', 10000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #d92228;">📱</div>
-                    <div class="product-name">Vietnam Mobile</div>
-                    <div class="product-value">10.000₫</div>
-                    <div class="product-price">10.000₫</div>
-                </div>
-
-                <div class="product-card" data-provider="vietnammobile" onclick="selectProduct('Thẻ Vietnam Mobile 20.000đ', 20000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #d92228;">📱</div>
-                    <div class="product-name">Vietnam Mobile</div>
-                    <div class="product-value">20.000₫</div>
-                    <div class="product-price">20.000₫</div>
-                </div>
-
-                <div class="product-card" data-provider="vietnammobile" onclick="selectProduct('Thẻ Vietnam Mobile 50.000đ', 50000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #d92228;">📱</div>
-                    <div class="product-name">Vietnam Mobile</div>
-                    <div class="product-value">50.000₫</div>
-                    <div class="product-price">50.000₫</div>
-                </div>
+                        <div class="product-value">
+                            <fmt:formatNumber value="${p.price}" pattern="#,###" currencySymbol=""/>đ
+                        </div>
+                    </div>
+                </c:forEach>
             </div>
 
             <!-- Game Cards Grid (Hidden by default) -->
             <div class="product-grid" id="gameProducts" style="display: none;">
-                <!-- Garena Cards -->
-                <div class="product-card" data-provider="garena" onclick="selectProduct('Thẻ Garena 20.000đ', 20000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #ff4500;">🎮</div>
-                    <div class="product-name">Garena</div>
-                    <div class="product-value">20.000₫</div>
-                    <div class="product-price">20.000₫</div>
-                </div>
+                <c:forEach var="p" items="${gameCards}">
+                    <div class="product-card"
+                         data-provider="${p.providerName.toLowerCase()}"
+                         onclick="selectProduct('${p.productId}','${p.productName}', ${p.price})">
 
-                <div class="product-card" data-provider="garena" onclick="selectProduct('Thẻ Garena 50.000đ', 50000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #ff4500;">🎮</div>
-                    <div class="product-name">Garena</div>
-                    <div class="product-value">50.000₫</div>
-                    <div class="product-price">50.000₫</div>
-                </div>
+                        <div class="selected-badge">✓</div>
 
-                <div class="product-card" data-provider="garena" onclick="selectProduct('Thẻ Garena 100.000đ', 100000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #ff4500;">🎮</div>
-                    <div class="product-name">Garena</div>
-                    <div class="product-value">100.000₫</div>
-                    <div class="product-price">100.000₫</div>
-                </div>
+                        <div class="product-logo" style="color: #e30613;">
+                                ${p.providerName == 'Garena' ? '📞' : '📱'}
+                        </div>
 
-                <div class="product-card" data-provider="garena" onclick="selectProduct('Thẻ Garena 200.000đ', 200000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #ff4500;">🎮</div>
-                    <div class="product-name">Garena</div>
-                    <div class="product-value">200.000₫</div>
-                    <div class="product-price">200.000₫</div>
-                </div>
+                        <div class="product-name">${p.providerName}</div>
 
-                <!-- Steam Cards -->
-                <div class="product-card" data-provider="steam" onclick="selectProduct('Thẻ Steam 100.000đ', 100000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #171a21;">🎯</div>
-                    <div class="product-name">Steam</div>
-                    <div class="product-value">100.000₫</div>
-                    <div class="product-price">100.000₫</div>
-                </div>
-
-                <div class="product-card" data-provider="steam" onclick="selectProduct('Thẻ Steam 200.000đ', 200000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #171a21;">🎯</div>
-                    <div class="product-name">Steam</div>
-                    <div class="product-value">200.000₫</div>
-                    <div class="product-price">200.000₫</div>
-                </div>
-
-                <div class="product-card" data-provider="steam" onclick="selectProduct('Thẻ Steam 500.000đ', 500000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #171a21;">🎯</div>
-                    <div class="product-name">Steam</div>
-                    <div class="product-value">500.000₫</div>
-                    <div class="product-price">500.000₫</div>
-                </div>
+                        <div class="product-value">
+                            <fmt:formatNumber value="${p.price}" pattern="#,###" currencySymbol=""/>đ
+                        </div>
+                    </div>
+                </c:forEach>
             </div>
         </main>
 
@@ -691,7 +565,9 @@
             </div>
 
             <!-- Order Form (hidden by default) -->
-            <form id="orderForm" style="display: none;" action="<%= request.getContextPath() %>/purchase" method="POST">
+            <form id="orderForm" style="display: none;" action="<%= request.getContextPath() %>/review-order" method="POST">
+
+                <input type="hidden" id="productId" name="productId">
 
                 <div class="form-group">
                     <label class="form-label">Tên sản phẩm</label>
@@ -702,7 +578,17 @@
                     <label class="form-label">Số lượng</label>
                     <div class="quantity-control">
                         <button type="button" class="quantity-btn" onclick="decreaseQuantity()">−</button>
-                        <input type="number" id="quantity" name="quantity" class="form-input quantity-input" value="1" min="1" max="100" readonly>
+                        <input
+                                type="number"
+                                id="quantity"
+                                name="quantity"
+                                class="form-input quantity-input"
+                                value="1"
+                                min="1"
+                                max="100"
+                                oninput="handleInputQuantity(this)"
+                                onblur="fixQuantity(this)"
+                        >
                         <button type="button" class="quantity-btn" onclick="increaseQuantity()">+</button>
                     </div>
                 </div>
@@ -785,6 +671,35 @@
         }
     }
 
+    function handleInputQuantity(element) {
+        let val = parseInt(element.value);
+
+        if (isNaN(val) || element.value === "") {
+            // Có thể set tạm total về 0 hoặc giữ nguyên
+            return;
+        }
+
+        if (val > 100) {
+            val = 100;
+            element.value = 100;
+        }
+
+        quantity = val;
+
+        updateTotal();
+    }
+    function fixQuantity(element) {
+        let val = parseInt(element.value);
+
+        if (isNaN(val) || val < 1) {
+            val = 1;
+            element.value = 1;
+        }
+
+        quantity = val;
+        updateTotal();
+    }
+
     // Filter by provider
     function filterProvider(category, provider) {
         event.stopPropagation(); // Prevent dropdown toggle
@@ -844,7 +759,7 @@
     }
 
     // Select product
-    function selectProduct(name, price) {
+    function selectProduct(id, name, price) {
         // Remove previous selection
         document.querySelectorAll('.product-card').forEach(card => {
             card.classList.remove('selected');
@@ -859,6 +774,7 @@
         quantity = 1;
 
         // Update form
+        document.getElementById('productId').value = id;
         document.getElementById('productName').value = name;
         document.getElementById('quantity').value = quantity;
         document.getElementById('unitPrice').value = price;

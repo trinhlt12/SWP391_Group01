@@ -52,12 +52,10 @@ public class GoogleConfirmServlet extends HttpServlet {
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
             session.setAttribute("email", user.getEmail());
+            session.setAttribute("username", user.getUsername());
             session.setAttribute("googleConfirmed", true);
-            if ("ADMIN".equalsIgnoreCase(user.getRole())) {
-                response.sendRedirect(request.getContextPath() + "/admin");
-            } else {
-                response.sendRedirect(request.getContextPath() + "/index.jsp");
-            }
+            response.sendRedirect(request.getContextPath() + "/index.jsp");
+
         } else {
             request.setAttribute("message", "Không tìm thấy user Google!");
             request.getRequestDispatcher("page/system/googlePassword.jsp").forward(request, response);

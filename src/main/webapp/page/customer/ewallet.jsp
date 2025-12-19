@@ -511,10 +511,15 @@
 
             <!-- Quick Actions -->
             <div class="quick-actions">
+                <a href="${pageContext.request.contextPath}/purchased-cards" class="action-btn" style="border-color: #4ca94e; color: #0f5132;">
+                    <div class="icon">📦</div>
+                    <div class="label">Thẻ Đã Mua</div>
+                </a>
                 <a href="javascript:void(0)" class="action-btn" onclick="toggleDepositForm()">
                     <div class="icon">💰</div>
                     <div class="label">Nạp Tiền</div>
                 </a>
+
             </div>
             <!-- Deposit Form - Hidden by default -->
             <div class="deposit-form-container" id="depositFormContainer">
@@ -593,7 +598,6 @@
                         <c:set var="isDeposit" value="${trans.type == 'DEPOSIT'}"/>
                         <c:set var="iconClass" value="${isDeposit ? 'deposit' : 'purchase'}"/>
                         <c:set var="iconSymbol" value="${isDeposit ? '⬇️' : '🛒'}"/>
-                        <c:set var="amountSign" value="${isDeposit ? '+' : '-'}"/>
                         <c:set var="amountClass" value="${isDeposit ? 'positive' : 'negative'}"/>
 
                         <!-- data-type dùng cho bộ lọc JS (deposit/purchase) -->
@@ -616,7 +620,12 @@
                             </div>
                             <div class="transaction-amount">
                                 <div class="amount-value ${amountClass}">
-                                        ${amountSign}
+                                        <%-- Nếu là nạp tiền (số dương) thì thêm dấu cộng thủ công --%>
+                                    <c:if test="${isDeposit}">+</c:if>
+
+                                        <%-- Hiển thị số tiền.
+                                             Nếu là mua hàng, trans.amount là âm (-10000) nên fmt sẽ tự hiển thị dấu trừ
+                                        --%>
                                     <fmt:formatNumber value="${trans.amount}" type="currency" currencySymbol="₫"/>
                                 </div>
 
@@ -633,15 +642,6 @@
                                     </c:otherwise>
                                 </c:choose>
                             </div>
-                                <%--
-                                                    <div class="transaction-details">
-                                &lt;%&ndash;
-                                                        <h4>${trans.message}</h4>
-                                &ndash;%&gt;
-                                                        <div class="transaction-date">
-
-                                                        </div>
-                                                    </div>--%>
                         </div>
                     </c:forEach>
 
@@ -802,7 +802,7 @@
 
     function clearError() {
         const errorAlert = document.getElementById('error-alert');
-        if(errorAlert){
+        if (errorAlert) {
             errorAlert.remove();
         }
     }

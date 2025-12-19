@@ -382,4 +382,47 @@ public class ProductDAO {
         }
         return "-";
     }
+
+    //SERVICE
+    public List<Products> getByCategoryId(int categoryId) {
+        List<Products> list = new ArrayList<>();
+
+        String sql = """
+            SELECT p.product_id, p.product_name, p.price, p.quantity, p.image_url,
+                   p.provider_id, p.category_id,
+                   pr.provider_name, c.category_name
+            FROM products p
+            JOIN providers pr ON p.provider_id = pr.provider_id
+            JOIN categories c ON p.category_id = c.category_id
+            WHERE p.category_id = ?
+            ORDER BY p.price ASC
+        """;
+
+        try (Connection con = DBContext.getInstance().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, categoryId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Products p = new Products();
+                p.setProductId(rs.getInt("product_id"));
+                p.setProductName(rs.getString("product_name"));
+                p.setPrice(rs.getDouble("price"));
+                p.setQuantity(rs.getInt("quantity"));
+                p.setImageUrl(rs.getString("image_url"));
+                p.setProviderId(rs.getInt("provider_id"));
+                p.setCategoryId(rs.getInt("category_id"));
+
+                // QUAN TRỌNG: Lấy tên Provider và Category từ kết quả JOIN
+                p.setProviderName(rs.getString("provider_name"));
+                p.setCategoryName(rs.getString("category_name"));
+
+                list.add(p);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

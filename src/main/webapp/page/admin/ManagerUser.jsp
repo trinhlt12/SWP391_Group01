@@ -8,8 +8,10 @@
     <title> Em Ban The | Admin System </title>
 
     <link rel="apple-touch-icon" sizes="144x144" href="${pageContext.request.contextPath}/assetAdmin/apple-touch-icon.png">
-    <link rel="shortcut icon" href="${pageContext.request.contextPath}/assetAdmin/favicon.ico">
+<%--    <link rel="shortcut icon" href="${pageContext.request.contextPath}/assetAdmin/favicon.ico">--%>
     <meta name="theme-color" content="#3063A0">
+    <link href="${pageContext.request.contextPath}/image/Logo.png" rel="icon">
+
     <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assetAdmin/assets/vendor/open-iconic/css/open-iconic-bootstrap.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assetAdmin/assets/vendor/fontawesome/css/all.css">
@@ -33,7 +35,7 @@
                 <button class="hamburger hamburger-squeeze mr-2" type="button" data-toggle="aside-menu">
                     <span class="hamburger-box"><span class="hamburger-inner"></span></span>
                 </button>
-<%--                <a href="${pageContext.request.contextPath}/home">--%>
+
     <a href="${pageContext.request.contextPath}/admin" class="text-decoration-none d-flex align-items-center">
 
     <span style="
@@ -93,11 +95,6 @@
                                 <span class="menu-icon fas fa-users"></span> <span class="menu-text">Quản lý User</span>
                             </a>
                         </li>
-                        <li class="menu-item">
-                            <a href="#" class="menu-link">
-                                <span class="menu-icon fas fa-users"></span> <span class="menu-text">Quản lý System</span>
-                            </a>
-                        </li>
                     </ul>
                 </nav>
             </div>
@@ -130,15 +127,6 @@
                                 <% session.removeAttribute("createMessage"); %>
                             </c:if>
 
-                            <c:if test="${not empty sessionScope.createError}">
-                                <div class="alert alert-danger alert-dismissible fade show w-100" role="alert">
-                                    <i class="fas fa-exclamation-triangle"></i> ${sessionScope.createError}
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <% session.removeAttribute("createError"); %>
-                            </c:if>
                         </div>
                         <div class="card card-fluid">
                             <div class="card-body">
@@ -161,7 +149,6 @@
                                                 <div class="col-md-3 mb-3">
                                                     <select class="custom-select" name="role" onchange="this.form.submit()">
                                                         <option value="">-- Tất cả Role --</option>
-
                                                         <option value="Admin" ${param.role == 'Admin' ? 'selected' : ''}>Admin</option>
                                                         <option value="Customer" ${param.role == 'Customer' ? 'selected' : ''}>Customer</option>
                                                     </select>
@@ -172,6 +159,7 @@
                                                         <option value="">-- Tất cả Trạng thái --</option>
                                                         <option value="Active" ${param.status == 'Active' ? 'selected' : ''}>Active</option>
                                                         <option value="Inactive" ${param.status == 'Inactive' ? 'selected' : ''}>Inactive</option>
+                                                        <option value="Banned" ${param.status == 'Banned' ? 'selected' : ''}>Banned</option>
                                                     </select>
                                                 </div>
 
@@ -251,18 +239,29 @@
                                 </div>
                                 <c:if test="${totalPages > 1}">
                                     <nav aria-label="Page navigation" class="mt-3">
-                                        <ul class="pagination justify-content-center"> <li class="page-item ${currentPage <= 1 ? 'disabled' : ''}">
-                                            <a class="page-link" href="${pageContext.request.contextPath}/admin/user-list?page=${currentPage - 1}" tabindex="-1">Trước</a>
-                                        </li>
+                                        <ul class="pagination justify-content-center">
+
+                                            <li class="page-item ${currentPage <= 1 ? 'disabled' : ''}">
+                                                <a class="page-link"
+                                                   href="${pageContext.request.contextPath}/admin/user-list?page=${currentPage - 1}&keyword=${param.keyword}&role=${param.role}&status=${param.status}">
+                                                    Trước
+                                                </a>
+                                            </li>
 
                                             <c:forEach begin="1" end="${totalPages}" var="i">
                                                 <li class="page-item ${currentPage == i ? 'active' : ''}">
-                                                    <a class="page-link" href="${pageContext.request.contextPath}/admin/user-list?page=${i}">${i}</a>
+                                                    <a class="page-link"
+                                                       href="${pageContext.request.contextPath}/admin/user-list?page=${i}&keyword=${param.keyword}&role=${param.role}&status=${param.status}">
+                                                            ${i}
+                                                    </a>
                                                 </li>
                                             </c:forEach>
 
                                             <li class="page-item ${currentPage >= totalPages ? 'disabled' : ''}">
-                                                <a class="page-link" href="${pageContext.request.contextPath}/admin/user-list?page=${currentPage + 1}">Sau</a>
+                                                <a class="page-link"
+                                                   href="${pageContext.request.contextPath}/admin/user-list?page=${currentPage + 1}&keyword=${param.keyword}&role=${param.role}&status=${param.status}">
+                                                    Sau
+                                                </a>
                                             </li>
 
                                         </ul>
@@ -346,6 +345,7 @@
 <%--Modal Add new user--%>
 <div class="modal fade" id="createUserModal" tabindex="-1" role="dialog" aria-labelledby="createUserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
+
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="createUserModalLabel">
@@ -358,21 +358,11 @@
 
             <form action="${pageContext.request.contextPath}/admin/user-create" method="post">
                 <div class="modal-body">
-                    <%-- Hiển thị thông báo lỗi nếu có --%>
                     <c:if test="${not empty sessionScope.createError}">
                         <div class="alert alert-danger">
-                            <i class="fas fa-exclamation-circle mr-1"></i>
-                                ${sessionScope.createError}
+                            <i class="fas fa-exclamation-triangle"></i> ${sessionScope.createError}
                         </div>
                     </c:if>
-
-                    <c:if test="${not empty sessionScope.createMessage}">
-                        <div class="alert alert-success">
-                            <i class="fas fa-check-circle mr-1"></i>
-                                ${sessionScope.createMessage}
-                        </div>
-                    </c:if>
-
                     <div class="row">
                         <div class="col-md-6">
                             <h6 class="text-muted border-bottom pb-2">Thông tin tài khoản</h6>
@@ -453,6 +443,12 @@
 <script src="${pageContext.request.contextPath}/assetAdmin/assets/vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="${pageContext.request.contextPath}/assetAdmin/assets/javascript/theme.min.js"></script>
 <script>
+    $(document).ready(function() {
+        // Kiểm tra biến từ Servlet gửi về qua session
+        <% if (session.getAttribute("createError") != null) { %>
+        $('#createUserModal').modal('show');
+        <% } %>
+    });
     function fillDataToModal(id, username, fullname, email, phone, role, status) {
         document.getElementById('modalUserId').value = id;
         document.getElementById('modalUsername').value = username;
@@ -463,20 +459,15 @@
         $('#modalStatus').val(status);
     }
 
-    $(document).ready(function () {
-        // Kiểm tra biến session 'openCreateModal'
-        <c:if test="${not empty sessionScope.openCreateModal}">
-        $('#createUserModal').modal('show');
-        </c:if>
-    });
+
 </script>
+
 
 <c:if test="${not empty sessionScope.openCreateModal}">
     <c:remove var="openCreateModal" scope="session"/>
     <c:remove var="createError" scope="session"/>
     <c:remove var="createMessage" scope="session"/>
 
-    <%-- Xóa dữ liệu cũ trong form --%>
     <c:remove var="oldUsername" scope="session"/>
     <c:remove var="oldFullname" scope="session"/>
     <c:remove var="oldEmail" scope="session"/>

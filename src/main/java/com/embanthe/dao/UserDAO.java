@@ -60,6 +60,30 @@ public class UserDAO {
         }
     }
 
+    // Hàm này nhận Connection từ bên ngoài để thực hiện Transaction
+    public void updateBalance(Connection conn, int userId, double newBalance) throws SQLException {
+        String sql = "UPDATE Users SET balance = ? WHERE user_id = ?";
+        // Lưu ý: Không dùng try-with-resources cho 'conn' vì nó được quản lý ở bên ngoài (Service)
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setDouble(1, newBalance);
+            ps.setInt(2, userId);
+            ps.executeUpdate();
+        }
+    }
+
+    public double getBalanceForUpdate(Connection conn, int userId) throws SQLException {
+        String sql ="SELECT balance FROM Users WHERE user_id = ? FOR UPDATE";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble("balance");
+                }
+            }
+        }
+        return 0.0;
+    }
+
     // 4. Lấy User theo Email
     public Users getUserByEmail(String email) {
         String sql = "SELECT * FROM Users WHERE email = ?";
@@ -272,38 +296,127 @@ public class UserDAO {
         return null;
     }
 
-    // 14. Phân trang
-    public List<Users> getUsersPaging(int page, int pageSize) {
+    public List<Users> searchUsersPaging(String keyword, String role, String status, int page, int pageSize) {
         List<Users> list = new ArrayList<>();
-        String sql = "SELECT * FROM Users ORDER BY created_at ASC LIMIT ? OFFSET ?";
-        int offset = (page - 1) * pageSize;
+        StringBuilder sql = new StringBuilder("SELECT * FROM Users WHERE 1=1 ");
+        List<Object> params = new ArrayList<>();
+
+        // Logic Filter
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            sql.append("AND (username LIKE ? OR full_name LIKE ? OR email LIKE ?) ");
+            String key = "%" + keyword.trim() + "%";
+            params.add(key);
+            params.add(key);
+            params.add(key);
+        }
+        if (role != null && !role.isEmpty()) {
+            sql.append("AND role = ? ");
+            params.add(role);
+        }
+        if (status != null && !status.isEmpty()) {
+            sql.append("AND status = ? ");
+            params.add(status);
+        }
+
+        // Thêm sắp xếp và Phân trang
+        sql.append(" ORDER BY created_at ASC LIMIT ? OFFSET ?");
+        params.add(pageSize);
+        params.add((page - 1) * pageSize);
 
         try (Connection conn = DBContext.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, pageSize);
-            ps.setInt(2, offset);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    list.add(mapRow(rs));
-                }
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return list;
     }
+    public int countUsers(String keyword, String role, String status) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM Users WHERE 1=1 ");
+        List<Object> params = new ArrayList<>();
 
-    // 15. Đếm số lượng user
-    public int countUsers() {
+        // Logic Filter (Giống hệt hàm search bên dưới)
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            sql.append("AND (username LIKE ? OR full_name LIKE ? OR email LIKE ?) ");
+            String key = "%" + keyword.trim() + "%";
+            params.add(key); params.add(key); params.add(key);
+        }
+        if (role != null && !role.isEmpty()) {
+            sql.append("AND role = ? ");
+            params.add(role);
+        }
+        if (status != null && !status.isEmpty()) {
+            sql.append("AND status = ? ");
+            params.add(status);
+        }
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    public int getTotalUserCount() {
         String sql = "SELECT COUNT(*) FROM Users";
         try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) return rs.getInt(1);
-        } catch (SQLException e) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return 0;
+    }
+    public Users getUserByUsername(String username) {
+        String sql = "SELECT * FROM Users WHERE username = ?";
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, username);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapRow(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public boolean updateUserProfile(Users user) {
+        String sql = "UPDATE Users SET full_name = ?, phone = ?, email = ? WHERE user_id = ?";
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, user.getFullName());
+            ps.setString(2, user.getPhone());
+            ps.setString(3, user.getEmail());
+            ps.setInt(4, user.getUserId());
+
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     // Helper: Map ResultSet to Users Object
