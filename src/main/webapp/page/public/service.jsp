@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.text.NumberFormat" %>
 <%@ page import="java.util.Locale" %>
@@ -509,113 +511,24 @@
 
             <!-- Phone Cards Grid -->
             <div class="product-grid" id="phoneProducts">
-                <!-- Viettel Cards -->
-                <div class="product-card" data-provider="viettel" onclick="selectProduct('Thẻ Viettel 10.000đ', 10000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #e30613;">📞</div>
-                    <div class="product-name">Viettel</div>
-                    <div class="product-value">10.000₫</div>
-                    <div class="product-price">10.000₫</div>
-                </div>
+                <c:forEach var="p" items="${phoneCards}">
+                    <div class="product-card"
+                         data-provider="${p.providerName.toLowerCase()}"
+                         onclick="selectProduct('${p.productName}', ${p.price})">
 
-                <div class="product-card" data-provider="viettel" onclick="selectProduct('Thẻ Viettel 20.000đ', 20000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #e30613;">📞</div>
-                    <div class="product-name">Viettel</div>
-                    <div class="product-value">20.000₫</div>
-                    <div class="product-price">20.000₫</div>
-                </div>
+                        <div class="selected-badge">✓</div>
 
-                <div class="product-card" data-provider="viettel" onclick="selectProduct('Thẻ Viettel 50.000đ', 50000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #e30613;">📞</div>
-                    <div class="product-name">Viettel</div>
-                    <div class="product-value">50.000₫</div>
-                    <div class="product-price">50.000₫</div>
-                </div>
+                        <div class="product-logo" style="color: #e30613;">
+                                ${p.providerName == 'Viettel' ? '📞' : '📱'}
+                        </div>
 
-                <div class="product-card" data-provider="viettel" onclick="selectProduct('Thẻ Viettel 100.000đ', 100000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #e30613;">📞</div>
-                    <div class="product-name">Viettel</div>
-                    <div class="product-value">100.000₫</div>
-                    <div class="product-price">100.000₫</div>
-                </div>
+                        <div class="product-name">${p.providerName}</div>
 
-                <!-- Mobifone Cards -->
-                <div class="product-card" data-provider="mobifone" onclick="selectProduct('Thẻ Mobifone 10.000đ', 10000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #1c4c9e;">📱</div>
-                    <div class="product-name">Mobifone</div>
-                    <div class="product-value">10.000₫</div>
-                    <div class="product-price">10.000₫</div>
-                </div>
-
-                <div class="product-card" data-provider="mobifone" onclick="selectProduct('Thẻ Mobifone 20.000đ', 20000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #1c4c9e;">📱</div>
-                    <div class="product-name">Mobifone</div>
-                    <div class="product-value">20.000₫</div>
-                    <div class="product-price">20.000₫</div>
-                </div>
-
-                <div class="product-card" data-provider="mobifone" onclick="selectProduct('Thẻ Mobifone 50.000đ', 50000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #1c4c9e;">📱</div>
-                    <div class="product-name">Mobifone</div>
-                    <div class="product-value">50.000₫</div>
-                    <div class="product-price">50.000₫</div>
-                </div>
-
-                <!-- Vinaphone Cards -->
-                <div class="product-card" data-provider="vinaphone" onclick="selectProduct('Thẻ Vinaphone 10.000đ', 10000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #8b1f8a;">📞</div>
-                    <div class="product-name">Vinaphone</div>
-                    <div class="product-value">10.000₫</div>
-                    <div class="product-price">10.000₫</div>
-                </div>
-
-                <div class="product-card" data-provider="vinaphone" onclick="selectProduct('Thẻ Vinaphone 20.000đ', 20000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #8b1f8a;">📞</div>
-                    <div class="product-name">Vinaphone</div>
-                    <div class="product-value">20.000₫</div>
-                    <div class="product-price">20.000₫</div>
-                </div>
-
-                <div class="product-card" data-provider="vinaphone" onclick="selectProduct('Thẻ Vinaphone 50.000đ', 50000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #8b1f8a;">📞</div>
-                    <div class="product-name">Vinaphone</div>
-                    <div class="product-value">50.000₫</div>
-                    <div class="product-price">50.000₫</div>
-                </div>
-
-                <!-- Vietnam Mobile Cards -->
-                <div class="product-card" data-provider="vietnammobile" onclick="selectProduct('Thẻ Vietnam Mobile 10.000đ', 10000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #d92228;">📱</div>
-                    <div class="product-name">Vietnam Mobile</div>
-                    <div class="product-value">10.000₫</div>
-                    <div class="product-price">10.000₫</div>
-                </div>
-
-                <div class="product-card" data-provider="vietnammobile" onclick="selectProduct('Thẻ Vietnam Mobile 20.000đ', 20000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #d92228;">📱</div>
-                    <div class="product-name">Vietnam Mobile</div>
-                    <div class="product-value">20.000₫</div>
-                    <div class="product-price">20.000₫</div>
-                </div>
-
-                <div class="product-card" data-provider="vietnammobile" onclick="selectProduct('Thẻ Vietnam Mobile 50.000đ', 50000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #d92228;">📱</div>
-                    <div class="product-name">Vietnam Mobile</div>
-                    <div class="product-value">50.000₫</div>
-                    <div class="product-price">50.000₫</div>
-                </div>
+                        <div class="product-value">
+                            <fmt:formatNumber value="${p.price}" pattern="#,###" currencySymbol=""/>đ
+                        </div>
+                    </div>
+                </c:forEach>
             </div>
 
             <!-- Game Cards Grid (Hidden by default) -->

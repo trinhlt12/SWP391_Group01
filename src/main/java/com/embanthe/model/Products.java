@@ -12,6 +12,9 @@ public class Products {
 
     private String imageUrl;
 
+    private String providerName;
+    private String categoryName;
+
     public Products() {
     }
 
@@ -62,5 +65,21 @@ public class Products {
     }
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getProviderName() {
+        return providerName;
+    }
+
+    public void setProviderName(String providerName) {
+        this.providerName = providerName;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }
