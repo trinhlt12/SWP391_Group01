@@ -615,7 +615,17 @@
                     <label class="form-label">Số lượng</label>
                     <div class="quantity-control">
                         <button type="button" class="quantity-btn" onclick="decreaseQuantity()">−</button>
-                        <input type="number" id="quantity" name="quantity" class="form-input quantity-input" value="1" min="1" max="100" readonly>
+                        <input
+                                type="number"
+                                id="quantity"
+                                name="quantity"
+                                class="form-input quantity-input"
+                                value="1"
+                                min="1"
+                                max="100"
+                                oninput="handleInputQuantity(this)"
+                                onblur="fixQuantity(this)"
+                        >
                         <button type="button" class="quantity-btn" onclick="increaseQuantity()">+</button>
                     </div>
                 </div>
@@ -696,6 +706,35 @@
             dropdown.style.display = 'none';
             parentItem.classList.remove('expanded');
         }
+    }
+
+    function handleInputQuantity(element) {
+        let val = parseInt(element.value);
+
+        if (isNaN(val) || element.value === "") {
+            // Có thể set tạm total về 0 hoặc giữ nguyên
+            return;
+        }
+
+        if (val > 100) {
+            val = 100;
+            element.value = 100;
+        }
+
+        quantity = val;
+
+        updateTotal();
+    }
+    function fixQuantity(element) {
+        let val = parseInt(element.value);
+
+        if (isNaN(val) || val < 1) {
+            val = 1;
+            element.value = 1;
+        }
+
+        quantity = val;
+        updateTotal();
     }
 
     // Filter by provider
