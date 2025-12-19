@@ -27,6 +27,14 @@
         .code-box { font-family: 'Courier New', monospace; font-weight: 700; letter-spacing: 1px; background: white; padding: 5px 10px; border: 1px dashed #d1d5db; border-radius: 5px; color: #111827; }
         .btn-copy { font-size: 0.8rem; margin-left: 8px; cursor: pointer; color: #059669; border: none; background: none; }
         .btn-copy:hover { text-decoration: underline; }
+
+        /* Thêm đoạn này vào trong thẻ <style> */
+        .code-cell {
+            display: flex;           /* Dùng Flexbox để xếp ngang */
+            align-items: center;     /* Căn giữa theo chiều dọc */
+            white-space: nowrap;     /* QUAN TRỌNG: Cấm tuyệt đối việc xuống dòng */
+            gap: 10px;               /* Khoảng cách giữa mã thẻ và nút Copy */
+        }
     </style>
 </head>
 <body>
@@ -73,8 +81,12 @@
                             </td>
                             <td>${item.serialNumber}</td>
                             <td>
-                                <span class="code-box">${item.cardCode}</span>
-                                <button class="btn-copy" onclick="copyText('${item.cardCode}')">Copy</button>
+                                <!-- Bọc vào div này -->
+                                <div class="code-cell">
+                                    <span class="code-box">${item.cardCode}</span>
+                                    <!-- Xóa margin-left cũ đi nếu có, vì đã dùng gap trong css -->
+                                    <button class="btn-copy" onclick="copyText('${item.cardCode}')" style="margin: 0;">Copy</button>
+                                </div>
                             </td>
                             <td><fmt:formatDate value="${item.createdAt}" pattern="dd/MM/yyyy HH:mm"/></td>
                             <td style="color: #dc2626;">
