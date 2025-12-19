@@ -95,11 +95,6 @@
                                 <span class="menu-icon fas fa-users"></span> <span class="menu-text">Quản lý User</span>
                             </a>
                         </li>
-                        <li class="menu-item">
-                            <a href="#" class="menu-link">
-                                <span class="menu-icon fas fa-users"></span> <span class="menu-text">Quản lý System</span>
-                            </a>
-                        </li>
                     </ul>
                 </nav>
             </div>

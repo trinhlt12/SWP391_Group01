@@ -1,42 +1,30 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: hoang
-  Date: 08/12/2025
-  Time: 11:54 CH
-  To change this template use File | Settings | File Templates.
---%>
-
 <!DOCTYPE html>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Em Ban The</title>
-
     <meta name="description" content="">
     <meta name="keywords" content="">
 
-    <!-- Favicons -->
     <link href="image/Logo.png" rel="icon">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
 
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com" rel="preconnect">
-    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
-          rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/assetsHome/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/assetsHome/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/assetsHome/vendor/aos/aos.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/assetsHome/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/assetsHome/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/assetsHome/css/main.css" rel="stylesheet">
 
-
-    <link href="assetsHome/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assetsHome/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-    <link href="assetsHome/vendor/aos/aos.css" rel="stylesheet">
-    <link href="assetsHome/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-    <link href="assetsHome/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-    <link href="assetsHome/css/main.css" rel="stylesheet">
-    <base href="${pageContext.request.contextPath}/">
 </head>
 
 <body class="index-page">
@@ -46,7 +34,7 @@
 
         <a href="home" class="logo d-flex align-items-center me-auto">
 
-            <img src="image/Logo.png" alt="Logo">
+            <img src="${pageContext.request.contextPath}/image/Logo.png" alt="Logo">
             <h1 class="sitename">Em Bán Thẻ</h1>
         </a>
 
@@ -55,20 +43,22 @@
             <ul>
 
                 <li><a href="#hero" class="active">Home</a></li>
-                <li><a href="#about">Dịch Vụ</a></li>
+                <li><a href="${pageContext.request.contextPath}/service">Dịch Vụ</a></li>
                 <c:if test="${not empty sessionScope.user}">
                     <li><a href="${pageContext.request.contextPath}/ewallet">Ewallet</a></li>
                     <li><a href="#portfolio">Thống Kê</a></li>
                     <li><a href="#team">Link Thanh Toán</a></li>
-                    <li><a href="#policy">Chính Sách</a></li>
+                    <li><a href="sendSupport">Hỗ Trợ</a></li>
                     <li class="dropdown">
-                        <img src="image/icons8-user-male-16.png" alt="User Icon"
+                        <img src="${pageContext.request.contextPath}/image/icons8-user-male-16.png"
+                             alt="User Icon"
                              style="width:20px; height:20px; margin-right:5px;">
+
                         <span>${sessionScope.user.fullName} - ${sessionScope.user.balance} VND</span>
                         <i class="bi bi-chevron-down toggle-dropdown"></i>
                         <ul>
                             <li><a href="userprofile">Thông tin cá nhân</a></li>
-                            <li><a href="#">Đổi Mật Khẩu Đăng nhập</a></li>
+                            <li><a href="changePassword">Đổi Mật Khẩu Đăng nhập</a></li>
                             <li><a href="#">Email: ${sessionScope.user.email}</a></li>
                             <li><a href="logout">Đăng xuất</a></li>
                         </ul>
@@ -93,12 +83,10 @@
         <div class="container">
             <div class="row gy-4">
                 <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="fade-up">
-                    <h1>Elegant and creative solutions</h1>
-                    <p>We are team of talented designers making websites with Bootstrap</p>
+                    <h1>Dịch Vụ Bán Thẻ</h1>
+                    <p>Trang thẻ uy tín</p>
                     <div class="d-flex">
-                        <a href="#about" class="btn-get-started">Get Started</a>
-                        <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8"
-                           class="glightbox btn-watch-video d-flex align-items-center"><i class="bi bi-play-circle"></i><span>Watch Video</span></a>
+                        <a href="${pageContext.request.contextPath}/service" class="btn-get-started">Dịch Vụ</a>
                     </div>
                 </div>
                 <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-out" data-aos-delay="100">
@@ -107,103 +95,79 @@
             </div>
         </div>
 
-    </section><!-- /Hero Section -->
+    </section>
     <section id="services" class="services section light-background">
 
-        <!-- Section Title -->
         <div class="container section-title" data-aos="fade-up">
-            <span>Services</span>
-            <h2>Services</h2>
-            <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
-        </div><!-- End Section Title -->
+            <span>Sản phẩm</span>
+            <h2>Danh sách sản phẩm mới</h2>
+            <p>Các loại thẻ đang được bán chạy nhất tại hệ thống</p>
+        </div>
 
         <div class="container">
-
             <div class="row gy-4">
 
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-                    <div class="service-item position-relative">
-                        <div class="icon">
-                            <i class="bi bi-activity"></i>
-                        </div>
-                        <a href="service-details.html" class="stretched-link">
-                            <h3>Nesciunt Mete</h3>
-                        </a>
-                        <p>Provident nihil minus qui consequatur non omnis maiores. Eos accusantium minus dolores iure
-                            perferendis tempore et consequatur.</p>
+                <c:if test="${empty productList}">
+                    <div class="col-12 text-center">
+                        <p>Hiện chưa có sản phẩm nào được bày bán.</p>
                     </div>
-                </div><!-- End Service Item -->
+                </c:if>
 
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-                    <div class="service-item position-relative">
-                        <div class="icon">
-                            <i class="bi bi-broadcast"></i>
-                        </div>
-                        <a href="service-details.html" class="stretched-link">
-                            <h3>Eosle Commodi</h3>
-                        </a>
-                        <p>Ut autem aut autem non a. Sint sint sit facilis nam iusto sint. Libero corrupti neque eum hic
-                            non ut nesciunt dolorem.</p>
-                    </div>
-                </div><!-- End Service Item -->
+                <c:forEach var="s" items="${productList}">
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="service-item position-relative">
 
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-                    <div class="service-item position-relative">
-                        <div class="icon">
-                            <i class="bi bi-easel"></i>
-                        </div>
-                        <a href="service-details.html" class="stretched-link">
-                            <h3>Ledo Markt</h3>
-                        </a>
-                        <p>Ut excepturi voluptatem nisi sed. Quidem fuga consequatur. Minus ea aut. Vel qui id voluptas
-                            adipisci eos earum corrupti.</p>
-                    </div>
-                </div><!-- End Service Item -->
+                            <div class="icon">
+                                <img src="${pageContext.request.contextPath}/${not empty s.imageUrl ? s.imageUrl : 'image/default-card.png'}"
+                                     alt="${s.productName}"
+                                     class="img-fluid"
+                                     style="max-height: 100px; object-fit: contain;">
+                            </div>
 
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
-                    <div class="service-item position-relative">
-                        <div class="icon">
-                            <i class="bi bi-bounding-box-circles"></i>
-                        </div>
-                        <a href="service-details.html" class="stretched-link">
-                            <h3>Asperiores Commodit</h3>
-                        </a>
-                        <p>Non et temporibus minus omnis sed dolor esse consequatur. Cupiditate sed error ea fuga sit
-                            provident adipisci neque.</p>
-                        <a href="service-details.html" class="stretched-link"></a>
-                    </div>
-                </div><!-- End Service Item -->
+                            <a href="product-details?id=${s.productId}" class="stretched-link">
+                                <h3>${s.productName}</h3>
+                            </a>
 
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
-                    <div class="service-item position-relative">
-                        <div class="icon">
-                            <i class="bi bi-calendar4-week"></i>
-                        </div>
-                        <a href="service-details.html" class="stretched-link">
-                            <h3>Velit Doloremque</h3>
-                        </a>
-                        <p>Cumque et suscipit saepe. Est maiores autem enim facilis ut aut ipsam corporis aut. Sed animi
-                            at autem alias eius labore.</p>
-                        <a href="service-details.html" class="stretched-link"></a>
-                    </div>
-                </div><!-- End Service Item -->
+                            <p>
+                                <strong>Nhà mạng:</strong> ${s.providerName}<br/>
+                                <strong>Loại thẻ:</strong> ${s.categoryName}<br/>
+                                <strong>Mệnh giá:</strong>
+                                <fmt:formatNumber value="${s.price}" type="currency" currencySymbol="đ"/><br/>
 
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
-                    <div class="service-item position-relative">
-                        <div class="icon">
-                            <i class="bi bi-chat-square-text"></i>
+                                <span class="${s.quantity > 0 ? 'text-success' : 'text-danger'}">
+                                        ${s.quantity > 0 ? 'Còn hàng' : 'Hết hàng'}
+                                </span>
+                            </p>
+
+                            <div class="mt-3 text-center" style="position: relative; z-index: 2;">
+                                <c:choose>
+                                    <%-- TRƯỜNG HỢP 1: Đã đăng nhập (Có session user) --%>
+                                    <c:when test="${not empty sessionScope.user}">
+                                        <c:if test="${s.quantity > 0}">
+                                            <a href="payment?productId=${s.productId}" class="btn btn-primary rounded-pill px-4">
+                                                Mua ngay <i class="bi bi-cart-check"></i>
+                                            </a>
+                                        </c:if>
+                                        <c:if test="${s.quantity <= 0}">
+                                            <button class="btn btn-secondary rounded-pill px-4" disabled>Hết hàng</button>
+                                        </c:if>
+                                    </c:when>
+
+                                    <c:otherwise>
+                                        <a href="login"
+                                           onclick="return confirm('Bạn cần đăng nhập để thực hiện mua hàng. Chuyển đến trang đăng nhập?');"
+                                           class="btn btn-outline-primary rounded-pill px-4">
+                                            Mua ngay <i class="bi bi-box-arrow-in-right"></i>
+                                        </a>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
                         </div>
-                        <a href="service-details.html" class="stretched-link">
-                            <h3>Dolori Architecto</h3>
-                        </a>
-                        <p>Hic molestias ea quibusdam eos. Fugiat enim doloremque aut neque non et debitis iure.
-                            Corrupti recusandae ducimus enim.</p>
-                        <a href="service-details.html" class="stretched-link"></a>
                     </div>
-                </div><!-- End Service Item -->
+                </c:forEach>
+
 
             </div>
-
         </div>
 
     </section>
@@ -214,67 +178,45 @@
 
             <div class="row gy-4">
 
-                <div class="col-lg-4 d-flex" data-aos="fade-up" data-aos-delay="100">
-                    <div class="service-item position-relative">
-                        <div class="icon"><i class="bi bi-activity icon"></i></div>
-                        <h4><a href="" class="stretched-link">Lorem Ipsum</a></h4>
-                        <p>Voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi</p>
-                    </div>
-                </div><!-- End Service Item -->
+                <c:forEach var="c" items="${categoriesList}">
+                    <div class="col-lg-4 d-flex" data-aos="fade-up" data-aos-delay="100">
+                        <div class="service-item position-relative">
 
-                <div class="col-lg-4 d-flex" data-aos="fade-up" data-aos-delay="200">
-                    <div class="service-item position-relative">
-                        <div class="icon"><i class="bi bi-bounding-box-circles icon"></i></div>
-                        <h4><a href="" class="stretched-link">Sed ut perspici</a></h4>
-                        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore</p>
-                    </div>
-                </div><!-- End Service Item -->
 
-                <div class="col-lg-4 d-flex" data-aos="fade-up" data-aos-delay="300">
-                    <div class="service-item position-relative">
-                        <div class="icon"><i class="bi bi-calendar4-week icon"></i></div>
-                        <h4><a href="" class="stretched-link">Magni Dolores</a></h4>
-                        <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia</p>
+                            <h4>
+                                <a href="category-details.jsp?id=${c.categoryId}" class="stretched-link">
+                                        ${c.categoryName}
+                                </a>
+                            </h4>
+                            <!-- Nếu có mô tả category -->
+                            <p>${c.description}</p>
+                        </div>
                     </div>
-                </div><!-- End Service Item -->
+                </c:forEach>
 
             </div>
 
         </div>
 
     </section><!-- /Featured Services Section -->
-    <!-- About Section -->
-    <!-- /About Section -->
-
-    <!-- Stats Section -->
-    <!-- /Stats Section -->
-
-    <!-- Services Section -->
-    <!-- /Services Section -->
-
-    <!-- Portfolio Section -->
-    <!-- /Portfolio Section -->
 
     <!-- Testimonials Section -->
-    <section id="testimonials" class="testimonials section light-background">
-
-        <!-- Section Title -->
-        <div class="container section-title" data-aos="fade-up">
-            <span>Testimonials</span>
-            <h2>Testimonials</h2>
-            <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
-        </div><!-- End Section Title -->
+    <section id="testimonials" class="testimonials section light-background" style="padding: 30px 0;">
+        <div class="container section-title" data-aos="fade-up" style="margin-bottom: 20px;"> <span>Nhà cung cấp</span>
+        <h2>Đối tác</h2>
+        </div>
 
         <div class="container" data-aos="fade-up" data-aos-delay="100">
 
             <div class="swiper init-swiper" data-speed="600" data-delay="5000"
-                 data-breakpoints="{ &quot;320&quot;: { &quot;slidesPerView&quot;: 1, &quot;spaceBetween&quot;: 40 }, &quot;1200&quot;: { &quot;slidesPerView&quot;: 3, &quot;spaceBetween&quot;: 40 } }">
+                 data-breakpoints="{ &quot;320&quot;: { &quot;slidesPerView&quot;: 2, &quot;spaceBetween&quot;: 20 }, &quot;768&quot;: { &quot;slidesPerView&quot;: 4, &quot;spaceBetween&quot;: 20 }, &quot;1200&quot;: { &quot;slidesPerView&quot;: 5, &quot;spaceBetween&quot;: 20 } }">
+
                 <script type="application/json" class="swiper-config">
                     {
                         "loop": true,
                         "speed": 600,
                         "autoplay": {
-                            "delay": 5000
+                            "delay": 3000
                         },
                         "slidesPerView": "auto",
                         "pagination": {
@@ -284,103 +226,46 @@
                         },
                         "breakpoints": {
                             "320": {
-                                "slidesPerView": 1,
-                                "spaceBetween": 40
+                                "slidesPerView": 2,
+                                "spaceBetween": 20
+                            },
+                            "768": {
+                                "slidesPerView": 4,
+                                "spaceBetween": 20
                             },
                             "1200": {
-                                "slidesPerView": 3,
-                                "spaceBetween": 20
+                                "slidesPerView": 5,
+                                "spaceBetween": 30
                             }
                         }
                     }
                 </script>
-                <div class="swiper-wrapper">
 
-                    <div class="swiper-slide">
-                        <div class="testimonial-item"
-                        "="">
-                        <p>
-                            <i class=" bi bi-quote quote-icon-left"></i>
-                            <span>Proin iaculis purus consequat sem cure digni ssim donec porttitora entum suscipit rhoncus. Accusantium quam, ultricies eget id, aliquam eget nibh et. Maecen aliquam, risus at semper.</span>
-                            <i class="bi bi-quote quote-icon-right"></i>
-                        </p>
-                        <img src="assets/img/testimonials/testimonials-1.jpg" class="testimonial-img" alt="">
-                        <h3>Saul Goodman</h3>
-                        <h4>Ceo &amp; Founder</h4>
-                    </div>
-                </div><!-- End testimonial item -->
+                <div class="row text-center">
+                    <c:forEach var="p" items="${providerList}">
+                        <div class="col">
+                            <img src="${pageContext.request.contextPath}/${p.logoUrl}"
+                                 style="max-width:100px;">
+                            <p>${p.providerName}</p>
+                        </div>
+                    </c:forEach>
+                </div>
 
-                <div class="swiper-slide">
-                    <div class="testimonial-item">
-                        <p>
-                            <i class="bi bi-quote quote-icon-left"></i>
-                            <span>Export tempor illum tamen malis malis eram quae irure esse labore quem cillum quid malis quorum velit fore eram velit sunt aliqua noster fugiat irure amet legam anim culpa.</span>
-                            <i class="bi bi-quote quote-icon-right"></i>
-                        </p>
-                        <img src="assets/img/testimonials/testimonials-2.jpg" class="testimonial-img" alt="">
-                        <h3>Sara Wilsson</h3>
-                        <h4>Designer</h4>
-                    </div>
-                </div><!-- End testimonial item -->
-
-                <div class="swiper-slide">
-                    <div class="testimonial-item">
-                        <p>
-                            <i class="bi bi-quote quote-icon-left"></i>
-                            <span>Enim nisi quem export duis labore cillum quae magna enim sint quorum nulla quem veniam duis minim tempor labore quem eram duis noster aute amet eram fore quis sint minim.</span>
-                            <i class="bi bi-quote quote-icon-right"></i>
-                        </p>
-                        <img src="assets/img/testimonials/testimonials-3.jpg" class="testimonial-img" alt="">
-                        <h3>Jena Karlis</h3>
-                        <h4>Store Owner</h4>
-                    </div>
-                </div><!-- End testimonial item -->
-
-                <div class="swiper-slide">
-                    <div class="testimonial-item">
-                        <p>
-                            <i class="bi bi-quote quote-icon-left"></i>
-                            <span>Fugiat enim eram quae cillum dolore dolor amet nulla culpa multos export minim fugiat dolor enim duis veniam ipsum anim magna sunt elit fore quem dolore labore illum veniam.</span>
-                            <i class="bi bi-quote quote-icon-right"></i>
-                        </p>
-                        <img src="assets/img/testimonials/testimonials-4.jpg" class="testimonial-img" alt="">
-                        <h3>Matt Brandon</h3>
-                        <h4>Freelancer</h4>
-                    </div>
-                </div><!-- End testimonial item -->
-
-                <div class="swiper-slide">
-                    <div class="testimonial-item">
-                        <p>
-                            <i class="bi bi-quote quote-icon-left"></i>
-                            <span>Quis quorum aliqua sint quem legam fore sunt eram irure aliqua veniam tempor noster veniam sunt culpa nulla illum cillum fugiat legam esse veniam culpa fore nisi cillum quid.</span>
-                            <i class="bi bi-quote quote-icon-right"></i>
-                        </p>
-                        <img src="assets/img/testimonials/testimonials-5.jpg" class="testimonial-img" alt="">
-                        <h3>John Larson</h3>
-                        <h4>Entrepreneur</h4>
-                    </div>
-                </div><!-- End testimonial item -->
-
+                <div class="swiper-pagination"></div>
             </div>
-            <div class="swiper-pagination"></div>
-        </div>
 
         </div>
 
-    </section><!-- /Testimonials Section -->
-
-    <!-- Call To Action Section -->
-    <!-- /Call To Action Section -->
+    </section>
 
     <!-- Team Section -->
     <section id="team" class="team section">
 
         <!-- Section Title -->
         <div class="container section-title" data-aos="fade-up">
-            <span>Section Title</span>
-            <h2>Team</h2>
-            <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+            <span>SWP391_Group01</span>
+            <h2>Team Member</h2>
+            <p></p>
         </div><!-- End Section Title -->
 
         <div class="container">
@@ -391,14 +276,9 @@
                     <div class="member">
                         <div class="pic"><img src="assets/img/team/team-1.jpg" class="img-fluid" alt=""></div>
                         <div class="member-info">
-                            <h4>Walter White</h4>
-                            <span>Chief Executive Officer</span>
-                            <div class="social">
-                                <a href=""><i class="bi bi-twitter-x"></i></a>
-                                <a href=""><i class="bi bi-facebook"></i></a>
-                                <a href=""><i class="bi bi-instagram"></i></a>
-                                <a href=""><i class="bi bi-linkedin"></i></a>
-                            </div>
+                            <h4>Do Sy Hung</h4>
+                            <span>Chief</span>
+
                         </div>
                     </div>
                 </div><!-- End Team Member -->
@@ -407,35 +287,23 @@
                     <div class="member">
                         <div class="pic"><img src="assets/img/team/team-2.jpg" class="img-fluid" alt=""></div>
                         <div class="member-info">
-                            <h4>Sarah Jhonson</h4>
+                            <h4>Lam Trinh</h4>
                             <span>Product Manager</span>
-                            <div class="social">
-                                <a href=""><i class="bi bi-twitter-x"></i></a>
-                                <a href=""><i class="bi bi-facebook"></i></a>
-                                <a href=""><i class="bi bi-instagram"></i></a>
-                                <a href=""><i class="bi bi-linkedin"></i></a>
-                            </div>
+
                         </div>
                     </div>
                 </div><!-- End Team Member -->
-
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
                     <div class="member">
-                        <div class="pic"><img src="assets/img/team/team-3.jpg" class="img-fluid" alt=""></div>
+                        <div class="pic"><img src="assets/img/team/team-1.jpg" class="img-fluid" alt=""></div>
                         <div class="member-info">
-                            <h4>William Anderson</h4>
-                            <span>CTO</span>
-                            <div class="social">
-                                <a href=""><i class="bi bi-twitter-x"></i></a>
-                                <a href=""><i class="bi bi-facebook"></i></a>
-                                <a href=""><i class="bi bi-instagram"></i></a>
-                                <a href=""><i class="bi bi-linkedin"></i></a>
-                            </div>
+                            <h4>Tran Hoang</h4>
+                            <span>Chief</span>
+
                         </div>
                     </div>
-                </div><!-- End Team Member -->
-
-            </div>
+                </div>
+                            </div>
 
         </div>
 
@@ -446,29 +314,6 @@
 <footer id="footer" class="footer">
 
     <!-- Newsletter -->
-    <div class="footer-newsletter">
-        <div class="container">
-            <div class="row justify-content-center text-center">
-                <div class="col-lg-6">
-                    <h4>Đăng ký nhận tin</h4>
-                    <p>
-                        Nhận thông báo khuyến mãi, thẻ mới và ưu đãi độc quyền từ EmBanThe.
-                    </p>
-                    <form action="#" method="post" class="php-email-form">
-                        <div class="newsletter-form">
-                            <input type="email" name="email" placeholder="Nhập email của bạn" required>
-                            <input type="submit" value="Đăng ký">
-                        </div>
-                        <div class="loading">Đang gửi...</div>
-                        <div class="error-message"></div>
-                        <div class="sent-message">
-                            Đăng ký thành công. Cảm ơn bạn!
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Footer Top -->
     <div class="container footer-top">
@@ -483,36 +328,13 @@
                     <p>Nền tảng mua thẻ điện thoại & thẻ game online</p>
                     <p>Uy tín – Nhanh chóng – An toàn</p>
                     <p class="mt-3">
-                        <strong>Hotline:</strong> <span>0900 123 456</span>
+                        <strong>Hotline:</strong> <span>0915201641</span>
                     </p>
                     <p>
                         <strong>Email:</strong> <span>support@embanthe.vn</span>
                     </p>
                 </div>
             </div>
-
-            <!-- Useful Links -->
-            <div class="col-lg-2 col-md-3 footer-links">
-                <h4>Liên kết</h4>
-                <ul>
-                    <li><i class="bi bi-chevron-right"></i> <a href="/">Trang chủ</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="/about">Giới thiệu</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="/cards">Mua thẻ</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="/contact">Liên hệ</a></li>
-                </ul>
-            </div>
-
-            <!-- Services -->
-            <div class="col-lg-2 col-md-3 footer-links">
-                <h4>Dịch vụ</h4>
-                <ul>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Thẻ điện thoại</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Thẻ game</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Nạp điện thoại</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Ví điện tử</a></li>
-                </ul>
-            </div>
-
             <!-- Social -->
             <div class="col-lg-4 col-md-12">
                 <h4>Kết nối với chúng tôi</h4>
@@ -552,14 +374,12 @@
 <div id="preloader"></div>
 
 <!-- Vendor JS Files -->
-<script src="assetsHome/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="assetsHome/vendor/php-email-form/validate.js"></script>
-<script src="assetsHome/vendor/aos/aos.js"></script>
-<script src="assetsHome/vendor/glightbox/js/glightbox.min.js"></script>
-<script src="assetsHome/vendor/purecounter/purecounter_vanilla.js"></script>
-<script src="assetsHome/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
-<script src="assetsHome/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-<script src="assetsHome/vendor/swiper/swiper-bundle.min.js"></script>
+<script src="${pageContext.request.contextPath}/assetsHome/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="${pageContext.request.contextPath}/assetsHome/vendor/aos/aos.js"></script>
+<script src="${pageContext.request.contextPath}/assetsHome/vendor/glightbox/js/glightbox.min.js"></script>
+<script src="${pageContext.request.contextPath}/assetsHome/vendor/swiper/swiper-bundle.min.js"></script>
+<script src="${pageContext.request.contextPath}/assetsHome/js/main.js"></script>
+
 
 <!-- Main JS File -->
 <script src="assetsHome/js/main.js"></script>
@@ -567,5 +387,3 @@
 </body>
 
 </html>
-
-
