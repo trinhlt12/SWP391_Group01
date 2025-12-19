@@ -18,7 +18,7 @@ public class UserResetPassServlet extends HttpServlet {
     private static final String HOST_NAME = "smtp.gmail.com";
     private static final int TSL_PORT = 587;
     private static final String APP_EMAIL = "hungdshe172854@fpt.edu.vn";
-    private static final String APP_PASSWORD = "urqh vtvx zakn luus";
+    private static final String APP_PASSWORD = "urqh vtvx zakn luus"; // app password
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -28,10 +28,9 @@ public class UserResetPassServlet extends HttpServlet {
         HttpSession session = request.getSession();
 
         try {
-            // Kiểm tra xem ID có tồn tại không trước khi ép kiểu để tránh lỗi
             String userIdStr = request.getParameter("userId");
-            if(userIdStr == null || userIdStr.isEmpty()){
-                session.setAttribute("createError", "Lỗi: Không tìm thấy ID người dùng.");
+            if (userIdStr == null || userIdStr.isEmpty()) {
+                session.setAttribute("createError", "Không tìm thấy ID người dùng.");
                 response.sendRedirect(request.getContextPath() + "/admin/user-list");
                 return;
             }
@@ -42,69 +41,93 @@ public class UserResetPassServlet extends HttpServlet {
             Users user = userDAO.getUserById(userId);
 
             if (user == null) {
-                session.setAttribute("createError", "Không tìm thấy người dùng trong hệ thống!");
+                session.setAttribute("createError", "Không tìm thấy người dùng.");
                 response.sendRedirect(request.getContextPath() + "/admin/user-list");
                 return;
             }
 
-            // --- BƯỚC 1: Tạo mật khẩu mới và lưu vào DB ---
+            // 1. Generate & save new password
             String randomPass = PasswordUtil.generateRandomPassword(8);
             String hashedPass = PasswordUtil.hash(randomPass);
 
             boolean updateSuccess = userDAO.changePassword(userId, hashedPass);
 
-            if (updateSuccess) {
-                // --- BƯỚC 2: Gửi Email ---
-                boolean emailSent = false;
-                try {
-                    Properties props = new Properties();
-                    props.put("mail.smtp.auth", "true");
-                    props.put("mail.smtp.starttls.enable", "true");
-                    props.put("mail.smtp.host", HOST_NAME);
-                    props.put("mail.smtp.port", TSL_PORT);
+            if (!updateSuccess) {
+                session.setAttribute("createError", "Không thể cập nhật mật khẩu trong database.");
+                response.sendRedirect(request.getContextPath() + "/admin/user-list");
+                return;
+            }
 
-                    // QUAN TRỌNG: Thêm 2 dòng này để Google không chặn kết nối
-                    props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
-                    props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+            // 2. Send email
+            boolean emailSent = false;
 
-                    Session mailSession = Session.getInstance(props, new Authenticator() {
-                        @Override
-                        protected PasswordAuthentication getPasswordAuthentication() {
-                            return new PasswordAuthentication(APP_EMAIL, APP_PASSWORD);
-                        }
-                    });
+            try {
+                Properties props = new Properties();
+                props.put("mail.smtp.auth", "true");
+                props.put("mail.smtp.starttls.enable", "true");
+                props.put("mail.smtp.host", HOST_NAME);
+                props.put("mail.smtp.port", TSL_PORT);
+                props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+                props.put("mail.smtp.ssl.protocols", "TLSv1.2");
 
-                    Message message = new MimeMessage(mailSession);
-                    message.setFrom(new InternetAddress(APP_EMAIL, "Em Ban The - Admin System")); // Tên người gửi đẹp hơn
-                    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(user.getEmail()));
-                    message.setSubject("CẤP LẠI MẬT KHẨU MỚI - EMBANTHE");
+                Session mailSession = Session.getInstance(props, new Authenticator() {
+                    @Override
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(APP_EMAIL, APP_PASSWORD);
+                    }
+                });
 
-                    // Nội dung email dạng HTML cho đẹp
-                    String htmlContent = "<div style='font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd;'>"
-                            + "<h3 style='color: #2c3e50;'>Xin chào " + user.getFullName() + ",</h3>"
-                            + "<p>Mật khẩu của bạn đã được Admin reset thành công.</p>"
-                            + "<p>Mật khẩu mới của bạn là: <b style='font-size: 18px; color: #e74c3c; background: #eee; padding: 5px;'>" + randomPass + "</b></p>"
-                            + "<p><i>Vui lòng đăng nhập và đổi lại mật khẩu ngay để bảo mật thông tin.</i></p>"
-                            + "</div>";
+                Message message = new MimeMessage(mailSession);
 
-                    message.setContent(htmlContent, "text/html; charset=utf-8");
+                // ✅ FROM (encode UTF-8)
+                message.setFrom(new InternetAddress(
+                        APP_EMAIL,
+                        MimeUtility.encodeText("Em Ban The - Admin System", "UTF-8", "B")
+                ));
 
-                    Transport.send(message);
-                    emailSent = true;
+                message.setRecipients(
+                        Message.RecipientType.TO,
+                        InternetAddress.parse(user.getEmail())
+                );
 
-                } catch (Exception e) {
-                    e.printStackTrace(); // In lỗi ra Console để xem nếu có
-                    emailSent = false;
-                }
+                // ✅ SUBJECT (encode UTF-8)
+                message.setSubject(
+                        MimeUtility.encodeText(
+                                "CẤP LẠI MẬT KHẨU MỚI - EMBANTHE",
+                                "UTF-8",
+                                "B"
+                        )
+                );
 
-                if (emailSent) {
-                    session.setAttribute("createMessage", "Thành công! Mật khẩu mới đã được gửi tới email: " + user.getEmail());
-                } else {
-                    // Nếu gửi mail lỗi, hiển thị pass ra màn hình để Admin copy gửi thủ công cho khách
-                    session.setAttribute("createError", "Lưu DB thành công nhưng GỬI MAIL LỖI. Pass mới là: " + randomPass);
-                }
+
+                String htmlContent =
+                        "<div style='font-family: Arial, sans-serif; padding:20px;'>"
+                                + "<h3>Xin chào " + user.getFullName() + ",</h3>"
+                                + "<p>Mật khẩu của bạn đã được Admin cấp lại.</p>"
+                                + "<p>Mật khẩu mới: "
+                                + "<b style='color:red;font-size:18px'>" + randomPass + "</b></p>"
+                                + "<p>Vui lòng đăng nhập và đổi lại mật khẩu ngay.</p>"
+                                + "</div>";
+
+                message.setContent(htmlContent, "text/html; charset=UTF-8");
+
+                Transport.send(message);
+                emailSent = true;
+
+            } catch (Exception mailEx) {
+                mailEx.printStackTrace();
+            }
+
+            if (emailSent) {
+                session.setAttribute(
+                        "createMessage",
+                        "Reset mật khẩu thành công. Email đã gửi tới: " + user.getEmail()
+                );
             } else {
-                session.setAttribute("createError", "Lỗi Database: Không thể cập nhật mật khẩu.");
+                session.setAttribute(
+                        "createError",
+                        "Reset thành công nhưng gửi mail lỗi. Mật khẩu mới: " + randomPass
+                );
             }
 
         } catch (Exception e) {
@@ -114,6 +137,4 @@ public class UserResetPassServlet extends HttpServlet {
 
         response.sendRedirect(request.getContextPath() + "/admin/user-list");
     }
-
-
 }

@@ -63,15 +63,10 @@ public class CreateNewUserController extends HttpServlet {
                 session.setAttribute("oldPhone", phone);
                 session.setAttribute("oldRole", role);
                 session.setAttribute("oldStatus", status);
-                // Lưu ý: Tuyệt đối KHÔNG lưu passwordRaw vì lý do bảo mật
 
                 response.sendRedirect(request.getContextPath() + "/admin/user-list");
-                return; // Dừng xử lý tại đây
+                return;
             }
-
-            // ============================================================
-            // NẾU THÀNH CÔNG
-            // ============================================================
 
             // 2. Hash password
             String passwordHash = PasswordUtil.hash(passwordRaw);
@@ -86,17 +81,15 @@ public class CreateNewUserController extends HttpServlet {
             newUser.setRole(role);
             newUser.setStatus(status);
 
-            // 4. Insert DB
             boolean isSuccess = userDAO.insertUser(newUser);
 
             if (isSuccess) {
                 session.setAttribute("createMessage", "Thêm mới thành công user: " + username);
-                // Xóa cờ modal nếu lỡ còn sót
                 session.removeAttribute("openCreateModal");
             } else {
                 session.setAttribute("createError", "Lỗi database: Không thể thêm mới user.");
                 session.setAttribute("openCreateModal", "true");
-                // Cũng nên lưu lại data cũ ở đây đề phòng lỗi DB
+
                 session.setAttribute("oldUsername", username);
                 session.setAttribute("oldFullname", fullname);
                 session.setAttribute("oldEmail", email);
@@ -112,14 +105,10 @@ public class CreateNewUserController extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/admin/user-list");
     }
 
-    /**
-     * Validate backend khi tạo user mới
-     */
     private String validateUserCreate(String username, String password, String fullname,
                                       String email, String phone, String role,
                                       String status, UserDAO userDAO) {
 
-        // 1. Required fields
         if (username == null || username.trim().isEmpty()) return "Username không được để trống";
         if (fullname == null || fullname.trim().isEmpty()) return "Họ tên không được để trống";
         if (email == null || email.trim().isEmpty()) return "Email không được để trống";
@@ -150,6 +139,6 @@ public class CreateNewUserController extends HttpServlet {
         if (userDAO.checkUsernameExists(username)) return "Tên đăng nhập đã tồn tại";
         if (userDAO.checkEmailExists(email)) return "Email đã được sử dụng";
 
-        return null; // hợp lệ
+        return null;
     }
 }
