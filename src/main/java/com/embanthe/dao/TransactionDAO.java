@@ -37,6 +37,19 @@ public class TransactionDAO {
         return -1;
     }
 
+
+    public void createTransaction(Connection conn, int userId, int orderId, double amount, String message) throws SQLException {
+        String sql = "INSERT INTO transactions (user_id, order_id, amount, type, status, message, created_at) VALUES (?, ?, ?, 'PURCHASE', 'SUCCESS', ?, NOW())";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.setInt(2, orderId);
+            ps.setDouble(3, -amount); // Lưu số âm: ví dụ -50000
+            ps.setString(4, message);
+            ps.executeUpdate();
+        }
+    }
+
     public Transactions getTransactionById(int id) {
         String sql = "SELECT * FROM transactions WHERE transaction_id = ?";
         try (Connection conn = DBContext.getInstance().getConnection();

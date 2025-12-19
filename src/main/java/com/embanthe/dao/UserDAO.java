@@ -60,6 +60,30 @@ public class UserDAO {
         }
     }
 
+    // Hàm này nhận Connection từ bên ngoài để thực hiện Transaction
+    public void updateBalance(Connection conn, int userId, double newBalance) throws SQLException {
+        String sql = "UPDATE Users SET balance = ? WHERE user_id = ?";
+        // Lưu ý: Không dùng try-with-resources cho 'conn' vì nó được quản lý ở bên ngoài (Service)
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setDouble(1, newBalance);
+            ps.setInt(2, userId);
+            ps.executeUpdate();
+        }
+    }
+
+    public double getBalanceForUpdate(Connection conn, int userId) throws SQLException {
+        String sql ="SELECT balance FROM Users WHERE user_id = ? FOR UPDATE";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble("balance");
+                }
+            }
+        }
+        return 0.0;
+    }
+
     // 4. Lấy User theo Email
     public Users getUserByEmail(String email) {
         String sql = "SELECT * FROM Users WHERE email = ?";
