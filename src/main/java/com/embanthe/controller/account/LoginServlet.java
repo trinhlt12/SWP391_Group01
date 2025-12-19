@@ -18,17 +18,17 @@ public class LoginServlet extends HttpServlet {
 
         String code = request.getParameter("code");
         Cookie[] cookies = request.getCookies();
-        String email = null;
-        String password = null;
+        String username = null;
+//        String password = null;
 
         if (cookies != null) {
             for (Cookie c : cookies) {
-                if ("email".equals(c.getName())) {
-                    email = c.getValue();
+                if ("username".equals(c.getName())) {
+                    username = c.getValue();
                 }
-                if ("password".equals(c.getName())) {
-                    password = c.getValue();
-                }
+//                if ("password".equals(c.getName())) {
+//                    password = c.getValue();
+//                }
             }
         }
         // Nếu không có code → Google từ chối hoặc lỗi
@@ -39,14 +39,14 @@ public class LoginServlet extends HttpServlet {
 
         try {
             // B1: Lấy access token + thông tin từ Google
-            String accessToken = GoogleLoginController.getToken(code);
-            Users googleUser  = GoogleLoginController.getUserInfo(accessToken);
+            String accessToken = GoogleController.getToken(code);
+            Users googleUser  = GoogleController.getUserInfo(accessToken);
             UserDAO userDAO = new UserDAO();
             Users existingUser = userDAO.getUserByEmail(googleUser.getEmail());
 
             if (existingUser != null) {
                 // Nếu email đã tồn tại trong DB → báo lỗi
-                request.setAttribute("message", "Tài khoản với email này đã tồn tại. Vui lòng đăng nhập bằng email & mật khẩu.");
+                request.setAttribute("message", "Tài khoản với email này đã tồn tại. Vui lòng đăng nhập lại.");
                 request.getRequestDispatcher("page/system/login.jsp").forward(request, response);
                 return;
             }
@@ -73,29 +73,52 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String email = request.getParameter("email");
+        String username = request.getParameter("username");
         String password = request.getParameter("password");
         String remember = request.getParameter("remember");
         try {
             AuthDAO authDAO = new AuthDAO();
-            Users user = authDAO.login(email, password);
+            Users user = authDAO.login(username, password);
 
             if (user != null) {
                 // Lưu user vào session
+                UserDAO userDAO = new UserDAO();
+                String status = userDAO.checkStatus(user.getUsername());
+                if ("INACTIVE".equalsIgnoreCase(status)) {
+                    request.setAttribute("message", "Tài khoản của bạn đang bị khóa. Vui lòng liên hệ hỗ trợ.");
+                    request.getRequestDispatcher("page/system/login.jsp").forward(request, response);
+                    return;
+                } else if ("BANNED".equalsIgnoreCase(status)) {
+                    request.setAttribute("message", "Tài khoản của bạn đã bị cấm.");
+                    request.getRequestDispatcher("page/system/login.jsp").forward(request, response);
+                    return;
+                }
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
-                session.setAttribute("email", user.getEmail());
+                session.setAttribute("username", user.getUsername());
                 if (remember != null) {
-                    Cookie cookieEmail = new Cookie("email", email);
-                    Cookie cookiePass = new Cookie("password", password);
-                    cookieEmail.setPath("/");
-                    cookiePass.setPath("/");
+                    Cookie cookieUser = new Cookie("username", username);
+//                    Cookie cookiePass = new Cookie("password", password);
+                    cookieUser.setPath("/");
+//                    cookiePass.setPath("/");
 
-                    cookieEmail.setMaxAge(2 * 60 * 60);
-                    cookiePass.setMaxAge(2 * 60 * 60);
+                    cookieUser.setMaxAge(2 * 60 * 60);
+//                    cookiePass.setMaxAge(2 * 60 * 60);
 
-                    response.addCookie(cookieEmail);
-                    response.addCookie(cookiePass);
+                    response.addCookie(cookieUser);
+//                    response.addCookie(cookiePass);
+                }else {
+                    Cookie cookieUser = new Cookie("username", "");
+//                    Cookie cookiePass = new Cookie("password", "");
+
+                    cookieUser.setPath("/");
+//                    cookiePass.setPath("/");
+
+                    cookieUser.setMaxAge(0);
+//                    cookiePass.setMaxAge(0);
+
+                    response.addCookie(cookieUser);
+//                    response.addCookie(cookiePass);
                 }
                 // Kiểm tra role (CUSTOMER/ADMIN)
                 if ("CUSTOMER".equalsIgnoreCase(user.getRole())) {
@@ -110,7 +133,7 @@ public class LoginServlet extends HttpServlet {
 
             } else {
                 // Sai thông tin đăng nhập
-                request.setAttribute("message", "Email hoặc mật khẩu không đúng!");
+                request.setAttribute("message", "Username hoặc mật khẩu không đúng!");
                 request.getRequestDispatcher("page/system/login.jsp").forward(request, response);
             }
         } catch (SQLException e) {

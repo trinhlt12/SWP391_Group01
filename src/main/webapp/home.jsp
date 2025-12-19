@@ -243,11 +243,16 @@
 
                 <div class="row text-center">
                     <c:forEach var="p" items="${providerList}">
-                        <div class="col">
-                            <img src="${pageContext.request.contextPath}/${p.logoUrl}"
-                                 style="max-width:100px;">
-                            <p>${p.providerName}</p>
+                        <div class="swiper-slide">
+                            <div class="testimonial-item">
+                                <img src="${p.logoUrl}" alt="${p.providerName}" width="150"
+                                     style="justify-content: center">
+                                <h3>${p.providerName}</h3>
+
+
+                            </div>
                         </div>
+                        <!-- End testimonial item -->
                     </c:forEach>
                 </div>
 
@@ -335,6 +340,33 @@
                     </p>
                 </div>
             </div>
+
+            <!-- Useful Links -->
+            <div class="col-lg-2 col-md-3 footer-links">
+                <h4>Liên kết</h4>
+                <ul>
+                    <li><i class="bi bi-chevron-right"></i> <a href="/">Trang chủ</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="/about">Giới thiệu</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="/cards">Mua thẻ</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="/contact">Liên hệ</a></li>
+                </ul>
+            </div>
+
+            <!-- Services -->
+            <div class="col-lg-2 col-md-3 footer-links">
+                <h4>Dịch vụ</h4>
+                <ul>
+                    <li><i class="bi bi-chevron-right"></i> <a href="${pageContext.request.contextPath}/service">Thẻ
+                        điện thoại</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="${pageContext.request.contextPath}/service">Thẻ
+                        game</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="${pageContext.request.contextPath}/service">Nạp
+                        điện thoại</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="${pageContext.request.contextPath}/ewallet">Ví điện
+                        tử</a></li>
+                </ul>
+            </div>
+
             <!-- Social -->
             <div class="col-lg-4 col-md-12">
                 <h4>Kết nối với chúng tôi</h4>

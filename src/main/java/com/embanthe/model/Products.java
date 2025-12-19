@@ -38,7 +38,6 @@ public class Products {
     public int getProductId() {
         return productId;
     }
-
     public void setProductId(int productId) {
         this.productId = productId;
     }
@@ -46,7 +45,6 @@ public class Products {
     public int getProviderId() {
         return providerId;
     }
-
     public void setProviderId(int providerId) {
         this.providerId = providerId;
     }
@@ -54,7 +52,6 @@ public class Products {
     public int getCategoryId() {
         return categoryId;
     }
-
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
@@ -62,7 +59,6 @@ public class Products {
     public String getProductName() {
         return productName;
     }
-
     public void setProductName(String productName) {
         this.productName = productName;
     }
@@ -70,7 +66,6 @@ public class Products {
     public double getPrice() {
         return price;
     }
-
     public void setPrice(double price) {
         this.price = price;
     }
@@ -78,7 +73,6 @@ public class Products {
     public int getQuantity() {
         return quantity;
     }
-
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
@@ -86,7 +80,6 @@ public class Products {
     public String getImageUrl() {
         return imageUrl;
     }
-
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }

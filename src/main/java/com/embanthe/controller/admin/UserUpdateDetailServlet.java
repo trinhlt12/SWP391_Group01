@@ -1,6 +1,8 @@
 package com.embanthe.controller.admin;
 
 import com.embanthe.dao.UserDAO;
+import com.embanthe.model.Users;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -28,6 +30,11 @@ public class UserUpdateDetailServlet extends HttpServlet {
             String role = request.getParameter("role");
             String status = request.getParameter("status");
 
+            // Validate ID
+            if (idStr == null || idStr.isEmpty()) {
+                response.sendRedirect(request.getContextPath() + "/admin/user-list");
+                return;
+            }
             int userId = Integer.parseInt(idStr);
 
 
@@ -38,21 +45,36 @@ public class UserUpdateDetailServlet extends HttpServlet {
                 return;
             }
 
-            // 3. Gọi DAO update thông tin
+            // 3. Tạo đối tượng Users để truyền vào DAO (SỬA Ở ĐÂY)
+            Users userToUpdate = Users.builder()
+                    .userId(userId)
+                    .fullName(fullName)
+                    .email(email)
+                    .phone(phone)
+                    .role(role)
+                    .status(status)
+                    .build();
+
+            // 4. Gọi DAO update
             UserDAO userDAO = new UserDAO();
-            boolean isUpdated = userDAO.updateUserInfo(userId, fullName, email, phone, role, status);
+
+            // Hàm updateUser trong DAO nhận vào đối tượng Users
+            boolean isUpdated = userDAO.updateUser(userToUpdate);
 
             if (isUpdated) {
                 session.setAttribute("message", "Cập nhật thông tin thành công!");
             } else {
-                session.setAttribute("error", "Lỗi cập nhật! Có thể Email đã tồn tại.");
+                session.setAttribute("error", "Lỗi cập nhật! Có thể Email đã tồn tại hoặc lỗi server.");
             }
 
             response.sendRedirect(request.getContextPath() + "/admin/user-detail?id=" + userId);
 
+        } catch (NumberFormatException e) {
+            session.setAttribute("error", "ID người dùng không hợp lệ.");
+            response.sendRedirect(request.getContextPath() + "/admin/user-list");
         } catch (Exception e) {
             e.printStackTrace();
-            session.setAttribute("error", "Lỗi hệ thống.");
+            session.setAttribute("error", "Lỗi hệ thống: " + e.getMessage());
             response.sendRedirect(request.getContextPath() + "/admin/user-list");
         }
     }

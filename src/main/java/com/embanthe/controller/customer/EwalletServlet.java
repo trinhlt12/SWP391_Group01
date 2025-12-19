@@ -18,8 +18,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-@WebServlet(name = "DepositServlet", urlPatterns = {"/ewallet"})
-public class DepositServlet extends HttpServlet {
+@WebServlet(name = "EwalletServlet", urlPatterns = {"/ewallet"})
+public class EwalletServlet extends HttpServlet {
 
     private final PaymentService paymentService = new PaymentService();
     private final TransactionDAO transactionDAO = new TransactionDAO();
@@ -28,7 +28,7 @@ public class DepositServlet extends HttpServlet {
 
     private static String walletPath = "/page/customer/ewallet.jsp";
 
-    public DepositServlet() throws SQLException {
+    public EwalletServlet() throws SQLException {
         userDAO = new UserDAO();
     }
 
@@ -38,16 +38,43 @@ public class DepositServlet extends HttpServlet {
         HttpSession session = req.getSession();
         Users currentUser = (Users) session.getAttribute("user");
 
+        String flashError = (String) session.getAttribute("flashError");
+        if (flashError != null) {
+            req.setAttribute("errorMessage", flashError);
+            session.removeAttribute("flashError");
+        }
+
         if (currentUser != null) {
-            Users updatedUser = userDAO.getUserById((int) currentUser.getUserId());
+            Users updatedUser = userDAO.getUserById(currentUser.getUserId()); // 1
             if (updatedUser != null) {
                 session.setAttribute("user", updatedUser);
                 currentUser = updatedUser;
             }
+            String type = req.getParameter("type");
+            if (type == null || type.isEmpty()) {
+                type = "ALL";
+            }
+            int page = 1;
+            int pageSize = 10;
 
-            List<Transactions> transactionList = transactionDAO.getRecentTransactions((int) currentUser.getUserId(), 10);
+            if (req.getParameter("page") != null) {
+                try {
+                    page = Integer.parseInt(req.getParameter("page"));
+                } catch (NumberFormatException e) {
+                    page = 1;
+                }
+            }
+
+            int totalTransactions = transactionDAO.countTransactionsByUserId((int) currentUser.getUserId(), type); //2
+            int totalPages = (int) Math.ceil((double) totalTransactions / pageSize);
+
+            //3
+            List<Transactions> transactionList = transactionDAO.getRecentTransactions((int) currentUser.getUserId(), type, page, pageSize);
 
             req.setAttribute("transactionList", transactionList);
+            req.setAttribute("currentPage", page);
+            req.setAttribute("totalPages", totalPages);
+            req.setAttribute("currentType", type);
 
         } else {
             resp.sendRedirect(req.getContextPath() + "/login");
@@ -56,6 +83,7 @@ public class DepositServlet extends HttpServlet {
 
         req.getRequestDispatcher(walletPath).forward(req, resp);
     }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
@@ -77,7 +105,6 @@ public class DepositServlet extends HttpServlet {
             }
 
             long amount = Long.parseLong(amountStr);
-
             if (amount < 10000 || amount > 50000000) {
                 request.setAttribute("errorMessage", "Số tiền nạp phải từ 10.000đ đến 50.000.000đ");
                 request.getRequestDispatcher(walletPath).forward(request, response);
@@ -94,20 +121,23 @@ public class DepositServlet extends HttpServlet {
             trans.setMessage("Nạp tiền vào ví qua VNPay");
             trans.setOrderId(0);
 
-            int transactionId = transactionDAO.createDepositTransaction(trans);
+            int transactionId = transactionDAO.createDepositTransaction(trans); //4
 
             if (transactionId == -1) {
                 request.setAttribute("errorMessage", "Lỗi hệ thống: Không thể tạo giao dịch.");
                 request.getRequestDispatcher(walletPath).forward(request, response);
                 return;
             }
+            //5
             String paymentUrl = paymentService.createDepositUrl((int) user.getUserId(), amount, ipAddr, String.valueOf(transactionId));
 
             response.sendRedirect(paymentUrl);
 
         } catch (NumberFormatException e) {
-            request.setAttribute("errorMessage", "Số tiền không hợp lệ.");
-            request.getRequestDispatcher(walletPath).forward(request, response);
+            request.getSession().setAttribute("flashError", "Lỗi: Số tiền không hợp lệ");
+            response.sendRedirect(request.getContextPath() + "/ewallet");
+            /*request.setAttribute("errorMessage", "Số tiền không hợp lệ.");
+            request.getRequestDispatcher(walletPath).forward(request, response);*/
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("errorMessage", "Lỗi: " + e.getMessage());

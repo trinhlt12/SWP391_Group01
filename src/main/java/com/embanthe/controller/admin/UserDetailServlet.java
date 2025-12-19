@@ -1,6 +1,6 @@
 package com.embanthe.controller.admin;
 
-import com.embanthe.dao.TransactionsDAO;
+import com.embanthe.dao.TransactionDAO;
 import com.embanthe.dao.UserDAO;
 import com.embanthe.model.Transactions;
 import com.embanthe.model.Users;
@@ -19,7 +19,7 @@ public class UserDetailServlet extends HttpServlet {
 
 
     private final UserDAO userDAO = new UserDAO();
-    private final TransactionsDAO transDAO = new TransactionsDAO();
+    private final TransactionDAO transDAO = new TransactionDAO();
 
     public UserDetailServlet() throws SQLException {
     }
