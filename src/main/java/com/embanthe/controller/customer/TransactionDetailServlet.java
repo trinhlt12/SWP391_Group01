@@ -35,6 +35,7 @@ public class TransactionDetailServlet extends HttpServlet {
         try {
             int transId = Integer.parseInt(idStr);
 
+            //9
             Transactions trans = transactionDAO.getTransactionById(transId);
 
             if (trans == null || trans.getUserId() != user.getUserId()) {

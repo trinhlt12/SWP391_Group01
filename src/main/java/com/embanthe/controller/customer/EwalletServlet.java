@@ -38,8 +38,14 @@ public class EwalletServlet extends HttpServlet {
         HttpSession session = req.getSession();
         Users currentUser = (Users) session.getAttribute("user");
 
+        String flashError = (String) session.getAttribute("flashError");
+        if(flashError != null){
+            req.setAttribute("errorMessage", flashError);
+            session.removeAttribute("flashError");
+        }
+
         if (currentUser != null) {
-            Users updatedUser = userDAO.getUserById((int) currentUser.getUserId());
+            Users updatedUser = userDAO.getUserById((int) currentUser.getUserId()); // 1
             if (updatedUser != null) {
                 session.setAttribute("user", updatedUser);
                 currentUser = updatedUser;
@@ -59,10 +65,10 @@ public class EwalletServlet extends HttpServlet {
                 }
             }
 
-            int totalTransactions = transactionDAO.countTransactionsByUserId((int) currentUser.getUserId());
+            int totalTransactions = transactionDAO.countTransactionsByUserId((int) currentUser.getUserId()); //2
             int totalPages = (int) Math.ceil((double) totalTransactions / pageSize);
 
-
+            //3
             List<Transactions> transactionList = transactionDAO.getRecentTransactions((int) currentUser.getUserId(), status, page, pageSize);
 
             req.setAttribute("transactionList", transactionList);
@@ -77,6 +83,7 @@ public class EwalletServlet extends HttpServlet {
 
         req.getRequestDispatcher(walletPath).forward(req, resp);
     }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
@@ -115,20 +122,23 @@ public class EwalletServlet extends HttpServlet {
             trans.setMessage("Nạp tiền vào ví qua VNPay");
             trans.setOrderId(0);
 
-            int transactionId = transactionDAO.createDepositTransaction(trans);
+            int transactionId = transactionDAO.createDepositTransaction(trans); //4
 
             if (transactionId == -1) {
                 request.setAttribute("errorMessage", "Lỗi hệ thống: Không thể tạo giao dịch.");
                 request.getRequestDispatcher(walletPath).forward(request, response);
                 return;
             }
+            //5
             String paymentUrl = paymentService.createDepositUrl((int) user.getUserId(), amount, ipAddr, String.valueOf(transactionId));
 
             response.sendRedirect(paymentUrl);
 
         } catch (NumberFormatException e) {
-            request.setAttribute("errorMessage", "Số tiền không hợp lệ.");
-            request.getRequestDispatcher(walletPath).forward(request, response);
+            request.getSession().setAttribute("flashError", "Lỗi: Số tiền không hợp lệ");
+            response.sendRedirect(request.getContextPath() + "/ewallet");
+            /*request.setAttribute("errorMessage", "Số tiền không hợp lệ.");
+            request.getRequestDispatcher(walletPath).forward(request, response);*/
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("errorMessage", "Lỗi: " + e.getMessage());
