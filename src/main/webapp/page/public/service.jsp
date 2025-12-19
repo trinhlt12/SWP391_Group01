@@ -514,7 +514,7 @@
                 <c:forEach var="p" items="${phoneCards}">
                     <div class="product-card"
                          data-provider="${p.providerName.toLowerCase()}"
-                         onclick="selectProduct('${p.productName}', ${p.price})">
+                         onclick="selectProduct('${p.productId}','${p.productName}', ${p.price})">
 
                         <div class="selected-badge">✓</div>
 
@@ -604,7 +604,9 @@
             </div>
 
             <!-- Order Form (hidden by default) -->
-            <form id="orderForm" style="display: none;" action="<%= request.getContextPath() %>/purchase" method="POST">
+            <form id="orderForm" style="display: none;" action="<%= request.getContextPath() %>/review-order" method="POST">
+
+                <input type="hidden" id="productId" name="productId">
 
                 <div class="form-group">
                     <label class="form-label">Tên sản phẩm</label>
@@ -796,7 +798,7 @@
     }
 
     // Select product
-    function selectProduct(name, price) {
+    function selectProduct(id, name, price) {
         // Remove previous selection
         document.querySelectorAll('.product-card').forEach(card => {
             card.classList.remove('selected');
@@ -811,6 +813,7 @@
         quantity = 1;
 
         // Update form
+        document.getElementById('productId').value = id;
         document.getElementById('productName').value = name;
         document.getElementById('quantity').value = quantity;
         document.getElementById('unitPrice').value = price;

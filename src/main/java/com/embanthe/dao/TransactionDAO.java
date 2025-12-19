@@ -37,6 +37,19 @@ public class TransactionDAO {
         return -1;
     }
 
+
+    public void createTransaction(Connection conn, int userId, int orderId, double amount, String message) throws SQLException {
+        String sql = "INSERT INTO transactions (user_id, order_id, amount, type, status, message, created_at) VALUES (?, ?, ?, 'PURCHASE', 'SUCCESS', ?, NOW())";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.setInt(2, orderId);
+            ps.setDouble(3, -amount); // Lưu số âm: ví dụ -50000
+            ps.setString(4, message);
+            ps.executeUpdate();
+        }
+    }
+
     public Transactions getTransactionById(int id) {
         String sql = "SELECT * FROM transactions WHERE transaction_id = ?";
         try (Connection conn = DBContext.getInstance().getConnection();
@@ -60,6 +73,29 @@ public class TransactionDAO {
         return null;
     }
 
+    public Transactions getTransactionByOrderId(int orderId) {
+        String sql = "SELECT * FROM transactions WHERE order_id = ? AND type = 'PURCHASE'";
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, orderId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Transactions t = new Transactions();
+                    t.setTransactionId(rs.getInt("transaction_id"));
+                    t.setUserId(rs.getInt("user_id"));
+                    t.setAmount(rs.getDouble("amount"));
+                    t.setType(rs.getString("type"));
+                    t.setStatus(rs.getString("status"));
+                    t.setMessage(rs.getString("message"));
+                    t.setCreatedAt(rs.getTimestamp("created_at"));
+                    return t;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     public boolean updateTransactionStatus(int transactionId, String status, String message) {
         String sql = "UPDATE transactions SET status = ?, message = ? WHERE transaction_id = ?";
         try (Connection conn = DBContext.getInstance().getConnection();

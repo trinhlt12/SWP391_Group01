@@ -31,4 +31,9 @@ public class ServiceServlet extends HttpServlet {
         req.getRequestDispatcher("/page/public/service.jsp").forward(req, resp);
     }
 
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doGet(req, resp);
+    }
+
 }
