@@ -16,7 +16,7 @@ public class PurchaseService {
     private final OrderDAO orderDAO = new OrderDAO();
     private final TransactionDAO transactionDAO = new TransactionDAO();
 
-    public String PurchaseService(int userId, int productId, int quantity) {
+    public String processPurchase(int userId, int productId, int quantity) {
         Connection conn = null;
         try {
             conn = DBContext.getInstance().getConnection();
