@@ -31,14 +31,14 @@ public class PurchaseService {
             double totalAmount = product.getPrice() * quantity;
 
             //locking:
-            double currentBalance = userDAO.getBalanceForUpdate(conn, userId);
+            double currentBalance = userDAO.getBalanceForUpdate(conn, userId); //1
 
             if (currentBalance < totalAmount) {
                 conn.rollback();
                 return "Số dư trong ví không đủ để thực hiện giao dịch này";
             }
 
-            List<CardItems> cardsToSell = cardItemDAO.getAvailableCardsForUpdate(conn, productId, quantity);
+            List<CardItems> cardsToSell = cardItemDAO.getAvailableCardsForUpdate(conn, productId, quantity); //2
 
             if (cardsToSell.size() < quantity) {
                 conn.rollback();
@@ -47,21 +47,22 @@ public class PurchaseService {
 
             //execution:
             double newBalance = currentBalance - totalAmount;
-            userDAO.updateBalance(conn, userId, newBalance);
+            userDAO.updateBalance(conn, userId, newBalance); //3
 
+            //4
             int orderId = orderDAO.createOrder(conn, userId, productId, quantity, totalAmount, product.getProductName(), product.getPrice());
             for (CardItems card : cardsToSell) {
-                cardItemDAO.updateCardStatusToSold(conn, card.getCardItemId(), orderId);
+                cardItemDAO.updateCardStatusToSold(conn, card.getCardItemId(), orderId); //5
             }
 
-            boolean updateQuantitySucess = productDAO.adjustQuantityWithCheck(conn, productId, -quantity);
+            boolean updateQuantitySucess = productDAO.adjustQuantityWithCheck(conn, productId, -quantity); //6
             if (!updateQuantitySucess) {
                 conn.rollback();
                 return "Lỗi cập nhật kho hàng";
             }
 
             String transactionMessage = "Mua " + quantity + " " + product.getProductName();
-            transactionDAO.createTransaction(conn, userId, orderId, totalAmount, transactionMessage);
+            transactionDAO.createTransaction(conn, userId, orderId, totalAmount, transactionMessage); //7
             conn.commit();
             return "SUCCESS|" + orderId;
         } catch (Exception e) {

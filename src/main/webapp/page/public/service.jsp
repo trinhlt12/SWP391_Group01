@@ -533,63 +533,24 @@
 
             <!-- Game Cards Grid (Hidden by default) -->
             <div class="product-grid" id="gameProducts" style="display: none;">
-                <!-- Garena Cards -->
-                <div class="product-card" data-provider="garena" onclick="selectProduct('Thẻ Garena 20.000đ', 20000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #ff4500;">🎮</div>
-                    <div class="product-name">Garena</div>
-                    <div class="product-value">20.000₫</div>
-                    <div class="product-price">20.000₫</div>
-                </div>
+                <c:forEach var="p" items="${gameCards}">
+                    <div class="product-card"
+                         data-provider="${p.providerName.toLowerCase()}"
+                         onclick="selectProduct('${p.productId}','${p.productName}', ${p.price})">
 
-                <div class="product-card" data-provider="garena" onclick="selectProduct('Thẻ Garena 50.000đ', 50000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #ff4500;">🎮</div>
-                    <div class="product-name">Garena</div>
-                    <div class="product-value">50.000₫</div>
-                    <div class="product-price">50.000₫</div>
-                </div>
+                        <div class="selected-badge">✓</div>
 
-                <div class="product-card" data-provider="garena" onclick="selectProduct('Thẻ Garena 100.000đ', 100000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #ff4500;">🎮</div>
-                    <div class="product-name">Garena</div>
-                    <div class="product-value">100.000₫</div>
-                    <div class="product-price">100.000₫</div>
-                </div>
+                        <div class="product-logo" style="color: #e30613;">
+                                ${p.providerName == 'Garena' ? '📞' : '📱'}
+                        </div>
 
-                <div class="product-card" data-provider="garena" onclick="selectProduct('Thẻ Garena 200.000đ', 200000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #ff4500;">🎮</div>
-                    <div class="product-name">Garena</div>
-                    <div class="product-value">200.000₫</div>
-                    <div class="product-price">200.000₫</div>
-                </div>
+                        <div class="product-name">${p.providerName}</div>
 
-                <!-- Steam Cards -->
-                <div class="product-card" data-provider="steam" onclick="selectProduct('Thẻ Steam 100.000đ', 100000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #171a21;">🎯</div>
-                    <div class="product-name">Steam</div>
-                    <div class="product-value">100.000₫</div>
-                    <div class="product-price">100.000₫</div>
-                </div>
-
-                <div class="product-card" data-provider="steam" onclick="selectProduct('Thẻ Steam 200.000đ', 200000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #171a21;">🎯</div>
-                    <div class="product-name">Steam</div>
-                    <div class="product-value">200.000₫</div>
-                    <div class="product-price">200.000₫</div>
-                </div>
-
-                <div class="product-card" data-provider="steam" onclick="selectProduct('Thẻ Steam 500.000đ', 500000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #171a21;">🎯</div>
-                    <div class="product-name">Steam</div>
-                    <div class="product-value">500.000₫</div>
-                    <div class="product-price">500.000₫</div>
-                </div>
+                        <div class="product-value">
+                            <fmt:formatNumber value="${p.price}" pattern="#,###" currencySymbol=""/>đ
+                        </div>
+                    </div>
+                </c:forEach>
             </div>
         </main>
 
