@@ -60,7 +60,7 @@ public class PurchaseService {
                 return "Lỗi cập nhật kho hàng";
             }
 
-            String transactionMessage = "Mua" + quantity + " mã thẻ" + product.getProductName();
+            String transactionMessage = "Mua " + quantity + " " + product.getProductName();
             transactionDAO.createTransaction(conn, userId, orderId, totalAmount, transactionMessage);
             conn.commit();
             return "SUCCESS|" + orderId;
