@@ -1,14 +1,13 @@
 <%--
   Created by IntelliJ IDEA.
   User: hoang
-  Date: 11/12/2025
-  Time: 9:30 SA
+  Date: 18/12/2025
+  Time: 1:45 CH
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
     <meta charset="utf-8">
@@ -27,8 +26,6 @@
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
           rel="stylesheet">
-
-
     <link href="assetsHome/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="assetsHome/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <link href="assetsHome/vendor/aos/aos.css" rel="stylesheet">
@@ -55,7 +52,7 @@
 
             <ul>
 
-                <li><a href="#hero" >Home</a></li>
+                <li><a href="#hero">Home</a></li>
                 <li><a href="${pageContext.request.contextPath}/service">Dịch Vụ</a></li>
                 <c:if test="${not empty sessionScope.user}">
                     <li><a href="${pageContext.request.contextPath}/ewallet">Ewallet</a></li>
@@ -115,7 +112,7 @@
                     <ul class="flex items-center space-x-2 text-base ">
                         <li><a href="home" class="active">Home</a></li>
                         <li class="flex items-center"><span class=" text-[#000000]">&gt;</span><span
-                                class="text-[#000000] font-medium">Tài khoản</span></li>
+                                class="text-[#000000] font-medium">Support</span></li>
                     </ul>
                 </nav>
                 <div class="card border-0 shadow-sm">
@@ -125,11 +122,11 @@
                             <div class="col-lg-3 border-end">
                                 <div class="p-4">
                                     <div class="nav flex-column nav-pills">
-                                        <a class="nav-link active" href="userprofile"><i class="fas fa-user me-2"></i>Thông
+                                        <a class="nav-link " href="userprofile"><i class="fas fa-user me-2"></i>Thông
                                             Tin Cá Nhân</a>
                                         <a class="nav-link" href="changePassword"><i class="fas fa-lock me-2"></i>Đổi
                                             Mật Khẩu</a>
-                                        <a class="nav-link" href="listSupport"><i class="fas fa-credit-card me-2"></i>Support</a>
+                                        <a class="nav-link active" href="listSupport"><i class="fas fa-credit-card me-2"></i>Support</a>
                                         <a class="nav-link" href="#"><i class="fas fa-chart-line me-2"></i>Activity</a>
                                     </div>
                                 </div>
@@ -137,61 +134,39 @@
 
                             <!-- Content Area -->
                             <div class="col-lg-9">
-                                <c:if test="${not empty success}">
-                                    <div style="color:blue; font-weight:bold;">
-                                            ${success}
-                                    </div>
-                                    <c:remove var="success" scope="session"/>
-                                </c:if>
-                                <c:if test="${not empty error}">
-                                    <div style="color:red; font-weight:bold;">
-                                            ${error}
-                                    </div>
-                                </c:if>
+
                                 <div class="p-4">
                                     <!-- Personal Information -->
                                     <div class="mb-4">
-                                        <h5 class="mb-4">Thông tin cá nhân</h5>
-<%--                                        <label class="form-label">Username:</label>--%>
-<%--                                        <span class="fw-bold text-primary"> ${sessionScope.user.username} </span>--%>
-                                        <form action="userprofile" method="post" id="profileForm">
-                                            <div class="position-absolute top-0 end-0 p-3">
-                                                <!-- Nút Edit -->
-                                                <button type="button" class="btn btn-light" id="editBtn">
-                                                    <i class="fas fa-edit me-2"></i>Edit Cover
-                                                </button>
-                                                <!-- Nút Save (ẩn mặc định) -->
-                                                <button type="submit" class="btn btn-primary d-none" id="saveBtn">
-                                                    Save
-                                                </button>
-                                                <!-- Nút Cancel (ẩn mặc định) -->
-                                                <button type="button" class="btn btn-secondary d-none" id="cancelBtn">
-                                                    Cancel
-                                                </button>
-                                            </div>
-                                            <div class="row g-3">
-
-                                                <div class="col-md-6">
-                                                    <label class="form-label">Fullname</label>
-                                                    <input type="text" class="form-control" id="fullNameInput"
-                                                           name="fullName"
-                                                           value="${sessionScope.user.fullName}" readonly>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="form-label">Phone <span class="text-muted">(tùy chọn)</span></label>
-                                                    <input type="tel" class="form-control" id="phoneInput" name="phone"
-                                                           value="${sessionScope.user.phone != null ? sessionScope.user.phone : ''}"
-                                                           placeholder="Để trống nếu không muốn cập nhật"
-                                                           readonly>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="form-label">Email</label>
-                                                    <input type="tel" class="form-control" id="emailInput" name="email"
-                                                           value="${sessionScope.user.email}" readonly>
-                                                </div>
-
-                                            </div>
-                                        </form>
+                                        <h5 class="mb-4">Danh sách yêu cầu hỗ trợ</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover align-middle">
+                                                <thead class="table-light">
+                                                <tr>
+                                                    <th scope="col">ID</th>
+                                                    <th scope="col">Tiêu đề</th>
+                                                    <th scope="col">Nội dung</th>
+                                                    <th scope="col">Trạng thái</th>
+                                                    <th scope="col">Ngày gửi</th>
+                                                    <th scope="col">Ghi chú xử lý</th>
+                                                    <th scope="col">Ngày xử lý</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody><c:forEach var="req" items="${supportRequests}">
+                                                    <tr>
+                                                        <td>${req.requestId}</td>
+                                                        <td class="fw-bold text-primary">${req.title}</td>
+                                                        <td>${req.message}</td>
+                                                        <td><span
+                                                                class="badge <c:choose> <c:when test="${req.status == 'OPEN'}">bg-warning</c:when> <c:when test="${req.status == 'IN_PROGRESS'}">bg-info</c:when> <c:when test="${req.status == 'RESOLVED'}">bg-success</c:when> <c:when test="${req.status == 'CLOSED'}">bg-secondary</c:when> </c:choose>"> ${req.status} </span>
+                                                        </td>
+                                                        <td>${req.createdAt}</td>
+                                                        <td>${req.processNote}</td>
+                                                        <td>${req.processedAt}</td>
+                                                    </tr>
+                                                </c:forEach></tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -200,8 +175,8 @@
                 </div>
             </div>
         </div>
-    </div>
 
+    </div>
 </div>
 <footer id="footer" class="footer">
 
@@ -279,39 +254,5 @@
     </div>
 
 </footer>
-
-<script>
-    const editBtn = document.getElementById("editBtn");
-    const saveBtn = document.getElementById("saveBtn");
-    const cancelBtn = document.getElementById("cancelBtn");
-
-    // Chỉ lấy 3 input cần sửa
-    const editableInputs = [
-        document.getElementById("fullNameInput"),
-        document.getElementById("phoneInput"),
-        document.getElementById("emailInput")
-    ];
-
-    editBtn.addEventListener("click", function () {
-        editableInputs.forEach(input => input.removeAttribute("readonly"));
-        saveBtn.classList.remove("d-none");
-        cancelBtn.classList.remove("d-none");
-        editBtn.classList.add("d-none");
-    });
-
-    cancelBtn.addEventListener("click", function () {
-        // Khôi phục readonly
-        editableInputs.forEach(input => input.setAttribute("readonly", true));
-        // Ẩn Save/Cancel, hiện lại Edit
-        saveBtn.classList.add("d-none");
-        cancelBtn.classList.add("d-none");
-        editBtn.classList.remove("d-none");
-        // Reset giá trị input về dữ liệu gốc
-        editableInputs.forEach(input => input.value = input.defaultValue);
-    });
-
-</script>
 </body>
-
-
 </html>

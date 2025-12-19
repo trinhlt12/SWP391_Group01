@@ -16,14 +16,14 @@ public class ChangePasswordServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String email = (String) request.getSession().getAttribute("email");
+        String username = (String) request.getSession().getAttribute("username");
 
-        if (email == null) {
+        if (username == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
         UserDAO userDAO = new UserDAO();
-        Users user = userDAO.getUserByEmail(email);
+        Users user = userDAO.getUserByUsername(username);
 
         if (user == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "User not found");
@@ -38,8 +38,8 @@ public class ChangePasswordServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String email = (String) request.getSession().getAttribute("email");
-        if (email == null) {
+        String username = (String) request.getSession().getAttribute("username");
+        if (username == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
@@ -49,7 +49,7 @@ public class ChangePasswordServlet extends HttpServlet {
         String confirmPassword = request.getParameter("confirmPassword");
 
         UserDAO userDAO = new UserDAO();
-        Users user = userDAO.getUserByEmail(email);
+        Users user = userDAO.getUserByUsername(username);
 
         if (user == null) {
             response.sendRedirect("home");
@@ -79,7 +79,7 @@ public class ChangePasswordServlet extends HttpServlet {
 
         // Kiểm tra độ mạnh mật khẩu mới
         if (!isValidPassword(newPassword)) {
-            request.setAttribute("mess", "Mật khẩu mới phải có ít nhất 8 ký tự, gồm 1 chữ in hoa, 1 số và 1 ký tự đặc biệt!");
+            request.setAttribute("mess", "Mật khẩu mới phải có 8-20 ký tự, gồm 1 chữ in hoa, 1 số và 1 ký tự đặc biệt!");
             request.getRequestDispatcher("/page/userProfile/changePassword.jsp").forward(request, response);
             return;
         }
@@ -107,7 +107,7 @@ public class ChangePasswordServlet extends HttpServlet {
     // Hàm kiểm tra độ mạnh mật khẩu
     private boolean isValidPassword(String password) {
         // Ít nhất 1 chữ in hoa, 1 số, 1 ký tự đặc biệt, tối thiểu 8 ký tự
-        String regex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+        String regex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,20}$";
         return password != null && password.matches(regex);
     }
 }

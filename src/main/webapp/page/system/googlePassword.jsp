@@ -40,9 +40,9 @@
                                         ${message}
                                 </div>
                             </c:if>
-
+                            <span>Tài khoản đăng nhập của bạn là: ${sessionScope.user.username}</span>
                             <form action="googleConfirm" method="post">
-                                <input type="hidden" name="email" value="${sessionScope.email}" />
+                                <input type="hidden" name="email" value="${sessionScope.email}"/>
                                 <div class="mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Mật khẩu mới</label>
                                     <input type="password" name="password" class="form-control" id="exampleInputEmail1"

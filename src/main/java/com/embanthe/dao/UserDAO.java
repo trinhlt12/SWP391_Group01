@@ -386,6 +386,38 @@ public class UserDAO {
         }
         return 0;
     }
+    public Users getUserByUsername(String username) {
+        String sql = "SELECT * FROM Users WHERE username = ?";
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, username);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapRow(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public boolean updateUserProfile(Users user) {
+        String sql = "UPDATE Users SET full_name = ?, phone = ?, email = ? WHERE user_id = ?";
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, user.getFullName());
+            ps.setString(2, user.getPhone());
+            ps.setString(3, user.getEmail());
+            ps.setInt(4, user.getUserId());
+
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     // Helper: Map ResultSet to Users Object
     private Users mapRow(ResultSet rs) throws SQLException {

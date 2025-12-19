@@ -43,19 +43,20 @@ public class RegisterServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException{
+            throws ServletException, IOException {
 
         request.setCharacterEncoding("UTF-8");
 
         String username = request.getParameter("username");
         String fullName = request.getParameter("fullName");
         String email = request.getParameter("email");
-        String phone = request.getParameter("phone");
+//        String phone = request.getParameter("phone");
         String password = request.getParameter("password");
         String confirmPassword = request.getParameter("confirmPassword");
 
 
-        if (isEmpty(username) || isEmpty(fullName) || isEmpty(email) || isEmpty(phone)
+        if (isEmpty(username) || isEmpty(fullName) || isEmpty(email)
+//                || isEmpty(phone)
                 || isEmpty(password) || isEmpty(confirmPassword)) {
             request.setAttribute("message", "Vui lòng điền đầy đủ thông tin!");
             request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
@@ -72,11 +73,11 @@ public class RegisterServlet extends HttpServlet {
             request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
             return;
         }
-        if (!isValidVietnamPhone(phone)) {
-            request.setAttribute("message", "Số điện thoại không hợp lệ! Vui lòng nhập số Việt Nam (0xxxxxxxxx hoặc +84xxxxxxxx).");
-            request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
-            return;
-        }
+//        if (!isValidVietnamPhone(phone)) {
+//            request.setAttribute("message", "Số điện thoại không hợp lệ! Vui lòng nhập số Việt Nam (0xxxxxxxxx).");
+//            request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
+//            return;
+//        }
         if (password.length() > 20) {
             request.setAttribute("message", "Mật khẩu không được vượt quá 20 ký tự!");
             request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
@@ -88,7 +89,7 @@ public class RegisterServlet extends HttpServlet {
             return;
         }
         if (!isValidPassword(password)) {
-            request.setAttribute("message", "Mật khẩu phải có ít nhất 1 chữ in hoa, 1 số và 1 ký tự đặc biệt, tối thiểu 8 ký tự!");
+            request.setAttribute("message", "Mật khẩu phải có ít nhất 1 chữ in hoa, 1 số và 1 ký tự đặc biệt, 8-20 ký tự!");
             request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
             return;
         }
@@ -96,18 +97,23 @@ public class RegisterServlet extends HttpServlet {
         try {
             boolean usernameExist = authDAO.isUsernameExists(username);
             boolean fullnameExist = authDAO.isFullNameExists(fullName);
-            boolean phoneExist = authDAO.isPhoneExists(phone);
+//            boolean phoneExist = authDAO.isPhoneExists(phone);
             boolean emailExist = authDAO.isEmailExists(email);
-            if (emailExist || usernameExist || phoneExist||fullnameExist) {
+            if (emailExist || usernameExist
+//                    || phoneExist
+                    || fullnameExist) {
                 if (emailExist) {
                     request.setAttribute("message", "Email này đã được sử dụng!");
                 } else if (usernameExist) {
                     request.setAttribute("message", "Username đã tồn tại!");
-                } else if (fullnameExist) {
-                    request.setAttribute("message", "Fullname đã tồn tại!");
-                }else if (phoneExist) {
-                    request.setAttribute("message", "Số điện thoại này đã được sử dụng!");
                 }
+//                else if (fullnameExist) {
+//                    request.setAttribute("message", "Fullname đã tồn tại!");
+//                }
+//                else
+//                    if (phoneExist) {
+//                    request.setAttribute("message", "Số điện thoại này đã được sử dụng!");
+//                }
                 request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
                 return;
             }
@@ -116,47 +122,43 @@ public class RegisterServlet extends HttpServlet {
             // Sinh OTP
             int otpValue = 100000 + new Random().nextInt(900000);
 
-            Properties props = new Properties();
-            props.put("mail.smtp.host", "smtp.gmail.com");
-            props.put("mail.smtp.socketFactory.port", "465");
-            props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-            props.put("mail.smtp.auth", "true");
-            props.put("mail.smtp.port", "465");
-
-            Session mailSession = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication("hoangtvhe160642@fpt.edu.vn", "nxco yzoq vdrn upqv");
-                }
-            });
-
-            try {
-                MimeMessage message = new MimeMessage(mailSession);
-                message.setFrom(new InternetAddress("hoangtvhe160642@fpt.edu.vn"));
-                message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-                message.setSubject("Xác nhận đăng ký");
-                message.setText("Mã OTP của bạn là: " + otpValue + "\nOTP sẽ hết hạn sau 30 phút.");
-                Transport.send(message);
-            } catch (MessagingException e) {
-                e.printStackTrace();
-                request.setAttribute("message", "Không thể gửi OTP. Vui lòng thử lại!");
-                request.getRequestDispatcher("/page/system/register.jsp").forward(request, response);
-                return;
-            }
-
-
+            // Lưu OTP và thông tin vào session trước
             HttpSession session = request.getSession();
             session.setAttribute("otp", otpValue);
+            session.setAttribute("otpGeneratedTime", System.currentTimeMillis());
             session.setAttribute("username", username.trim());
             session.setAttribute("fullName", fullName.trim());
             session.setAttribute("email", email.trim());
             session.setAttribute("password", password);
-            session.setAttribute("phone", phone.trim());
+//            session.setAttribute("phone", phone.trim());
             session.setAttribute("actionType", "register");
-
-            // Chuyển sang trang nhập OTP
+            // Chuyển ngay sang trang nhập OTP
             request.setAttribute("message", "OTP đã được gửi đến email của bạn!");
             request.getRequestDispatcher("/page/system/enterOTP.jsp").forward(request, response);
-
+            // Gửi OTP bất đồng bộ
+            new Thread(() -> {
+                try {
+                    Properties props = new Properties();
+                    props.put("mail.smtp.host", "smtp.gmail.com");
+                    props.put("mail.smtp.socketFactory.port", "465");
+                    props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+                    props.put("mail.smtp.auth", "true");
+                    props.put("mail.smtp.port", "465");
+                    Session mailSession = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+                        protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication("hoangtvhe160642@fpt.edu.vn", "nxco yzoq vdrn upqv");
+                        }
+                    });
+                    MimeMessage message = new MimeMessage(mailSession);
+                    message.setFrom(new InternetAddress("hoangtvhe160642@fpt.edu.vn"));
+                    message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+                    message.setSubject("Xác nhận đăng ký");
+                    message.setText("Mã OTP của bạn là: " + otpValue + "\nOTP sẽ hết hạn sau 30 phút.");
+                    Transport.send(message);
+                } catch (MessagingException e) {
+                    e.printStackTrace(); // Có thể log lỗi hoặc lưu trạng thái gửi thất bại } }).start();
+                }
+            }).start();
         } catch (SQLException e) {
             e.printStackTrace();
             request.setAttribute("message", "Lỗi hệ thống. Vui lòng thử lại sau!");
@@ -164,21 +166,19 @@ public class RegisterServlet extends HttpServlet {
         }
     }
 
-
     private boolean isEmpty(String s) {
         return s == null || s.trim().isEmpty();
     }
 
     private boolean isValidPassword(String password) {
         // Ít nhất 1 chữ in hoa, 1 số, 1 ký tự đặc biệt, tối thiểu 8 ký tự
-        String regex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+        String regex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,20}$";
         return password != null && password.matches(regex);
     }
 
     private boolean isValidVietnamPhone(String phone) {
         // Cho phép số bắt đầu bằng 0 và có 10 chữ số
-        // hoặc bắt đầu bằng +84 và theo sau là 9 chữ số
-        String regex = "^(0\\d{9}|\\+84\\d{9})$";
+        String regex = "^(0\\d{9})$";
         return phone != null && phone.matches(regex);
     }
 }
