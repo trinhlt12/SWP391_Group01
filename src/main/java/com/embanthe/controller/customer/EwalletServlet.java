@@ -39,7 +39,7 @@ public class EwalletServlet extends HttpServlet {
         Users currentUser = (Users) session.getAttribute("user");
 
         String flashError = (String) session.getAttribute("flashError");
-        if(flashError != null){
+        if (flashError != null) {
             req.setAttribute("errorMessage", flashError);
             session.removeAttribute("flashError");
         }
@@ -98,19 +98,18 @@ public class EwalletServlet extends HttpServlet {
 
         try {
             String amountStr = request.getParameter("amount");
-            /*if (amountStr == null || amountStr.isEmpty()) {
+            if (amountStr == null || amountStr.isEmpty()) {
                 request.setAttribute("errorMessage", "Vui lòng nhập số tiền.");
                 request.getRequestDispatcher(walletPath).forward(request, response);
                 return;
-            }*/
+            }
 
             long amount = Long.parseLong(amountStr);
-
-            /*if (amount < 10000 || amount > 50000000) {
+            if (amount < 10000 || amount > 50000000) {
                 request.setAttribute("errorMessage", "Số tiền nạp phải từ 10.000đ đến 50.000.000đ");
                 request.getRequestDispatcher(walletPath).forward(request, response);
                 return;
-            }*/
+            }
 
             String ipAddr = VNPayUtils.getIpAddress(request);
 
