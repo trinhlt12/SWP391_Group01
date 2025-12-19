@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.text.NumberFormat" %>
 <%@ page import="java.util.Locale" %>
@@ -90,6 +92,7 @@
             gap: 12px;
             color: #374151;
             font-weight: 500;
+            justify-content: space-between;
         }
 
         .category-item:hover {
@@ -104,6 +107,55 @@
 
         .category-icon {
             font-size: 1.3rem;
+        }
+
+        /* Dropdown Arrow */
+        .dropdown-arrow {
+            margin-left: auto;
+            transition: transform 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .category-item.expanded .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Category Dropdown */
+        .category-dropdown {
+            margin-left: 15px;
+            margin-top: 10px;
+            padding-left: 15px;
+            border-left: 3px solid #e5e7eb;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #6b7280;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .dropdown-item:hover {
+            background: #fef2f2;
+            color: #059669;
+        }
+
+        .dropdown-item.active {
+            background: #059669;
+            color: white;
+        }
+
+        .dropdown-icon {
+            font-size: 1.1rem;
         }
 
         /* ========== CENTER - PRODUCT GRID ========== */
@@ -399,14 +451,54 @@
         <aside class="category-sidebar">
             <h3 class="sidebar-title">Danh Mục</h3>
 
-            <div class="category-item active" onclick="switchCategory('phone')">
-                <span class="category-icon">📱</span>
-                <span>Thẻ điện thoại</span>
+            <!-- Thẻ điện thoại - Expandable -->
+            <div class="category-item active" onclick="toggleDropdown('phoneDropdown')">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span class="category-icon">📱</span>
+                    <span>Thẻ điện thoại</span>
+                </div>
+                <span class="dropdown-arrow">▼</span>
             </div>
 
-            <div class="category-item" onclick="switchCategory('game')">
-                <span class="category-icon">🎮</span>
-                <span>Thẻ game</span>
+            <!-- Phone Dropdown -->
+            <div class="category-dropdown" id="phoneDropdown" style="display: block;">
+                <div class="dropdown-item" onclick="filterProvider('phone', 'viettel')">
+                    <span class="dropdown-icon">📞</span>
+                    <span>Thẻ Viettel</span>
+                </div>
+                <div class="dropdown-item" onclick="filterProvider('phone', 'mobifone')">
+                    <span class="dropdown-icon">📱</span>
+                    <span>Thẻ Mobifone</span>
+                </div>
+                <div class="dropdown-item" onclick="filterProvider('phone', 'vinaphone')">
+                    <span class="dropdown-icon">📞</span>
+                    <span>Thẻ Vinaphone</span>
+                </div>
+                <div class="dropdown-item" onclick="filterProvider('phone', 'vietnammobile')">
+                    <span class="dropdown-icon">📱</span>
+                    <span>Thẻ Vietnam mobile</span>
+                </div>
+            </div>
+
+            <!-- Thẻ game - Expandable -->
+            <div class="category-item" onclick="toggleDropdown('gameDropdown')">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span class="category-icon">🎮</span>
+                    <span>Thẻ game</span>
+                </div>
+                <span class="dropdown-arrow">▼</span>
+            </div>
+
+            <!-- Game Dropdown (Hidden by default) -->
+            <div class="category-dropdown" id="gameDropdown" style="display: none;">
+                <div class="dropdown-item" onclick="filterProvider('game', 'garena')">
+                    <span class="dropdown-icon">🎮</span>
+                    <span>Thẻ Garena</span>
+                </div>
+                <div class="dropdown-item" onclick="filterProvider('game', 'steam')">
+                    <span class="dropdown-icon">🎯</span>
+                    <span>Thẻ Steam</span>
+                </div>
             </div>
         </aside>
 
@@ -419,74 +511,30 @@
 
             <!-- Phone Cards Grid -->
             <div class="product-grid" id="phoneProducts">
-                <div class="product-card" onclick="selectProduct('Thẻ Viettel 10.000đ', 10000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #e30613;">📞</div>
-                    <div class="product-name">Viettel</div>
-                    <div class="product-value">10.000₫</div>
-                    <div class="product-price">10.000₫</div>
-                </div>
+                <c:forEach var="p" items="${phoneCards}">
+                    <div class="product-card"
+                         data-provider="${p.providerName.toLowerCase()}"
+                         onclick="selectProduct('${p.productName}', ${p.price})">
 
-                <div class="product-card" onclick="selectProduct('Thẻ Viettel 20.000đ', 20000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #e30613;">📞</div>
-                    <div class="product-name">Viettel</div>
-                    <div class="product-value">20.000₫</div>
-                    <div class="product-price">20.000₫</div>
-                </div>
+                        <div class="selected-badge">✓</div>
 
-                <div class="product-card" onclick="selectProduct('Thẻ Viettel 50.000đ', 50000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #e30613;">📞</div>
-                    <div class="product-name">Viettel</div>
-                    <div class="product-value">50.000₫</div>
-                    <div class="product-price">50.000₫</div>
-                </div>
+                        <div class="product-logo" style="color: #e30613;">
+                                ${p.providerName == 'Viettel' ? '📞' : '📱'}
+                        </div>
 
-                <div class="product-card" onclick="selectProduct('Thẻ Viettel 100.000đ', 100000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #e30613;">📞</div>
-                    <div class="product-name">Viettel</div>
-                    <div class="product-value">100.000₫</div>
-                    <div class="product-price">100.000₫</div>
-                </div>
+                        <div class="product-name">${p.providerName}</div>
 
-                <div class="product-card" onclick="selectProduct('Thẻ Mobifone 10.000đ', 10000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #1c4c9e;">📱</div>
-                    <div class="product-name">Mobifone</div>
-                    <div class="product-value">10.000₫</div>
-                    <div class="product-price">10.000₫</div>
-                </div>
-
-                <div class="product-card" onclick="selectProduct('Thẻ Mobifone 20.000đ', 20000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #1c4c9e;">📱</div>
-                    <div class="product-name">Mobifone</div>
-                    <div class="product-value">20.000₫</div>
-                    <div class="product-price">20.000₫</div>
-                </div>
-
-                <div class="product-card" onclick="selectProduct('Thẻ Vinaphone 10.000đ', 10000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #8b1f8a;">📞</div>
-                    <div class="product-name">Vinaphone</div>
-                    <div class="product-value">10.000₫</div>
-                    <div class="product-price">10.000₫</div>
-                </div>
-
-                <div class="product-card" onclick="selectProduct('Thẻ Vinaphone 50.000đ', 50000)">
-                    <div class="selected-badge">✓</div>
-                    <div class="product-logo" style="color: #8b1f8a;">📞</div>
-                    <div class="product-name">Vinaphone</div>
-                    <div class="product-value">50.000₫</div>
-                    <div class="product-price">50.000₫</div>
-                </div>
+                        <div class="product-value">
+                            <fmt:formatNumber value="${p.price}" pattern="#,###" currencySymbol=""/>đ
+                        </div>
+                    </div>
+                </c:forEach>
             </div>
 
             <!-- Game Cards Grid (Hidden by default) -->
             <div class="product-grid" id="gameProducts" style="display: none;">
-                <div class="product-card" onclick="selectProduct('Thẻ Garena 20.000đ', 20000)">
+                <!-- Garena Cards -->
+                <div class="product-card" data-provider="garena" onclick="selectProduct('Thẻ Garena 20.000đ', 20000)">
                     <div class="selected-badge">✓</div>
                     <div class="product-logo" style="color: #ff4500;">🎮</div>
                     <div class="product-name">Garena</div>
@@ -494,7 +542,7 @@
                     <div class="product-price">20.000₫</div>
                 </div>
 
-                <div class="product-card" onclick="selectProduct('Thẻ Garena 50.000đ', 50000)">
+                <div class="product-card" data-provider="garena" onclick="selectProduct('Thẻ Garena 50.000đ', 50000)">
                     <div class="selected-badge">✓</div>
                     <div class="product-logo" style="color: #ff4500;">🎮</div>
                     <div class="product-name">Garena</div>
@@ -502,7 +550,7 @@
                     <div class="product-price">50.000₫</div>
                 </div>
 
-                <div class="product-card" onclick="selectProduct('Thẻ Garena 100.000đ', 100000)">
+                <div class="product-card" data-provider="garena" onclick="selectProduct('Thẻ Garena 100.000đ', 100000)">
                     <div class="selected-badge">✓</div>
                     <div class="product-logo" style="color: #ff4500;">🎮</div>
                     <div class="product-name">Garena</div>
@@ -510,7 +558,16 @@
                     <div class="product-price">100.000₫</div>
                 </div>
 
-                <div class="product-card" onclick="selectProduct('Thẻ Steam 100.000đ', 100000)">
+                <div class="product-card" data-provider="garena" onclick="selectProduct('Thẻ Garena 200.000đ', 200000)">
+                    <div class="selected-badge">✓</div>
+                    <div class="product-logo" style="color: #ff4500;">🎮</div>
+                    <div class="product-name">Garena</div>
+                    <div class="product-value">200.000₫</div>
+                    <div class="product-price">200.000₫</div>
+                </div>
+
+                <!-- Steam Cards -->
+                <div class="product-card" data-provider="steam" onclick="selectProduct('Thẻ Steam 100.000đ', 100000)">
                     <div class="selected-badge">✓</div>
                     <div class="product-logo" style="color: #171a21;">🎯</div>
                     <div class="product-name">Steam</div>
@@ -518,12 +575,20 @@
                     <div class="product-price">100.000₫</div>
                 </div>
 
-                <div class="product-card" onclick="selectProduct('Thẻ Steam 200.000đ', 200000)">
+                <div class="product-card" data-provider="steam" onclick="selectProduct('Thẻ Steam 200.000đ', 200000)">
                     <div class="selected-badge">✓</div>
                     <div class="product-logo" style="color: #171a21;">🎯</div>
                     <div class="product-name">Steam</div>
                     <div class="product-value">200.000₫</div>
                     <div class="product-price">200.000₫</div>
+                </div>
+
+                <div class="product-card" data-provider="steam" onclick="selectProduct('Thẻ Steam 500.000đ', 500000)">
+                    <div class="selected-badge">✓</div>
+                    <div class="product-logo" style="color: #171a21;">🎯</div>
+                    <div class="product-name">Steam</div>
+                    <div class="product-value">500.000₫</div>
+                    <div class="product-price">500.000₫</div>
                 </div>
             </div>
         </main>
@@ -576,28 +641,119 @@
     let selectedProduct = null;
     let unitPrice = 0;
     let quantity = 1;
+    let currentCategory = 'phone';
+    let currentProvider = null;
 
-    // Switch category
-    function switchCategory(category) {
-        // Update category buttons
-        document.querySelectorAll('.category-item').forEach(item => {
+    // Toggle dropdown
+    function toggleDropdown(dropdownId) {
+        const dropdown = document.getElementById(dropdownId);
+        const parentItem = event.currentTarget;
+
+        if (dropdown.style.display === 'none') {
+            dropdown.style.display = 'block';
+            parentItem.classList.add('expanded');
+
+            // Nếu mở phone dropdown -> đóng game dropdown
+            if (dropdownId === 'phoneDropdown') {
+                document.getElementById('gameDropdown').style.display = 'none';
+                document.querySelectorAll('.category-item')[1].classList.remove('expanded');
+
+                // Show phone products
+                currentCategory = 'phone';
+                document.getElementById('phoneProducts').style.display = 'grid';
+                document.getElementById('gameProducts').style.display = 'none';
+                document.getElementById('categoryTitle').textContent = 'Thẻ Điện Thoại';
+
+                // Update active category
+                document.querySelectorAll('.category-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                document.querySelectorAll('.category-item')[0].classList.add('active');
+            }
+            // Nếu mở game dropdown -> đóng phone dropdown
+            else if (dropdownId === 'gameDropdown') {
+                document.getElementById('phoneDropdown').style.display = 'none';
+                document.querySelectorAll('.category-item')[0].classList.remove('expanded');
+
+                // Show game products
+                currentCategory = 'game';
+                document.getElementById('phoneProducts').style.display = 'none';
+                document.getElementById('gameProducts').style.display = 'grid';
+                document.getElementById('categoryTitle').textContent = 'Thẻ Game';
+
+                // Update active category
+                document.querySelectorAll('.category-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                document.querySelectorAll('.category-item')[1].classList.add('active');
+            }
+
+            // Reset filter
+            currentProvider = null;
+            showAllProducts();
+            clearSelection();
+        } else {
+            dropdown.style.display = 'none';
+            parentItem.classList.remove('expanded');
+        }
+    }
+
+    // Filter by provider
+    function filterProvider(category, provider) {
+        event.stopPropagation(); // Prevent dropdown toggle
+
+        currentProvider = provider;
+
+        // Update active dropdown item
+        const parentDropdown = event.currentTarget.closest('.category-dropdown');
+        parentDropdown.querySelectorAll('.dropdown-item').forEach(item => {
             item.classList.remove('active');
         });
-        event.target.closest('.category-item').classList.add('active');
+        event.currentTarget.classList.add('active');
 
-        // Show/hide product grids
-        if (category === 'phone') {
-            document.getElementById('phoneProducts').style.display = 'grid';
-            document.getElementById('gameProducts').style.display = 'none';
-            document.getElementById('categoryTitle').textContent = 'Thẻ Điện Thoại';
-        } else {
-            document.getElementById('phoneProducts').style.display = 'none';
-            document.getElementById('gameProducts').style.display = 'grid';
-            document.getElementById('categoryTitle').textContent = 'Thẻ Game';
-        }
+        // Get container
+        const container = category === 'phone' ?
+            document.getElementById('phoneProducts') :
+            document.getElementById('gameProducts');
 
-        // Reset selection
+        // Show/hide cards based on provider
+        const cards = container.querySelectorAll('.product-card');
+        cards.forEach(card => {
+            if (card.dataset.provider === provider) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Update title
+        const providerNames = {
+            'viettel': 'Viettel',
+            'mobifone': 'Mobifone',
+            'vinaphone': 'Vinaphone',
+            'vietnammobile': 'Vietnam Mobile',
+            'garena': 'Garena',
+            'steam': 'Steam'
+        };
+
+        document.getElementById('categoryTitle').textContent =
+            `Thẻ ${providerNames[provider]}`;
+
         clearSelection();
+    }
+
+    // Show all products (reset filter)
+    function showAllProducts() {
+        const phoneCards = document.querySelectorAll('#phoneProducts .product-card');
+        const gameCards = document.querySelectorAll('#gameProducts .product-card');
+
+        phoneCards.forEach(card => card.style.display = 'block');
+        gameCards.forEach(card => card.style.display = 'block');
+
+        // Reset active dropdown items
+        document.querySelectorAll('.dropdown-item').forEach(item => {
+            item.classList.remove('active');
+        });
     }
 
     // Select product

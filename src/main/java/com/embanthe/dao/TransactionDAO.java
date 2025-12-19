@@ -78,14 +78,20 @@ public class TransactionDAO {
         return getRecentTransactions(userId, "ALL", pageIndex, pageSize);
     }
 
-    public List<Transactions> getRecentTransactions(int userId, String status, int pageIndex, int pageSize) {
+    public List<Transactions> getRecentTransactions(int userId, String filterValue, int pageIndex, int pageSize) {
         List<Transactions> list = new ArrayList<>();
         int offset = (pageIndex - 1) * pageSize;
 
         StringBuilder sql = new StringBuilder("SELECT * FROM transactions WHERE user_id = ?");
 
-        if (status != null && !status.isEmpty() && !status.equals("ALL")) {
-            sql.append(" AND status = ?");
+        boolean hasFilter = (filterValue != null && !filterValue.trim().isEmpty() && !filterValue.equals("ALL"));
+
+        if (hasFilter) {
+            if (filterValue.equals("DEPOSIT") || filterValue.equals("PURCHASE")) {
+                sql.append(" AND type = ?");   // Lọc theo cột TYPE
+            } else {
+                sql.append(" AND status = ?"); // Lọc theo cột STATUS
+            }
         }
 
         sql.append(" ORDER BY created_at DESC LIMIT ? OFFSET ?");
@@ -96,8 +102,8 @@ public class TransactionDAO {
             int paramIndex = 1;
             ps.setInt(paramIndex++, userId);
 
-            if (status != null && !status.isEmpty() && !status.equals("ALL")) {
-                ps.setString(paramIndex++, status);
+            if (hasFilter) {
+                ps.setString(paramIndex++, filterValue);
             }
 
             ps.setInt(paramIndex++, pageSize);
@@ -126,13 +132,17 @@ public class TransactionDAO {
         return countTransactionsByUserId(userId, "ALL");
     }
 
-    public int countTransactionsByUserId(int userId, String status) {
+    public int countTransactionsByUserId(int userId, String filterValue) {
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM transactions WHERE user_id = ?");
 
-        boolean hasStatus = (status != null && !status.isEmpty() && !status.equals("ALL"));
+        boolean hasFilter = (filterValue != null && !filterValue.trim().isEmpty() && !filterValue.equals("ALL"));
 
-        if (hasStatus) {
-            sql.append(" AND status = ?");
+        if (hasFilter) {
+            if (filterValue.equals("DEPOSIT") || filterValue.equals("PURCHASE")) {
+                sql.append(" AND type = ?");
+            } else {
+                sql.append(" AND status = ?");
+            }
         }
 
         try (Connection conn = DBContext.getInstance().getConnection();
@@ -141,8 +151,8 @@ public class TransactionDAO {
             int paramIndex = 1;
             ps.setInt(paramIndex++, userId);
 
-            if (hasStatus) {
-                ps.setString(paramIndex++, status);
+            if (hasFilter) {
+                ps.setString(paramIndex++, filterValue);
             }
 
             try (ResultSet rs = ps.executeQuery()) {
