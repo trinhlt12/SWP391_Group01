@@ -12,7 +12,7 @@
         body { background: #f9fafb; font-family: 'Inter', sans-serif; }
         .page-container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
         .card-box { background: white; border-radius: 15px; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .page-title { color: #059669; font-weight: 700; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
+        .page-title { color: #059669; font-weight: 700; margin-bottom: 25px; display: flex; align-items: center; gap: 20px; }
 
         /* Table Styles */
         .table-custom { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
@@ -41,14 +41,31 @@
 
 <jsp:include page="/header.jsp"/>
 
+
 <div class="page-container">
     <div class="card-box">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="page-title">📦 Kho thẻ đã mua</h2>
+            <h2 class="page-title">Kho thẻ đã mua</h2>
             <a href="${pageContext.request.contextPath}/ewallet" class="btn btn-outline-secondary">
                 ← Quay lại Ví
             </a>
         </div>
+        <!-- Tìm kiếm -->
+        <div class="row mb-3">
+            <div class="col-md-6 ms-auto">
+                <form action="purchased-cards" method="GET" class="d-flex gap-2">
+                    <input type="text" name="search" class="form-control"
+                           placeholder="Tìm theo tên thẻ, serial hoặc mã code..."
+                           value="${searchKeyword}">
+                    <button type="submit" class="btn btn-primary">Tìm</button>
+
+                    <c:if test="${not empty searchKeyword}">
+                        <a href="purchased-cards" class="btn btn-outline-secondary">Xóa</a>
+                    </c:if>
+                </form>
+            </div>
+        </div>
+
 
         <c:if test="${empty purchasedList}">
             <div class="text-center py-5 text-muted">
@@ -97,6 +114,39 @@
                     </c:forEach>
                     </tbody>
                 </table>
+                <!-- Pagination -->
+                <c:if test="${totalPages > 1}">
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center">
+
+                            <!-- Nút Previous -->
+                            <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                                <a class="page-link"
+                                   href="purchased-cards?page=${currentPage - 1}&search=${searchKeyword}">
+                                    &laquo;
+                                </a>
+                            </li>
+
+                            <!-- Các nút số trang -->
+                            <c:forEach begin="1" end="${totalPages}" var="i">
+                                <li class="page-item ${currentPage == i ? 'active' : ''}">
+                                    <a class="page-link"
+                                       href="purchased-cards?page=${i}&search=${searchKeyword}">
+                                            ${i}
+                                    </a>
+                                </li>
+                            </c:forEach>
+
+                            <!-- Nút Next -->
+                            <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                <a class="page-link"
+                                   href="purchased-cards?page=${currentPage + 1}&search=${searchKeyword}">
+                                    &raquo;
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </c:if>
             </div>
         </c:if>
     </div>

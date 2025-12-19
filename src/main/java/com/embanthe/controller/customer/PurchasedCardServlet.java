@@ -28,9 +28,30 @@ public class PurchasedCardServlet extends HttpServlet {
             return;
         }
 
-        List<CardItems> list = cardItemDAO.getPurchasedCardsByUserId(user.getUserId());
+        String keyword = req.getParameter("search");
+        String pageStr = req.getParameter("page");
+
+        int page = 1;
+        int pageSize = 10;
+
+        try {
+            if (pageStr != null && !pageStr.isEmpty()) {
+                page = Integer.parseInt(pageStr);
+            }
+        } catch (NumberFormatException e) {
+            page = 1;
+        }
+
+        List<CardItems> list = cardItemDAO.getPurchasedCardsPaging(user.getUserId(), keyword, page, pageSize);
+        int totalRecords = cardItemDAO.countPurchasedCards(user.getUserId(), keyword);
+
+        int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
 
         req.setAttribute("purchasedList", list);
+        req.setAttribute("currentPage", page);
+        req.setAttribute("totalPages", totalPages);
+        req.setAttribute("searchKeyword", keyword);
+
         req.getRequestDispatcher("/page/customer/purchased-cards.jsp").forward(req, resp);
     }
 }

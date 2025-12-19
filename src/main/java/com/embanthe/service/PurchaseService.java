@@ -49,7 +49,7 @@ public class PurchaseService {
             double newBalance = currentBalance - totalAmount;
             userDAO.updateBalance(conn, userId, newBalance);
 
-            int orderId = orderDAO.createOrder(conn, userId, productId, quantity, totalAmount);
+            int orderId = orderDAO.createOrder(conn, userId, productId, quantity, totalAmount, product.getProductName(), product.getPrice());
             for (CardItems card : cardsToSell) {
                 cardItemDAO.updateCardStatusToSold(conn, card.getCardItemId(), orderId);
             }
