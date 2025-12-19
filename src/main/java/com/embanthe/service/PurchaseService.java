@@ -63,7 +63,7 @@ public class PurchaseService {
             String transactionMessage = "Mua" + quantity + " mã thẻ" + product.getProductName();
             transactionDAO.createTransaction(conn, userId, orderId, totalAmount, transactionMessage);
             conn.commit();
-            return "SUCCESS!" + orderId;
+            return "SUCCESS|" + orderId;
         } catch (Exception e) {
             e.printStackTrace();
             if (conn != null) {

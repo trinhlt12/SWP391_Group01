@@ -1,4 +1,5 @@
 package com.embanthe.controller.customer;
+
 import com.embanthe.dao.UserDAO;
 import com.embanthe.model.Users;
 import com.embanthe.service.PurchaseService;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+
 @WebServlet("/purchase")
 public class PurchaseServlet extends HttpServlet {
 
@@ -22,9 +24,8 @@ public class PurchaseServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
 
-        // 1. Kiểm tra đăng nhập
         HttpSession session = req.getSession();
-        Users user = (Users) session.getAttribute("user"); // Giả sử key session của bạn là "user"
+        Users user = (Users) session.getAttribute("user");
 
         if (user == null) {
             String message = "Vui lòng đăng nhập để mua hàng";
@@ -35,11 +36,9 @@ public class PurchaseServlet extends HttpServlet {
         }
 
         try {
-            // 2. Lấy dữ liệu từ Form (service.jsp)
             String productIdStr = req.getParameter("productId");
             String quantityStr = req.getParameter("quantity");
 
-            // Validate dữ liệu đầu vào
             if (productIdStr == null || quantityStr == null || productIdStr.isEmpty() || quantityStr.isEmpty()) {
                 forwardWithError(req, resp, "Dữ liệu không hợp lệ.");
                 return;
@@ -53,28 +52,23 @@ public class PurchaseServlet extends HttpServlet {
                 return;
             }
 
-            // 3. GỌI SERVICE XỬ LÝ GIAO DỊCH
-            // Kết quả trả về dạng: "SUCCESS|15" hoặc "Số dư không đủ..."
             String result = purchaseService.processPurchase(user.getUserId(), productId, quantity);
+            System.out.println("DEBUG: Purchase Result = " + result);
+
 
             if (result.startsWith("SUCCESS")) {
-                // --- MUA THÀNH CÔNG ---
 
-                // Lấy Order ID từ kết quả
                 String orderId = result.split("\\|")[1];
+                System.out.println("DEBUG: Order ID = " + orderId);
 
-                // QUAN TRỌNG: Cập nhật lại số dư mới vào Session để hiển thị trên Header
-                // (Lấy user mới nhất từ DB lên)
                 Users updatedUser = userDAO.getUserById(user.getUserId());
                 session.setAttribute("user", updatedUser);
 
-                // Chuyển hướng sang trang chi tiết đơn hàng (Redirect để tránh resubmit form khi F5)
-                // Lưu ý: Bạn cần có trang order-detail.jsp hoặc OrderDetailServlet để hứng cái này
-                resp.sendRedirect(req.getContextPath() + "/order-detail?id=" + orderId);
-
+                resp.sendRedirect(req.getContextPath() + "/purchase-result?status=SUCCESS&orderId=" + orderId);
             } else {
-                // --- MUA THẤT BẠI ---
-                forwardWithError(req, resp, result); // Hiển thị lỗi Service trả về (ví dụ: "Kho hết hàng")
+                String encodedMsg = URLEncoder.encode(result, StandardCharsets.UTF_8.toString());
+                resp.sendRedirect(req.getContextPath() + "/purchase-result?status=FAILED&message=" + encodedMsg);
+
             }
 
         } catch (NumberFormatException e) {
@@ -85,13 +79,11 @@ public class PurchaseServlet extends HttpServlet {
         }
     }
 
-    // Hàm phụ trợ để hiển thị lỗi và quay lại trang Service
     private void forwardWithError(HttpServletRequest req, HttpServletResponse resp, String errorMessage)
             throws ServletException, IOException {
 
         req.setAttribute("errorMessage", errorMessage);
 
-        // Forward về ServiceServlet để nó load lại danh sách sản phẩm rồi mới hiện JSP
         req.getRequestDispatcher("/service").forward(req, resp);
     }
 }

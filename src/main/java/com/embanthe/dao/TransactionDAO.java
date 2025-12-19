@@ -73,6 +73,29 @@ public class TransactionDAO {
         return null;
     }
 
+    public Transactions getTransactionByOrderId(int orderId) {
+        String sql = "SELECT * FROM transactions WHERE order_id = ? AND type = 'PURCHASE'";
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, orderId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Transactions t = new Transactions();
+                    t.setTransactionId(rs.getInt("transaction_id"));
+                    t.setUserId(rs.getInt("user_id"));
+                    t.setAmount(rs.getDouble("amount"));
+                    t.setType(rs.getString("type"));
+                    t.setStatus(rs.getString("status"));
+                    t.setMessage(rs.getString("message"));
+                    t.setCreatedAt(rs.getTimestamp("created_at"));
+                    return t;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     public boolean updateTransactionStatus(int transactionId, String status, String message) {
         String sql = "UPDATE transactions SET status = ?, message = ? WHERE transaction_id = ?";
         try (Connection conn = DBContext.getInstance().getConnection();
