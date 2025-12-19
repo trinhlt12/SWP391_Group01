@@ -99,7 +99,7 @@ public class UserResetPassServlet extends HttpServlet {
                         )
                 );
 
-                // HTML content
+
                 String htmlContent =
                         "<div style='font-family: Arial, sans-serif; padding:20px;'>"
                                 + "<h3>Xin chào " + user.getFullName() + ",</h3>"

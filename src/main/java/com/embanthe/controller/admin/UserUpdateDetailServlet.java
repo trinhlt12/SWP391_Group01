@@ -21,7 +21,7 @@ public class UserUpdateDetailServlet extends HttpServlet {
         String idStr = request.getParameter("id");
 
         try {
-            // 1. Lấy dữ liệu
+
             String fullName = request.getParameter("fullName");
             String email = request.getParameter("email");
             String phone = request.getParameter("phone");
@@ -30,10 +30,10 @@ public class UserUpdateDetailServlet extends HttpServlet {
 
             int userId = Integer.parseInt(idStr);
 
-            // 2. Validate cơ bản
+
             if (fullName == null || email == null || fullName.trim().isEmpty()) {
                 session.setAttribute("error", "Tên và Email không được để trống!");
-                // Redirect lại trang chi tiết đúng ID đó
+
                 response.sendRedirect(request.getContextPath() + "/admin/user-detail?id=" + userId);
                 return;
             }

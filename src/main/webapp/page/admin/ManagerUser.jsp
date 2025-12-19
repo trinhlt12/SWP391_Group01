@@ -8,8 +8,10 @@
     <title> Em Ban The | Admin System </title>
 
     <link rel="apple-touch-icon" sizes="144x144" href="${pageContext.request.contextPath}/assetAdmin/apple-touch-icon.png">
-    <link rel="shortcut icon" href="${pageContext.request.contextPath}/assetAdmin/favicon.ico">
+<%--    <link rel="shortcut icon" href="${pageContext.request.contextPath}/assetAdmin/favicon.ico">--%>
     <meta name="theme-color" content="#3063A0">
+    <link href="${pageContext.request.contextPath}/image/Logo.png" rel="icon">
+
     <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assetAdmin/assets/vendor/open-iconic/css/open-iconic-bootstrap.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assetAdmin/assets/vendor/fontawesome/css/all.css">
@@ -33,7 +35,7 @@
                 <button class="hamburger hamburger-squeeze mr-2" type="button" data-toggle="aside-menu">
                     <span class="hamburger-box"><span class="hamburger-inner"></span></span>
                 </button>
-<%--                <a href="${pageContext.request.contextPath}/home">--%>
+
     <a href="${pageContext.request.contextPath}/admin" class="text-decoration-none d-flex align-items-center">
 
     <span style="
@@ -130,15 +132,6 @@
                                 <% session.removeAttribute("createMessage"); %>
                             </c:if>
 
-<%--                            <c:if test="${not empty sessionScope.createError}">--%>
-<%--&lt;%&ndash;                                <div class="alert alert-danger alert-dismissible fade show w-100" role="alert">&ndash;%&gt;--%>
-<%--&lt;%&ndash;                                    <i class="fas fa-exclamation-triangle"></i> ${sessionScope.createError}&ndash;%&gt;--%>
-<%--&lt;%&ndash;                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">&ndash;%&gt;--%>
-<%--&lt;%&ndash;                                        <span aria-hidden="true">&times;</span>&ndash;%&gt;--%>
-<%--&lt;%&ndash;                                    </button>&ndash;%&gt;--%>
-<%--&lt;%&ndash;                                </div>&ndash;%&gt;--%>
-<%--                                <% session.removeAttribute("createError"); %>--%>
-<%--                            </c:if>--%>
                         </div>
                         <div class="card card-fluid">
                             <div class="card-body">
@@ -480,7 +473,6 @@
     <c:remove var="createError" scope="session"/>
     <c:remove var="createMessage" scope="session"/>
 
-    <%-- Xóa dữ liệu cũ trong form --%>
     <c:remove var="oldUsername" scope="session"/>
     <c:remove var="oldFullname" scope="session"/>
     <c:remove var="oldEmail" scope="session"/>

@@ -305,7 +305,7 @@ public class UserDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null; // Không tìm thấy thì trả về null
+        return null;
     }
 
     public List<Users> searchUsersPaging(String keyword, String role, String status, int page, int pageSize) {
@@ -315,9 +315,11 @@ public class UserDAO {
 
         // Logic Filter
         if (keyword != null && !keyword.trim().isEmpty()) {
-            sql.append("AND (full_name LIKE ? OR email LIKE ?) ");
-            params.add("%" + keyword.trim() + "%");
-            params.add("%" + keyword.trim() + "%");
+            sql.append("AND (username LIKE ? OR full_name LIKE ? OR email LIKE ?) ");
+            String key = "%" + keyword.trim() + "%";
+            params.add(key);
+            params.add(key);
+            params.add(key);
         }
         if (role != null && !role.isEmpty()) {
             sql.append("AND role = ? ");
