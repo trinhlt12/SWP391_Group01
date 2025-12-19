@@ -514,7 +514,7 @@
                 <c:forEach var="p" items="${phoneCards}">
                     <div class="product-card"
                          data-provider="${p.providerName.toLowerCase()}"
-                         onclick="selectProduct('${p.productId},${p.productName}', ${p.price})">
+                         onclick="selectProduct('${p.productId}','${p.productName}', ${p.price})">
 
                         <div class="selected-badge">✓</div>
 
