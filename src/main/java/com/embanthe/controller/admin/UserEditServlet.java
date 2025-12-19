@@ -24,7 +24,7 @@ public class UserEditServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         try {
-            // Lấy dữ liệu
+
             int id = Integer.parseInt(request.getParameter("id"));
             String fullName = request.getParameter("fullname");
             String email = request.getParameter("email");
@@ -32,7 +32,6 @@ public class UserEditServlet extends HttpServlet {
             String role = request.getParameter("role");
             String status = request.getParameter("status");
 
-            // Tạo User object
             Users user = Users.builder()
                     .userId(id)
                     .fullName(fullName)
@@ -42,7 +41,6 @@ public class UserEditServlet extends HttpServlet {
                     .status(status)
                     .build();
 
-            // Gọi DAO update
             UserDAO dao = new UserDAO();
             boolean isSuccess = dao.updateUser(user);
 
@@ -51,7 +49,6 @@ public class UserEditServlet extends HttpServlet {
             } else {
                 response.sendRedirect(request.getContextPath() + "/admin/user-list?msg=Fail");
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect(request.getContextPath() + "/admin/user-list?msg=Error");
