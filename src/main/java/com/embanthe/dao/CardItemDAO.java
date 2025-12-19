@@ -304,4 +304,135 @@ public class CardItemDAO {
             ps.executeUpdate();
         }
     }
+
+    public List<CardItems> getPurchasedCardsByUserId(int userId) {
+        List<CardItems> list = new ArrayList<>();
+        // Join 3 bảng để lấy đầy đủ thông tin
+        String sql = "SELECT c.card_item_id, c.serial_number, c.card_code, c.created_at, c.expiration_date, " +
+                "p.product_name, p.price, c.order_id " +
+                "FROM card_items c " +
+                "JOIN orders o ON c.order_id = o.order_id " +
+                "JOIN products p ON c.product_id = p.product_id " +
+                "WHERE o.user_id = ? AND c.status = 'SOLD' " +
+                "ORDER BY c.created_at DESC";
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    CardItems c = new CardItems();
+                    c.setCardItemId(rs.getInt("card_item_id"));
+                    c.setSerialNumber(rs.getString("serial_number"));
+                    c.setCardCode(rs.getString("card_code"));
+                    c.setCreatedAt(rs.getTimestamp("created_at"));
+                    c.setExpirationDate(rs.getDate("expiration_date"));
+                    c.setOrderId(rs.getInt("order_id"));
+
+                    // Set các trường bổ sung
+                    c.setProductName(rs.getString("product_name"));
+                    c.setPrice(rs.getDouble("price"));
+
+                    list.add(c);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<CardItems> getPurchasedCardsPaging(int userId, String keyword, int pageIndex, int pageSize) {
+        List<CardItems> list = new ArrayList<>();
+        int offset = (pageIndex - 1) * pageSize;
+
+        StringBuilder sql = new StringBuilder(
+                // SỬA: Lấy product_name và unit_price từ bảng ORDERS (o)
+                "SELECT c.card_item_id, c.serial_number, c.card_code, o.created_at, c.expiration_date, " +
+                        "o.product_name, o.unit_price, c.order_id " +
+                        "FROM card_items c " +
+                        "JOIN orders o ON c.order_id = o.order_id " +
+                        "WHERE o.user_id = ? AND c.status = 'SOLD' ");
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            // SỬA: Tìm kiếm theo o.product_name
+            sql.append("AND (o.product_name LIKE ? OR c.serial_number LIKE ? OR c.card_code LIKE ?) ");
+        }
+
+        sql.append("ORDER BY o.created_at DESC LIMIT ? OFFSET ?");
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            int paramIndex = 1;
+            ps.setInt(paramIndex++, userId);
+
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                String searchPattern = "%" + keyword.trim() + "%";
+                ps.setString(paramIndex++, searchPattern);
+                ps.setString(paramIndex++, searchPattern);
+                ps.setString(paramIndex++, searchPattern);
+            }
+
+            ps.setInt(paramIndex++, pageSize);
+            ps.setInt(paramIndex++, offset);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    CardItems c = new CardItems();
+                    c.setCardItemId(rs.getInt("card_item_id"));
+                    c.setSerialNumber(rs.getString("serial_number"));
+                    c.setCardCode(rs.getString("card_code"));
+                    c.setCreatedAt(rs.getTimestamp("created_at"));
+                    c.setExpirationDate(rs.getDate("expiration_date"));
+                    c.setOrderId(rs.getInt("order_id"));
+
+                    c.setProductName(rs.getString("product_name"));
+                    c.setPrice(rs.getDouble("unit_price")); // Lưu ý tên cột trong DB là unit_price
+
+                    list.add(c);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public int countPurchasedCards(int userId, String keyword) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT COUNT(*) " +
+                        "FROM card_items c " +
+                        "JOIN orders o ON c.order_id = o.order_id " +
+                        "WHERE o.user_id = ? AND c.status = 'SOLD' ");
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            sql.append("AND (o.product_name LIKE ? OR c.serial_number LIKE ? OR c.card_code LIKE ?) ");
+        }
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            int paramIndex = 1;
+            ps.setInt(paramIndex++, userId);
+
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                String searchPattern = "%" + keyword.trim() + "%";
+                ps.setString(paramIndex++, searchPattern);
+                ps.setString(paramIndex++, searchPattern);
+                ps.setString(paramIndex++, searchPattern);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }
