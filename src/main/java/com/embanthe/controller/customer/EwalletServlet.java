@@ -39,20 +39,20 @@ public class EwalletServlet extends HttpServlet {
         Users currentUser = (Users) session.getAttribute("user");
 
         String flashError = (String) session.getAttribute("flashError");
-        if(flashError != null){
+        if (flashError != null) {
             req.setAttribute("errorMessage", flashError);
             session.removeAttribute("flashError");
         }
 
         if (currentUser != null) {
-            Users updatedUser = userDAO.getUserById((int) currentUser.getUserId()); // 1
+            Users updatedUser = userDAO.getUserById(currentUser.getUserId()); // 1
             if (updatedUser != null) {
                 session.setAttribute("user", updatedUser);
                 currentUser = updatedUser;
             }
-            String status = req.getParameter("status");
-            if (status == null || status.isEmpty()) {
-                status = "ALL";
+            String type = req.getParameter("type");
+            if (type == null || type.isEmpty()) {
+                type = "ALL";
             }
             int page = 1;
             int pageSize = 10;
@@ -65,16 +65,16 @@ public class EwalletServlet extends HttpServlet {
                 }
             }
 
-            int totalTransactions = transactionDAO.countTransactionsByUserId((int) currentUser.getUserId()); //2
+            int totalTransactions = transactionDAO.countTransactionsByUserId((int) currentUser.getUserId(), type); //2
             int totalPages = (int) Math.ceil((double) totalTransactions / pageSize);
 
             //3
-            List<Transactions> transactionList = transactionDAO.getRecentTransactions((int) currentUser.getUserId(), status, page, pageSize);
+            List<Transactions> transactionList = transactionDAO.getRecentTransactions((int) currentUser.getUserId(), type, page, pageSize);
 
             req.setAttribute("transactionList", transactionList);
             req.setAttribute("currentPage", page);
             req.setAttribute("totalPages", totalPages);
-            req.setAttribute("currentStatus", status);
+            req.setAttribute("currentType", type);
 
         } else {
             resp.sendRedirect(req.getContextPath() + "/login");
@@ -98,19 +98,18 @@ public class EwalletServlet extends HttpServlet {
 
         try {
             String amountStr = request.getParameter("amount");
-            /*if (amountStr == null || amountStr.isEmpty()) {
+            if (amountStr == null || amountStr.isEmpty()) {
                 request.setAttribute("errorMessage", "Vui lòng nhập số tiền.");
                 request.getRequestDispatcher(walletPath).forward(request, response);
                 return;
-            }*/
+            }
 
             long amount = Long.parseLong(amountStr);
-
-            /*if (amount < 10000 || amount > 50000000) {
+            if (amount < 10000 || amount > 50000000) {
                 request.setAttribute("errorMessage", "Số tiền nạp phải từ 10.000đ đến 50.000.000đ");
                 request.getRequestDispatcher(walletPath).forward(request, response);
                 return;
-            }*/
+            }
 
             String ipAddr = VNPayUtils.getIpAddress(request);
 
