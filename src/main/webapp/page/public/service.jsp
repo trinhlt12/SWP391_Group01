@@ -604,7 +604,7 @@
             </div>
 
             <!-- Order Form (hidden by default) -->
-            <form id="orderForm" style="display: none;" action="<%= request.getContextPath() %>/purchase" method="POST">
+            <form id="orderForm" style="display: none;" action="<%= request.getContextPath() %>/review-order" method="POST">
 
                 <input type="hidden" id="productId" name="productId">
 
