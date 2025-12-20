@@ -62,7 +62,19 @@
                                 <a href="${pageContext.request.contextPath}/admin/providers" class="menu-link"><span class="menu-icon fas fa-building"></span> <span class="menu-text">Quản lý Nhà mạng</span></a>
                             </li>
                             <li class="menu-item">
-                                <a href="${pageContext.request.contextPath}/admin/categories" class="menu-link"><span class="menu-icon fas fa-tags"></span> <span class="menu-text">Quản lý Loại thẻ</span></a>
+                                <a href="${pageContext.request.contextPath}/admin/category" class="menu-link"><span class="menu-icon fas fa-tags"></span> <span class="menu-text">Quản lý Loại thẻ</span></a>
+                            </li>
+                            <li class="menu-item ">
+                                <a href="${pageContext.request.contextPath}/admin/support-list" class="menu-link ">
+                                    <span class="menu-icon oi oi-browser"></span> <span
+                                        class="menu-text">Quản lý Support</span>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="${pageContext.request.contextPath}/admin/carditems" class="menu-link">
+                                    <span class="menu-icon fas fa-warehouse"></span> <span class="menu-text">Kho hàng</span>
+
+                                </a>
                             </li>
                         </ul>
                     </nav>

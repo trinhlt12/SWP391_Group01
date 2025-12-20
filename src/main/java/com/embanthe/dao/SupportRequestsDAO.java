@@ -155,7 +155,7 @@ public class SupportRequestsDAO {
         String sql = "SELECT * FROM support_requests WHERE 1=1";
 
         if (subject != null && !subject.isEmpty()) {
-            sql += " AND subject = ?";
+            sql += " AND title = ?";
         }
         if (status != null && !status.isEmpty()) {
             sql += " AND status = ?";
@@ -194,7 +194,7 @@ public class SupportRequestsDAO {
         String sql = "SELECT COUNT(*) FROM support_requests WHERE 1=1";
 
         if (subject != null && !subject.isEmpty()) {
-            sql += " AND subject = ?";
+            sql += " AND title = ?";
         }
         if (status != null && !status.isEmpty()) {
             sql += " AND status = ?";

@@ -85,25 +85,32 @@
             <div class="aside-menu overflow-hidden">
                 <nav id="stacked-menu" class="stacked-menu">
                     <ul class="menu">
-                        <li class="menu-item">
-                            <a href="${pageContext.request.contextPath}/admin" class="menu-link">
-                                <span class="menu-icon fas fa-home"></span> <span class="menu-text">Trang chủ</span>
-                            </a>
+                        <li class="menu-item ">
+                            <a href="${pageContext.request.contextPath}/admin" class="menu-link"><span class="menu-icon fas fa-home"></span> <span class="menu-text">Dashboard</span></a>
                         </li>
+                        <li class="menu-header">Hệ thống</li>
                         <li class="menu-item has-active">
-                            <a href="${pageContext.request.contextPath}/admin/user-list" class="menu-link">
-                                <span class="menu-icon fas fa-users"></span> <span class="menu-text">Quản lý User</span>
-                            </a>
+                            <a href="${pageContext.request.contextPath}/admin/user-list" class="menu-link"><span class="menu-icon fas fa-users"></span> <span class="menu-text">Quản lý User</span></a>
                         </li>
                         <li class="menu-item">
+                            <a href="${pageContext.request.contextPath}/admin/products" class="menu-link"><span class="menu-icon fas fa-box"></span> <span class="menu-text">Quản lý Sản Phẩm</span></a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="${pageContext.request.contextPath}/admin/providers" class="menu-link"><span class="menu-icon fas fa-building"></span> <span class="menu-text">Quản lý Nhà mạng</span></a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="${pageContext.request.contextPath}/admin/category" class="menu-link"><span class="menu-icon fas fa-tags"></span> <span class="menu-text">Quản lý Loại thẻ</span></a>
+                        </li>
+                        <li class="menu-item ">
                             <a href="${pageContext.request.contextPath}/admin/support-list" class="menu-link ">
                                 <span class="menu-icon oi oi-browser"></span> <span
                                     class="menu-text">Quản lý Support</span>
                             </a>
                         </li>
                         <li class="menu-item">
-                            <a href="#" class="menu-link">
-                                <span class="menu-icon fas fa-users"></span> <span class="menu-text">Quản lý System</span>
+                            <a href="${pageContext.request.contextPath}/admin/carditems" class="menu-link">
+                                <span class="menu-icon fas fa-warehouse"></span> <span class="menu-text">Kho hàng</span>
+
                             </a>
                         </li>
                     </ul>
