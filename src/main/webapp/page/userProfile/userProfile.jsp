@@ -42,50 +42,9 @@
 
 </head>
 <body class="index-page">
-<header id="header" class="header d-flex align-items-center sticky-top">
-    <div class="container-fluid container-xl position-relative d-flex align-items-center">
 
-        <a href="home" class="logo d-flex align-items-center me-auto">
+<jsp:include page="/header.jsp" />
 
-            <img src="image/Logo.png" alt="Logo">
-            <h1 class="">Em Bán Thẻ</h1>
-        </a>
-
-        <nav id="navmenu" class="navmenu">
-
-            <ul>
-
-                <li><a href="#hero" >Home</a></li>
-                <li><a href="${pageContext.request.contextPath}/service">Dịch Vụ</a></li>
-                <c:if test="${not empty sessionScope.user}">
-                    <li><a href="${pageContext.request.contextPath}/ewallet">Ewallet</a></li>
-                    <li><a href="#portfolio">Thống Kê</a></li>
-                    <li><a href="#team">Link Thanh Toán</a></li>
-                    <li><a href="sendSupport">Hỗ Trợ</a></li>
-                    <li class="dropdown">
-                        <img src="image/icons8-user-male-16.png" alt="User Icon"
-                             style="width:20px; height:20px; margin-right:5px;">
-
-                        <span>${sessionScope.user.fullName} - ${sessionScope.user.balance} VND</span>
-                        <i class="bi bi-chevron-down toggle-dropdown"></i>
-                        <ul>
-                            <li><a href="userprofile">Thông tin cá nhân</a></li>
-                            <li><a href="changePassword">Đổi Mật Khẩu Đăng nhập</a></li>
-                            <li><a href="#">Email: ${sessionScope.user.email}</a></li>
-                            <li><a href="logout">Đăng xuất</a></li>
-                        </ul>
-                    </li>
-                </c:if>
-                <!-- Nếu chưa đăng nhập -->
-                <c:if test="${empty sessionScope.user}">
-                    <li><a href="login">Đăng nhập</a></li>
-                </c:if>
-            </ul>
-            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-        </nav>
-
-    </div>
-</header>
 <div class="bg-light">
     <div class="container py-5">
         <div class="row">

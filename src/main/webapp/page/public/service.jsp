@@ -439,10 +439,10 @@
     </style>
 </head>
 <body>
+<jsp:include page="/header.jsp"/>
 
 <div class="service-container">
 
-    <jsp:include page="/header.jsp"/>
 
     <!-- Main 3-column Layout -->
     <div class="main-layout">
@@ -688,6 +688,7 @@
 
         updateTotal();
     }
+
     function fixQuantity(element) {
         let val = parseInt(element.value);
 

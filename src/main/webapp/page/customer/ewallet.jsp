@@ -34,9 +34,7 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
             min-height: 100vh;
-            padding: 20px;
         }
 
         .container {
@@ -46,7 +44,7 @@
 
         /* Header Section */
         .page-header {
-            margin-top: 60px;
+            margin-top: 30px;
             text-align: center;
             margin-bottom: 30px;
         }
@@ -481,7 +479,12 @@
         }
     </style>
 </head>
+
 <body>
+
+<jsp:include page="/header.jsp"/>
+
+
 <%
     // Format tiền VN
     NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
@@ -492,7 +495,6 @@
 %>
 
 <div class="container">
-    <jsp:include page="/header.jsp"/>
     <!-- Page Header -->
     <div class="page-header">
         <h1>💳 Em Bán Thẻ E-Wallet</h1>
@@ -609,10 +611,10 @@
                                     <div class="transaction-date">
                                         <!-- Format ngày tháng -->
                                         <fmt:formatDate value="${trans.createdAt}" pattern="dd/MM/yyyy HH:mm"/>
-                                        <%--<a href="transaction-detail?id=${trans.transactionId}"
-                                           style="color: #059669; text-decoration: underline; font-weight: bold;">
-                                            Xem chi tiết
-                                        </a>--%>
+                                            <%--<a href="transaction-detail?id=${trans.transactionId}"
+                                               style="color: #059669; text-decoration: underline; font-weight: bold;">
+                                                Xem chi tiết
+                                            </a>--%>
                                     </div>
                                 </div>
                             </div>
