@@ -98,27 +98,19 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("username", user.getUsername());
                 if (remember != null) {
                     Cookie cookieUser = new Cookie("username", username);
-//                    Cookie cookiePass = new Cookie("password", password);
                     cookieUser.setPath("/");
-//                    cookiePass.setPath("/");
 
                     cookieUser.setMaxAge(2 * 60 * 60);
-//                    cookiePass.setMaxAge(2 * 60 * 60);
 
                     response.addCookie(cookieUser);
-//                    response.addCookie(cookiePass);
                 }else {
                     Cookie cookieUser = new Cookie("username", "");
-//                    Cookie cookiePass = new Cookie("password", "");
 
                     cookieUser.setPath("/");
-//                    cookiePass.setPath("/");
 
                     cookieUser.setMaxAge(0);
-//                    cookiePass.setMaxAge(0);
 
                     response.addCookie(cookieUser);
-//                    response.addCookie(cookiePass);
                 }
                 // Kiểm tra role (CUSTOMER/ADMIN)
                 if ("CUSTOMER".equalsIgnoreCase(user.getRole())) {
