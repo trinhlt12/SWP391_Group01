@@ -54,7 +54,6 @@
                                     <label for="exampleInputPassword1" class="form-label">Mật khẩu</label>
                                     <input type="password" name="password" class="form-control"
                                            id="exampleInputPassword1"
-<%--                                           value="${cookie.password.value}"--%>
                                     >
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between mb-4">

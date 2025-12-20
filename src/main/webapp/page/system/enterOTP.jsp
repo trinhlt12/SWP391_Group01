@@ -64,10 +64,10 @@
                                 <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">
                                     <c:choose>
                                         <c:when test="${sessionScope.actionType eq 'forgotPassword'}">
-                                            Xác nhận mật khẩu
+                                            Xác nhận OTP mật khẩu
                                         </c:when>
                                         <c:when test="${sessionScope.actionType eq 'register'}">
-                                            Xác nhận đăng ký
+                                            Xác nhận OTP đăng ký
                                         </c:when>
                                         <c:otherwise>
                                             Nhập OTP
