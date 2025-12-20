@@ -95,6 +95,12 @@
                             </a>
                         </li>
                         <li class="menu-item">
+                            <a href="${pageContext.request.contextPath}/admin/support-list" class="menu-link ">
+                                <span class="menu-icon oi oi-browser"></span> <span
+                                    class="menu-text">Quản lý Support</span>
+                            </a>
+                        </li>
+                        <li class="menu-item">
                             <a href="#" class="menu-link">
                                 <span class="menu-icon fas fa-users"></span> <span class="menu-text">Quản lý System</span>
                             </a>

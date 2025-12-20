@@ -46,7 +46,7 @@ public class SendSupportServlet extends HttpServlet {
             supportRequest.setUserId(userId);
             supportRequest.setTitle(title);
             supportRequest.setMessage(message);
-            supportRequest.setStatus("OPEN");
+            supportRequest.setStatus("Processing");
             supportRequest.setCreatedAt(new Timestamp(System.currentTimeMillis()));
 
             boolean success = supportRequestsDAO.sendSupport(supportRequest);

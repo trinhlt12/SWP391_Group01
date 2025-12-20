@@ -36,7 +36,85 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assetsHome/css/userProfile.css">
     <base href="${pageContext.request.contextPath}/">
+    <style> /* Khung tổng thể */
+    .support-section {
+        background: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
 
+    /* Tiêu đề */
+    .support-section h5 {
+        font-weight: 600;
+        color: #2c3e50;
+        border-left: 4px solid #0d6efd;
+        padding-left: 10px;
+    }
+
+    /* Form lọc */
+    .support-section form {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .support-section select {
+        padding: 6px 12px;
+        border-radius: 6px;
+        border: 1px solid #ced4da;
+    }
+
+    .support-section button {
+        padding: 6px 16px;
+        border-radius: 6px;
+    }
+
+    /* Bảng */
+    .support-section table {
+        border-radius: 6px;
+        overflow: hidden;
+    }
+
+    .support-section thead {
+        background: #f8f9fa;
+    }
+
+    .support-section th {
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .support-section td {
+        vertical-align: middle;
+    }
+
+    /* Badge trạng thái */
+    .badge {
+        padding: 6px 10px;
+        font-size: 0.85rem;
+        border-radius: 20px;
+    }
+
+    .bg-warning {
+        background-color: #ffc107 !important;
+        color: #212529;
+    }
+
+    .bg-success {
+        background-color: #28a745 !important;
+    }
+
+    .bg-secondary {
+        background-color: #6c757d !important;
+    }
+
+    /* Hover row */
+    .support-section tbody tr:hover {
+        background-color: #f1f5f9;
+        transition: background-color 0.2s ease-in-out;
+    } </style>
 </head>
 <body class="index-page">
 <header id="header" class="header d-flex align-items-center sticky-top">
@@ -58,7 +136,7 @@
                     <li><a href="${pageContext.request.contextPath}/ewallet">Ewallet</a></li>
                     <li><a href="#portfolio">Thống Kê</a></li>
                     <li><a href="#team">Link Thanh Toán</a></li>
-                    <li><a href="#policy">Chính Sách</a></li>
+                    <li><a href="sendSupport">Hỗ Trợ</a></li>
                     <li class="dropdown">
                         <img src="image/icons8-user-male-16.png" alt="User Icon"
                              style="width:20px; height:20px; margin-right:5px;">
@@ -126,7 +204,8 @@
                                             Tin Cá Nhân</a>
                                         <a class="nav-link" href="changePassword"><i class="fas fa-lock me-2"></i>Đổi
                                             Mật Khẩu</a>
-                                        <a class="nav-link active" href="listSupport"><i class="fas fa-credit-card me-2"></i>Support</a>
+                                        <a class="nav-link active" href="listSupport"><i
+                                                class="fas fa-credit-card me-2"></i>Support</a>
                                         <a class="nav-link" href="#"><i class="fas fa-chart-line me-2"></i>Activity</a>
                                     </div>
                                 </div>
@@ -137,8 +216,22 @@
 
                                 <div class="p-4">
                                     <!-- Personal Information -->
-                                    <div class="mb-4">
+                                    <div class=" support-section mb-4">
                                         <h5 class="mb-4">Danh sách yêu cầu hỗ trợ</h5>
+                                        <form method="get" action="listSupport"><select name="status">
+                                            <option value="">--Tất cả--</option>
+                                            <option value="Processing" ${selectedStatus == 'Processing' ? 'selected' : ''}>
+                                                Processing
+                                            </option>
+                                            <option value="Approved" ${selectedStatus == 'Approved' ? 'selected' : ''}>
+                                                Approved
+                                            </option>
+                                            <option value="Rejected" ${selectedStatus == 'Rejected' ? 'selected' : ''}>
+                                                Rejected
+                                            </option>
+                                        </select>
+                                            <button type="submit">Lọc</button>
+                                        </form>
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover align-middle">
                                                 <thead class="table-light">
@@ -158,17 +251,37 @@
                                                         <td class="fw-bold text-primary">${req.title}</td>
                                                         <td>${req.message}</td>
                                                         <td><span
-                                                                class="badge <c:choose> <c:when test="${req.status == 'OPEN'}">bg-warning</c:when> <c:when test="${req.status == 'IN_PROGRESS'}">bg-info</c:when> <c:when test="${req.status == 'RESOLVED'}">bg-success</c:when> <c:when test="${req.status == 'CLOSED'}">bg-secondary</c:when> </c:choose>"> ${req.status} </span>
+                                                                class="badge <c:choose> <c:when test="${req.status == 'Processing'}">bg-warning</c:when>
+                                                            <c:when test="${req.status == 'Approved'}">bg-success</c:when>
+                                                            <c:when test="${req.status == 'Rejected'}">bg-secondary</c:when>
+                                                            </c:choose>"> ${req.status} </span>
                                                         </td>
-                                                        <td>${req.createdAt}</td>
+                                                        <td><fmt:formatDate value="${req.createdAt}"
+                                                                            pattern="yyyy-MM-dd HH:mm:ss"/></td>
+
                                                         <td>${req.processNote}</td>
-                                                        <td>${req.processedAt}</td>
+
+                                                        <td><fmt:formatDate value="${req.processedAt}"
+                                                                            pattern="yyyy-MM-dd HH:mm:ss"/></td>
                                                     </tr>
                                                 </c:forEach></tbody>
                                             </table>
                                         </div>
                                     </div>
                                 </div>
+                                <c:set var="totalPages"
+                                       value="${(totalRequests / pageSize) + (totalRequests % pageSize > 0 ? 1 : 0)}"/>
+
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination">
+                                        <c:forEach var="i" begin="1" end="${totalPages}">
+                                            <li class="page-item ${i == currentPage ? 'active' : ''}">
+                                                <a class="page-link" href="listSupport?page=${i}">${i}</a>
+                                            </li>
+                                        </c:forEach>
+                                    </ul>
+                                </nav>
+
                             </div>
                         </div>
                     </div>

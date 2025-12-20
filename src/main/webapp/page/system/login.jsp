@@ -62,7 +62,7 @@
                                         <input class="form-check-input primary" type="checkbox" value=""
                                                id="flexCheckChecked" name="remember" checked>
                                         <label class="form-check-label text-dark" for="flexCheckChecked">
-                                            Remeber this Device
+                                            Lưu tên đăng nhập
                                         </label>
                                     </div>
                                     <a class="text-primary fw-bold" href="forgotPassword">Forgot Password ?</a>
