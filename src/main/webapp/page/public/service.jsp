@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dịch vụ - Em Bán Thẻ</title>
     <base href="${pageContext.request.contextPath}/">
-
+    <link href="${pageContext.request.contextPath}/image/Logo.png" rel="icon">
     <link href="assetsHome/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="assetsHome/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <link href="assetsHome/vendor/aos/aos.css" rel="stylesheet">

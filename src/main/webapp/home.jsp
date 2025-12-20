@@ -24,56 +24,36 @@
     <link href="${pageContext.request.contextPath}/assetsHome/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/assetsHome/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/assetsHome/css/main.css" rel="stylesheet">
+    <style>
+        .partner-item {
+            padding: 15px;
+            background: #fff;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
 
+        .partner-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .partner-logo {
+            max-height: 60px;
+            object-fit: contain;
+        }
+
+        .partner-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+
+    </style>
 </head>
 
 <body class="index-page">
 
-<header id="header" class="header d-flex align-items-center sticky-top">
-    <div class="container-fluid container-xl position-relative d-flex align-items-center">
-
-        <a href="home" class="logo d-flex align-items-center me-auto">
-
-            <img src="${pageContext.request.contextPath}/image/Logo.png" alt="Logo">
-            <h1 class="sitename">Em Bán Thẻ</h1>
-        </a>
-
-        <nav id="navmenu" class="navmenu">
-
-            <ul>
-
-                <li><a href="#hero" class="active">Home</a></li>
-                <li><a href="${pageContext.request.contextPath}/service">Dịch Vụ</a></li>
-                <c:if test="${not empty sessionScope.user}">
-                    <li><a href="${pageContext.request.contextPath}/ewallet">Ewallet</a></li>
-                    <li><a href="#portfolio">Thống Kê</a></li>
-                    <li><a href="#team">Link Thanh Toán</a></li>
-                    <li><a href="sendSupport">Hỗ Trợ</a></li>
-                    <li class="dropdown">
-                        <img src="${pageContext.request.contextPath}/image/icons8-user-male-16.png"
-                             alt="User Icon"
-                             style="width:20px; height:20px; margin-right:5px;">
-
-                        <span>${sessionScope.user.fullName} - ${sessionScope.user.balance} VND</span>
-                        <i class="bi bi-chevron-down toggle-dropdown"></i>
-                        <ul>
-                            <li><a href="userprofile">Thông tin cá nhân</a></li>
-                            <li><a href="changePassword">Đổi Mật Khẩu Đăng nhập</a></li>
-                            <li><a href="#">Email: ${sessionScope.user.email}</a></li>
-                            <li><a href="logout">Đăng xuất</a></li>
-                        </ul>
-                    </li>
-                </c:if>
-                <!-- Nếu chưa đăng nhập -->
-                <c:if test="${empty sessionScope.user}">
-                    <li><a href="login">Đăng nhập</a></li>
-                </c:if>
-            </ul>
-            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-        </nav>
-
-    </div>
-</header>
+<jsp:include page="header.jsp" />
 
 <main class="main">
 
@@ -124,44 +104,59 @@
                                      style="max-height: 100px; object-fit: contain;">
                             </div>
 
-                            <a href="product-details?id=${s.productId}" class="stretched-link">
+                            <a href="${not empty sessionScope.user ? 'product-details?id=' : 'login'}${not empty sessionScope.user ? s.productId : ''}" class="stretched-link">
                                 <h3>${s.productName}</h3>
                             </a>
 
-                            <p>
-                                <strong>Nhà mạng:</strong> ${s.providerName}<br/>
-                                <strong>Loại thẻ:</strong> ${s.categoryName}<br/>
-                                <strong>Mệnh giá:</strong>
-                                <fmt:formatNumber value="${s.price}" type="currency" currencySymbol="đ"/><br/>
-
-                                <span class="${s.quantity > 0 ? 'text-success' : 'text-danger'}">
-                                        ${s.quantity > 0 ? 'Còn hàng' : 'Hết hàng'}
+                            <div class="mt-2 mb-3">
+                                <p class="mb-2">
+                                    <strong style="font-size: 1.3rem; color: #dc3545;">
+                                        <fmt:formatNumber value="${s.price}" type="number" groupingUsed="true" /> đ
+                                    </strong>
+                                </p>
+                                <span class="${s.quantity > 0 ? 'badge bg-success' : 'badge bg-secondary'}">
+                                        ${s.quantity > 0 ? 'Sẵn hàng' : 'Tạm hết'}
                                 </span>
-                            </p>
+                            </div>
 
-                            <div class="mt-3 text-center" style="position: relative; z-index: 2;">
+                            <div class="text-center" style="position: relative; z-index: 2;">
+
                                 <c:choose>
-                                    <%-- TRƯỜNG HỢP 1: Đã đăng nhập (Có session user) --%>
-                                    <c:when test="${not empty sessionScope.user}">
-                                        <c:if test="${s.quantity > 0}">
-                                            <a href="payment?productId=${s.productId}" class="btn btn-primary rounded-pill px-4">
-                                                Mua ngay <i class="bi bi-cart-check"></i>
-                                            </a>
-                                        </c:if>
-                                        <c:if test="${s.quantity <= 0}">
-                                            <button class="btn btn-secondary rounded-pill px-4" disabled>Hết hàng</button>
-                                        </c:if>
+                                    <%-- ƯU TIÊN 1: Kiểm tra Hết hàng trước --%>
+                                    <c:when test="${s.quantity <= 0}">
+                                        <button class="btn btn-secondary rounded-pill px-4" disabled style="cursor: not-allowed;">
+                                            Hết hàng <i class="bi bi-x-circle"></i>
+                                        </button>
                                     </c:when>
 
+                                    <%-- ƯU TIÊN 2: Còn hàng -> Kiểm tra xem là Khách hay User --%>
                                     <c:otherwise>
-                                        <a href="login"
-                                           onclick="return confirm('Bạn cần đăng nhập để thực hiện mua hàng. Chuyển đến trang đăng nhập?');"
-                                           class="btn btn-outline-primary rounded-pill px-4">
-                                            Mua ngay <i class="bi bi-box-arrow-in-right"></i>
-                                        </a>
+                                        <c:choose>
+
+                                            <%-- USER ĐÃ LOGIN: Hiện nút MUA --%>
+                                            <c:when test="${not empty sessionScope.user}">
+                                                <form action="${pageContext.request.contextPath}/review-order" method="post">
+                                                    <input type="hidden" name="productId" value="${s.productId}">
+                                                    <input type="hidden" name="quantity" value="1">
+                                                    <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                                                        Mua ngay <i class="bi bi-cart-check"></i>
+                                                    </button>
+                                                </form>
+                                            </c:when>
+
+                                            <%-- KHÁCH VÃNG LAI: Hiện nút ĐĂNG NHẬP --%>
+                                            <c:otherwise>
+                                                <a href="login" class="btn btn-outline-primary rounded-pill px-4">
+                                                    Đăng nhập để mua <i class="bi bi-box-arrow-in-right"></i>
+                                                </a>
+                                            </c:otherwise>
+
+                                        </c:choose>
                                     </c:otherwise>
                                 </c:choose>
+
                             </div>
+
                         </div>
                     </div>
                 </c:forEach>
@@ -182,13 +177,12 @@
                     <div class="col-lg-4 d-flex" data-aos="fade-up" data-aos-delay="100">
                         <div class="service-item position-relative">
 
-
                             <h4>
-                                <a href="category-details.jsp?id=${c.categoryId}" class="stretched-link">
+                                <a href="${pageContext.request.contextPath}/service" class="stretched-link">
                                         ${c.categoryName}
                                 </a>
                             </h4>
-                            <!-- Nếu có mô tả category -->
+                            <!-- Nếu có mô tả category ?id=${c.categoryId} -->
                             <p>${c.description}</p>
                         </div>
                     </div>
@@ -200,67 +194,31 @@
 
     </section><!-- /Featured Services Section -->
 
-    <!-- Testimonials Section -->
-    <section id="testimonials" class="testimonials section light-background" style="padding: 30px 0;">
-        <div class="container section-title" data-aos="fade-up" style="margin-bottom: 20px;"> <span>Nhà cung cấp</span>
-        <h2>Đối tác</h2>
+    <section id="partners" class="partners section light-background">
+        <div class="container section-title" data-aos="fade-up">
+            <span>Nhà cung cấp</span>
+            <h2>Đối tác</h2>
+            <p>Các nhà cung cấp uy tín đang hợp tác cùng hệ thống</p>
         </div>
 
-        <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="container">
+            <div class="row justify-content-center align-items-center g-4">
 
-            <div class="swiper init-swiper" data-speed="600" data-delay="5000"
-                 data-breakpoints="{ &quot;320&quot;: { &quot;slidesPerView&quot;: 2, &quot;spaceBetween&quot;: 20 }, &quot;768&quot;: { &quot;slidesPerView&quot;: 4, &quot;spaceBetween&quot;: 20 }, &quot;1200&quot;: { &quot;slidesPerView&quot;: 5, &quot;spaceBetween&quot;: 20 } }">
-
-                <script type="application/json" class="swiper-config">
-                    {
-                        "loop": true,
-                        "speed": 600,
-                        "autoplay": {
-                            "delay": 3000
-                        },
-                        "slidesPerView": "auto",
-                        "pagination": {
-                            "el": ".swiper-pagination",
-                            "type": "bullets",
-                            "clickable": true
-                        },
-                        "breakpoints": {
-                            "320": {
-                                "slidesPerView": 2,
-                                "spaceBetween": 20
-                            },
-                            "768": {
-                                "slidesPerView": 4,
-                                "spaceBetween": 20
-                            },
-                            "1200": {
-                                "slidesPerView": 5,
-                                "spaceBetween": 30
-                            }
-                        }
-                    }
-                </script>
-
-                <div class="row text-center">
-                    <c:forEach var="p" items="${providerList}">
-                        <div class="swiper-slide">
-                            <div class="testimonial-item">
-                                <img src="${p.logoUrl}" alt="${p.providerName}" width="150"
-                                     style="justify-content: center">
-                                <h3>${p.providerName}</h3>
-
-
-                            </div>
+                <c:forEach var="p" items="${providerList}">
+                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 text-center">
+                        <div class="partner-item">
+                            <img src="${pageContext.request.contextPath}/${p.logoUrl}"
+                                 alt="${p.providerName}"
+                                 class="img-fluid partner-logo">
+                            <p class="mt-2 mb-0 partner-name">
+                                    ${p.providerName}
+                            </p>
                         </div>
-                        <!-- End testimonial item -->
-                    </c:forEach>
-                </div>
+                    </div>
+                </c:forEach>
 
-                <div class="swiper-pagination"></div>
             </div>
-
         </div>
-
     </section>
 
     <!-- Team Section -->
