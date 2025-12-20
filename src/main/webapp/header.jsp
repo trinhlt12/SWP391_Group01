@@ -20,6 +20,7 @@
                 <c:if test="${not empty sessionScope.user}">
                     <li><a href="${pageContext.request.contextPath}/ewallet">Ewallet</a></li>
                     <li><a href="${pageContext.request.contextPath}/user-history">Thống Kê</a></li>
+                    <li><a href="${pageContext.request.contextPath}/sendSupport">Hỗ trợ</a></li>
 
                     <li class="dropdown">
                         <a href="#">
