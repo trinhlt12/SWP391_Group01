@@ -14,7 +14,7 @@
             <ul>
                 <!-- Sửa lại các link href cho chuẩn đường dẫn tuyệt đối -->
                 <li><a href="${pageContext.request.contextPath}/home#hero" class="active">Home</a></li>
-                <li><a href="${pageContext.request.contextPath}/home#about">Dịch Vụ</a></li>
+                <li><a href="${pageContext.request.contextPath}/service">Dịch Vụ</a></li>
 
                 <c:if test="${not empty sessionScope.user}">
                     <li><a href="${pageContext.request.contextPath}/ewallet">Ewallet</a></li>
