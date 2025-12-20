@@ -87,7 +87,9 @@
             <span>Support</span>
             <h2>Support</h2>
             <p>Hỗ Trợ Khánh Hàng</p>
-            <c:if test="${not empty msg}"> <div class="alert alert-info">${msg}</div> </c:if>
+            <c:if test="${not empty msg}">
+                <div class="alert alert-info">${msg}</div>
+            </c:if>
         </div><!-- End Section Title -->
 
         <div class="container" data-aos="fade-up" data-aos-delay="100">
@@ -101,7 +103,7 @@
                             <i class="bi bi-geo-alt flex-shrink-0"></i>
                             <div>
                                 <h3>Địa Chỉ</h3>
-                                <p>A108 Adam Street, New York, NY 535022</p>
+                                <p>FPT HÒA LẠC</p>
                             </div>
                         </div><!-- End Info Item -->
 
@@ -109,7 +111,7 @@
                             <i class="bi bi-telephone flex-shrink-0"></i>
                             <div>
                                 <h3>Số Điện Thoại</h3>
-                                <p>+1 5589 55488 55</p>
+                                <p>+84 </p>
                             </div>
                         </div><!-- End Info Item -->
 
@@ -117,13 +119,14 @@
                             <i class="bi bi-envelope flex-shrink-0"></i>
                             <div>
                                 <h3>Email</h3>
-                                <p>info@example.com</p>
+                                <p></p>
                             </div>
                         </div><!-- End Info Item -->
 
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d48389.78314118045!2d-74.006138!3d40.710059!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25a22a3bda30d%3A0xb89d1fe6bc499443!2sDowntown%20Conference%20Center!5e0!3m2!1sen!2sus!4v1676961268712!5m2!1sen!2sus"
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.506218146545!2d105.52042364238727!3d21.012421638578534!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135abc60e7d3f19%3A0x2be9d7d0b5abcbf4!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBGUFQgSMOgIE7hu5lp!5e0!3m2!1svi!2s!4v1766158556420!5m2!1svi!2s"
                                 frameborder="0" style="border:0; width: 100%; height: 270px;" allowfullscreen=""
                                 loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
                     </div>
                 </div>
 
@@ -131,7 +134,7 @@
                     <form action="sendSupport" method="post" class="php-email-form"
                           data-aos-delay="200">
                         <div class="row gy-4">
-                            <input type="hidden" name="userId" value="${sessionScope.user.userId}" />
+                            <input type="hidden" name="userId" value="${sessionScope.user.userId}"/>
                             <div class="col-md-6">
                                 <label for="name-field" class="pb-2">Tên</label>
                                 <input type="text" id="name-field" class="form-control" required="">
@@ -140,8 +143,16 @@
 
                             <div class="col-md-12">
                                 <label for="subject-field" class="pb-2">Chủ Đề</label>
-                                <input type="text" class="form-control" name="title" id="subject-field" required="">
+                                <select class="form-control" name="title" id="subject-field" required>
+                                    <option value="">-- Chọn chủ đề --</option>
+                                    <option value="Bán thẻ hỗ trợ">Bán thẻ hỗ trợ</option>
+                                    <option value="Đơn hỗ trợ khác">Đơn hỗ trợ khác</option>
+                                    <option value="Vấn đề tài khoản">Vấn đề tài khoản</option>
+                                    <option value="Thanh toán">Thanh toán</option>
+                                    <option value="Hỗ trợ kỹ thuật">Hỗ trợ kỹ thuật</option>
+                                </select>
                             </div>
+
 
                             <div class="col-md-12">
                                 <label for="message-field" class="pb-2">Nội Dung</label>

@@ -13,7 +13,7 @@ public class SupportRequests {
     private java.sql.Timestamp processedAt; // ngày xử lý
 
 
-    public long getRequestId() {
+    public int getRequestId() {
         return requestId;
     }
 
@@ -22,7 +22,7 @@ public class SupportRequests {
     }
 
 
-    public long getUserId() {
+    public int getUserId() {
         return userId;
     }
 
