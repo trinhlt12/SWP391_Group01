@@ -201,4 +201,129 @@ public class TransactionDAO {
         }
         return 0;
     }
+    public java.util.Map<String, Double> getUserOverview(int userId) {
+        java.util.Map<String, Double> stats = new java.util.HashMap<>();
+        // Tính tổng nạp (DEPOSIT + SUCCESS) và tổng tiêu (PURCHASE + SUCCESS)
+        String sql = "SELECT " +
+                "COALESCE(SUM(CASE WHEN type = 'DEPOSIT' AND status = 'SUCCESS' THEN amount ELSE 0 END), 0) as total_deposit, " +
+                "COALESCE(SUM(CASE WHEN type = 'PURCHASE' AND status = 'SUCCESS' THEN amount ELSE 0 END), 0) as total_spent " +
+                "FROM transactions WHERE user_id = ?";
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    stats.put("totalDeposit", rs.getDouble("total_deposit"));
+                    stats.put("totalSpent", rs.getDouble("total_spent")); // total_spent trong DB là số âm, nhưng ở đây lấy giá trị raw
+                    // Nếu muốn hiển thị số dương cho tổng tiêu thì có thể Math.abs() ở Servlet hoặc JSP
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return stats;
+    }
+
+    // 2. Đếm tổng số dòng (Có lọc Keyword + Ngày tháng) để phân trang
+    public int countUserTransactions(int userId, String keyword, String type, String fromDate, String toDate) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM transactions WHERE user_id = ? ");
+        List<Object> params = new ArrayList<>();
+        params.add(userId);
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            sql.append(" AND (message LIKE ? OR order_id LIKE ?) ");
+            params.add("%" + keyword + "%");
+            params.add("%" + keyword + "%");
+        }
+        if (type != null && !type.trim().isEmpty()) {
+            sql.append(" AND type = ? ");
+            params.add(type);
+        }
+        if (fromDate != null && !fromDate.trim().isEmpty()) {
+            sql.append(" AND DATE(created_at) >= ? ");
+            params.add(fromDate);
+        }
+        if (toDate != null && !toDate.trim().isEmpty()) {
+            sql.append(" AND DATE(created_at) <= ? ");
+            params.add(toDate);
+        }
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    // 3. Lấy danh sách giao dịch (Có lọc Keyword + Ngày tháng + Phân trang)
+    public List<Transactions> getUserTransactions(int userId, String keyword, String type, String fromDate, String toDate, int page, int pageSize) {
+        List<Transactions> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM transactions WHERE user_id = ? ");
+        List<Object> params = new ArrayList<>();
+        params.add(userId);
+
+        // --- Logic lọc ---
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            sql.append(" AND (message LIKE ? OR order_id LIKE ?) ");
+            params.add("%" + keyword + "%");
+            params.add("%" + keyword + "%");
+        }
+        if (type != null && !type.trim().isEmpty()) {
+            sql.append(" AND type = ? ");
+            params.add(type);
+        }
+        if (fromDate != null && !fromDate.trim().isEmpty()) {
+            sql.append(" AND DATE(created_at) >= ? ");
+            params.add(fromDate);
+        }
+        if (toDate != null && !toDate.trim().isEmpty()) {
+            sql.append(" AND DATE(created_at) <= ? ");
+            params.add(toDate);
+        }
+
+        // Sắp xếp và phân trang
+        sql.append(" ORDER BY created_at DESC LIMIT ? OFFSET ?");
+        params.add(pageSize);
+        params.add((page - 1) * pageSize);
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Transactions t = new Transactions();
+                    t.setTransactionId(rs.getInt("transaction_id"));
+                    t.setUserId(rs.getInt("user_id"));
+                    // Xử lý order_id có thể null
+                    int oId = rs.getInt("order_id");
+                    if (!rs.wasNull()) {
+                        t.setOrderId(oId);
+                    }
+
+                    t.setAmount(rs.getDouble("amount"));
+                    t.setType(rs.getString("type"));
+                    t.setStatus(rs.getString("status"));
+                    t.setMessage(rs.getString("message"));
+                    t.setCreatedAt(rs.getTimestamp("created_at"));
+                    list.add(t);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

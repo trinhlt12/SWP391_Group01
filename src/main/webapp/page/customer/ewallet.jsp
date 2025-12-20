@@ -511,12 +511,10 @@
 
             <!-- Quick Actions -->
             <div class="quick-actions">
-                <a href="${pageContext.request.contextPath}/purchased-cards" class="action-btn" style="border-color: #4ca94e; color: #0f5132;">
-                    <div class="icon">📦</div>
+                <a href="${pageContext.request.contextPath}/purchased-cards" class="action-btn">
                     <div class="label">Thẻ Đã Mua</div>
                 </a>
                 <a href="javascript:void(0)" class="action-btn" onclick="toggleDepositForm()">
-                    <div class="icon">💰</div>
                     <div class="label">Nạp Tiền</div>
                 </a>
 
@@ -611,10 +609,10 @@
                                     <div class="transaction-date">
                                         <!-- Format ngày tháng -->
                                         <fmt:formatDate value="${trans.createdAt}" pattern="dd/MM/yyyy HH:mm"/>
-                                        <a href="transaction-detail?id=${trans.transactionId}"
+                                        <%--<a href="transaction-detail?id=${trans.transactionId}"
                                            style="color: #059669; text-decoration: underline; font-weight: bold;">
                                             Xem chi tiết
-                                        </a>
+                                        </a>--%>
                                     </div>
                                 </div>
                             </div>
