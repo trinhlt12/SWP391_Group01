@@ -130,7 +130,7 @@ public class TransactionDAO {
             }
         }
 
-        sql.append(" ORDER BY created_at ASC LIMIT ? OFFSET ?");
+        sql.append(" ORDER BY created_at DESC LIMIT ? OFFSET ?");
 
         try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql.toString())) {
@@ -291,7 +291,7 @@ public class TransactionDAO {
         }
 
         // Sắp xếp và phân trang
-        sql.append(" ORDER BY created_at DESC LIMIT ? OFFSET ?");
+        sql.append(" ORDER BY created_at ASC LIMIT ? OFFSET ?");
         params.add(pageSize);
         params.add((page - 1) * pageSize);
 
