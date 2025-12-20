@@ -3,6 +3,7 @@ package com.embanthe.controller.account;
 import com.embanthe.dao.AuthDAO;
 import com.embanthe.dao.UserDAO;
 import com.embanthe.model.Users;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
@@ -40,7 +41,7 @@ public class LoginServlet extends HttpServlet {
         try {
             // B1: Lấy access token + thông tin từ Google
             String accessToken = GoogleController.getToken(code);
-            Users googleUser  = GoogleController.getUserInfo(accessToken);
+            Users googleUser = GoogleController.getUserInfo(accessToken);
             UserDAO userDAO = new UserDAO();
             Users existingUser = userDAO.getUserByEmail(googleUser.getEmail());
 
@@ -96,6 +97,7 @@ public class LoginServlet extends HttpServlet {
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
                 session.setAttribute("username", user.getUsername());
+
                 if (remember != null) {
                     Cookie cookieUser = new Cookie("username", username);
                     cookieUser.setPath("/");
@@ -103,7 +105,7 @@ public class LoginServlet extends HttpServlet {
                     cookieUser.setMaxAge(2 * 60 * 60);
 
                     response.addCookie(cookieUser);
-                }else {
+                } else {
                     Cookie cookieUser = new Cookie("username", "");
 
                     cookieUser.setPath("/");
@@ -112,12 +114,19 @@ public class LoginServlet extends HttpServlet {
 
                     response.addCookie(cookieUser);
                 }
+
+                String redirectDest = request.getParameter("redirect");
+
+                if ("review-order".equals(redirectDest)) {
+                    response.sendRedirect(request.getContextPath() + "/review-order");
+                    return;
+                }
                 // Kiểm tra role (CUSTOMER/ADMIN)
                 if ("CUSTOMER".equalsIgnoreCase(user.getRole())) {
                     response.sendRedirect(request.getContextPath() + "/index.jsp");
                 } else if ("ADMIN".equalsIgnoreCase(user.getRole())) {
                     response.sendRedirect(request.getContextPath() + "/admin");
-                }  else {
+                } else {
                     // Nếu role không xác định, quay về trang login
                     request.setAttribute("message", "Role không hợp lệ!");
                     request.getRequestDispatcher("page/system/login.jsp").forward(request, response);

@@ -66,6 +66,7 @@
                                     </div>
                                     <a class="text-primary fw-bold" href="forgotPassword">Forgot Password ?</a>
                                 </div>
+                                <input type="hidden" name="redirect" value="${param.redirect}">
                                 <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">Đăng nhập
                                 </button>
                                 <div class="d-flex align-items-center my-4">
