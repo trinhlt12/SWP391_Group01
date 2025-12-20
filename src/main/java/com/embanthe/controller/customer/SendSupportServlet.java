@@ -24,6 +24,10 @@ public class SendSupportServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html; charset=UTF-8");
+
         // Lấy dữ liệu từ form
         String userIdStr = request.getParameter("userId");
         String title = request.getParameter("title");
