@@ -117,7 +117,16 @@
     .support-section tbody tr:hover {
         background-color: #f1f5f9;
         transition: background-color 0.2s ease-in-out;
-    } </style>
+    }
+
+    /* Pagination styling */
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        padding: 15px 0;
+    }
+    </style>
 </head>
 <body class="index-page">
 <jsp:include page="/header.jsp"/>
@@ -227,12 +236,25 @@
                                                 </c:forEach></tbody>
                                             </table>
                                         </div>
+                                        <c:set var="totalPages"
+                                               value="${(totalRequests / pageSize) + (totalRequests % pageSize > 0 ? 1 : 0)}"/>
+
+                                        <div class="pagination-container">
+                                            <nav aria-label="Page navigation">
+                                                <ul class="pagination mb-0">
+                                                    <c:forEach var="i" begin="1" end="${totalPages}">
+                                                        <li class="page-item ${i == currentPage ? 'active' : ''}">
+                                                            <a class="page-link" href="listSupport?page=${i}">${i}</a>
+                                                        </li>
+                                                    </c:forEach>
+                                                </ul>
+                                            </nav>
+                                        </div>
                                     </div>
                                 </div>
-                                <c:set var="totalPages"
-                                       value="${(totalRequests / pageSize) + (totalRequests % pageSize > 0 ? 1 : 0)}"/>
 
-                                <nav aria-label="Page navigation">
+
+                                <%--<nav aria-label="Page navigation">
                                     <ul class="pagination">
                                         <c:forEach var="i" begin="1" end="${totalPages}">
                                             <li class="page-item ${i == currentPage ? 'active' : ''}">
@@ -240,7 +262,7 @@
                                             </li>
                                         </c:forEach>
                                     </ul>
-                                </nav>
+                                </nav>--%>
 
                             </div>
                         </div>

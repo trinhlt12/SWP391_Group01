@@ -40,7 +40,9 @@
 
 </head>
 <body class="index-page">
+
 <jsp:include page="/header.jsp" />
+
 <div class="bg-light">
     <div class="container py-5">
         <div class="row">

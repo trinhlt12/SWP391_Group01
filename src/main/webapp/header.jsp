@@ -20,8 +20,8 @@
                 <c:if test="${not empty sessionScope.user}">
                     <li><a href="${pageContext.request.contextPath}/ewallet">Ewallet</a></li>
                     <li><a href="${pageContext.request.contextPath}/user-history">Thống Kê</a></li>
-                    <li><a href="${pageContext.request.contextPath}/home#policy">Chính Sách</a></li>
                     <li><a href="${pageContext.request.contextPath}/sendSupport">Hỗ trợ</a></li>
+
                     <li class="dropdown">
                         <a href="#">
                             <img src="${pageContext.request.contextPath}/image/icons8-user-male-16.png" alt="User Icon" style="width:20px; height:20px; margin-right:5px;">
@@ -35,7 +35,6 @@
                         <ul>
                             <li><a href="${pageContext.request.contextPath}/userprofile">Thông tin cá nhân</a></li>
                             <li><a href="${pageContext.request.contextPath}/user-history">Lịch sử giao dịch</a></li>
-
                             <li><a href="#">Email: ${sessionScope.user.email}</a></li>
                             <li><a href="${pageContext.request.contextPath}/logout">Đăng xuất</a></li>
                         </ul>

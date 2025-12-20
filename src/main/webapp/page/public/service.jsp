@@ -439,10 +439,10 @@
     </style>
 </head>
 <body>
+<jsp:include page="/header.jsp"/>
 
 <div class="service-container">
 
-    <jsp:include page="/header.jsp"/>
 
     <!-- Main 3-column Layout -->
     <div class="main-layout">
@@ -463,19 +463,35 @@
             <!-- Phone Dropdown -->
             <div class="category-dropdown" id="phoneDropdown" style="display: block;">
                 <div class="dropdown-item" onclick="filterProvider('phone', 'viettel')">
-                    <span class="dropdown-icon">📞</span>
+                    <span class="dropdown-icon">
+                        <img src="${pageContext.request.contextPath}/image/viettel1.png"
+                             alt="Viettel"
+                             style="width: 24px; height: 24px; object-fit: contain;">
+                    </span>
                     <span>Thẻ Viettel</span>
                 </div>
                 <div class="dropdown-item" onclick="filterProvider('phone', 'mobifone')">
-                    <span class="dropdown-icon">📱</span>
+                    <span class="dropdown-icon">
+                        <img src="${pageContext.request.contextPath}/image/mobi.png"
+                             alt="Mobifone"
+                             style="width: 24px; height: 24px; object-fit: contain;">
+                    </span>
                     <span>Thẻ Mobifone</span>
                 </div>
                 <div class="dropdown-item" onclick="filterProvider('phone', 'vinaphone')">
-                    <span class="dropdown-icon">📞</span>
+                    <span class="dropdown-icon">
+                        <img src="${pageContext.request.contextPath}/image/vina.png"
+                             alt="Vinaphone"
+                             style="width: 24px; height: 24px; object-fit: contain;">
+                    </span>
                     <span>Thẻ Vinaphone</span>
                 </div>
-                <div class="dropdown-item" onclick="filterProvider('phone', 'vietnammobile')">
-                    <span class="dropdown-icon">📱</span>
+                <div class="dropdown-item" onclick="filterProvider('phone', 'vietnamobile')">
+                    <span class="dropdown-icon">
+                        <img src="${pageContext.request.contextPath}/image/vietnammobile.png"
+                             alt="Vietnamobile"
+                             style="width: 24px; height: 24px; object-fit: contain;">
+                    </span>
                     <span>Thẻ Vietnam mobile</span>
                 </div>
             </div>
@@ -492,11 +508,19 @@
             <!-- Game Dropdown (Hidden by default) -->
             <div class="category-dropdown" id="gameDropdown" style="display: none;">
                 <div class="dropdown-item" onclick="filterProvider('game', 'garena')">
-                    <span class="dropdown-icon">🎮</span>
+                    <span class="dropdown-icon">
+                        <img src="${pageContext.request.contextPath}/image/garena.png"
+                             alt="Garena"
+                             style="width: 24px; height: 24px; object-fit: contain;">
+                    </span>
                     <span>Thẻ Garena</span>
                 </div>
                 <div class="dropdown-item" onclick="filterProvider('game', 'steam')">
-                    <span class="dropdown-icon">🎯</span>
+                    <span class="dropdown-icon">
+                        <img src="${pageContext.request.contextPath}/image/Steam_logo.png"
+                             alt="Steam"
+                             style="width: 24px; height: 24px; object-fit: contain;">
+                    </span>
                     <span>Thẻ Steam</span>
                 </div>
             </div>
@@ -518,8 +542,34 @@
 
                         <div class="selected-badge">✓</div>
 
-                        <div class="product-logo" style="color: #e30613;">
-                                ${p.providerName == 'Viettel' ? '📞' : '📱'}
+                        <div class="product-logo">
+                            <c:choose>
+                                <c:when test="${p.providerName == 'Viettel'}">
+                                    <img src="${pageContext.request.contextPath}/image/viettel1.png"
+                                         alt="Viettel"
+                                         style="width: 100%; height: 100%; object-fit: contain;">
+                                </c:when>
+                                <c:when test="${p.providerName == 'Mobifone'}">
+                                    <img src="${pageContext.request.contextPath}/image/mobi.png"
+                                         alt="Mobifone"
+                                         style="width: 100%; height: 100%; object-fit: contain;">
+                                </c:when>
+                                <c:when test="${p.providerName == 'Vinaphone'}">
+                                    <img src="${pageContext.request.contextPath}/image/vina.png"
+                                         alt="Vinaphone"
+                                         style="width: 100%; height: 100%; object-fit: contain;">
+                                </c:when>
+                                <c:when test="${p.providerName == 'Vietnamobile'}">
+                                    <img src="${pageContext.request.contextPath}/image/vietnammobile.png"
+                                         alt="Vietnamobile"
+                                         style="width: 100%; height: 100%; object-fit: contain;">
+                                </c:when>
+                                <c:otherwise>
+                                    <img src="${pageContext.request.contextPath}/image/default.png"
+                                         alt="Logo"
+                                         style="width: 100%; height: 100%; object-fit: contain;">
+                                </c:otherwise>
+                            </c:choose>
                         </div>
 
                         <div class="product-name">${p.providerName}</div>
@@ -540,8 +590,24 @@
 
                         <div class="selected-badge">✓</div>
 
-                        <div class="product-logo" style="color: #e30613;">
-                                ${p.providerName == 'Garena' ? '📞' : '📱'}
+                        <div class="product-logo">
+                            <c:choose>
+                                <c:when test="${p.providerName == 'Garena'}">
+                                    <img src="${pageContext.request.contextPath}/image/garena.png"
+                                         alt="Garena"
+                                         style="width: 100%; height: 100%; object-fit: contain;">
+                                </c:when>
+                                <c:when test="${p.providerName == 'Steam'}">
+                                    <img src="${pageContext.request.contextPath}/image/Steam_logo.png"
+                                         alt="Steam"
+                                         style="width: 100%; height: 100%; object-fit: contain;">
+                                </c:when>
+                                <c:otherwise>
+                                    <img src="${pageContext.request.contextPath}/image/default.png"
+                                         alt="Game Logo"
+                                         style="width: 100%; height: 100%; object-fit: contain;">
+                                </c:otherwise>
+                            </c:choose>
                         </div>
 
                         <div class="product-name">${p.providerName}</div>
@@ -688,6 +754,7 @@
 
         updateTotal();
     }
+
     function fixQuantity(element) {
         let val = parseInt(element.value);
 
