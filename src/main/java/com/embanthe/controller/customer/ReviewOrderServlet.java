@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @WebServlet("/review-order")
 public class ReviewOrderServlet extends HttpServlet {
@@ -18,18 +20,44 @@ public class ReviewOrderServlet extends HttpServlet {
     private final ProductDAO productDAO = new ProductDAO();
 
     @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        processRequest(req, resp);
+    }
+
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        processRequest(req, resp);
+    }
+
+    private void processRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         Users user = (Users) session.getAttribute("user");
+
+        String productIdStr = req.getParameter("productId");
+        String quantityStr = req.getParameter("quantity");
+
+        if (productIdStr == null && session.getAttribute("PENDING_PRODUCT_ID") != null) {
+            productIdStr = (String) session.getAttribute("PENDING_PRODUCT_ID");
+            quantityStr = (String) session.getAttribute("PENDING_QUANTITY");
+
+            session.removeAttribute("PENDING_PRODUCT_ID");
+            session.removeAttribute("PENDING_QUANTITY");
+        }
+
         if (user == null) {
-            resp.sendRedirect(req.getContextPath() + "/login?message=" + java.net.URLEncoder.encode("Vui lòng đăng nhập", "UTF-8"));
+            if (productIdStr != null && quantityStr != null) {
+                session.setAttribute("PENDING_PRODUCT_ID", productIdStr);
+                session.setAttribute("PENDING_QUANTITY", quantityStr);
+            }
+
+            String message = "Vui lòng đăng nhập để tiếp tục thanh toán";
+            String encodedMessage = URLEncoder.encode(message, StandardCharsets.UTF_8.toString());
+
+            resp.sendRedirect(req.getContextPath() + "/login?message=" + encodedMessage + "&redirect=review-order");
             return;
         }
 
         try {
-            String productIdStr = req.getParameter("productId");
-            String quantityStr = req.getParameter("quantity");
-
             // Validate
             if (productIdStr == null || quantityStr == null) {
                 resp.sendRedirect(req.getContextPath() + "/service");
@@ -57,5 +85,6 @@ public class ReviewOrderServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             resp.sendRedirect(req.getContextPath() + "/service");
         }
+
     }
 }
