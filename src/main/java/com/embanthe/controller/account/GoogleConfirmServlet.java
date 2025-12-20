@@ -41,31 +41,24 @@ public class GoogleConfirmServlet extends HttpServlet {
                 request.getRequestDispatcher("page/system/googlePassword.jsp").forward(request, response);
                 return;
             }
-        try {
-            UserDAO userDAO = new UserDAO();
-            Users user = userDAO.getUserByEmail(email);
-            if (user != null) {
-                // Hash mật khẩu mới
-                String hashed = org.mindrot.jbcrypt.BCrypt.hashpw(password, org.mindrot.jbcrypt.BCrypt.gensalt());
+        UserDAO userDAO = new UserDAO();
+        Users user = userDAO.getUserByEmail(email);
+        if (user != null) {
+            // Hash mật khẩu mới
+            String hashed = org.mindrot.jbcrypt.BCrypt.hashpw(password, org.mindrot.jbcrypt.BCrypt.gensalt());
 
-                userDAO.changePassword(user.getUserId(), hashed);
+            userDAO.changePassword(user.getUserId(), hashed);
 
-                HttpSession session = request.getSession();
-                session.setAttribute("user", user);
-                session.setAttribute("email", user.getEmail());
-                session.setAttribute("googleConfirmed", true);
-                if ("ADMIN".equalsIgnoreCase(user.getRole())) {
-                    response.sendRedirect(request.getContextPath() + "/admin");
-                } else {
-                    response.sendRedirect(request.getContextPath() + "/index.jsp");
-                }
-            } else {
-                request.setAttribute("message", "Không tìm thấy user Google!");
-                request.getRequestDispatcher("page/system/googlePassword.jsp").forward(request, response);
-            }
-        } catch (SQLException e) {
-            throw new ServletException(e);
+            HttpSession session = request.getSession();
+            session.setAttribute("user", user);
+            session.setAttribute("email", user.getEmail());
+            session.setAttribute("username", user.getUsername());
+            session.setAttribute("googleConfirmed", true);
+            response.sendRedirect(request.getContextPath() + "/index.jsp");
 
+        } else {
+            request.setAttribute("message", "Không tìm thấy user Google!");
+            request.getRequestDispatcher("page/system/googlePassword.jsp").forward(request, response);
         }
     }
     private boolean isValidPassword(String password) {

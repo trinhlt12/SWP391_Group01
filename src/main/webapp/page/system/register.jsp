@@ -39,17 +39,17 @@
                                     <input type="text" name="username" class="form-control" id="username" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="fullName" class="form-label">Full Name</label>
+                                    <label for="fullName" class="form-label">FullName</label>
                                     <input type="text" name="fullName" class="form-control" id="fullName" required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="email" class="form-label">Email Address</label>
                                     <input type="email" name="email" class="form-control" id="email" required>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="phone" class="form-label">Phone Number</label>
-                                    <input type="text" name="phone" class="form-control" id="phone" required>
-                                </div>
+<%--                                <div class="mb-3">--%>
+<%--                                    <label for="phone" class="form-label">Phone Number</label>--%>
+<%--                                    <input type="text" name="phone" class="form-control" id="phone" required>--%>
+<%--                                </div>--%>
                                 <div class="mb-3">
                                     <label for="password" class="form-label">Password</label>
                                     <input type="password" name="password" class="form-control" id="password" required>
@@ -61,11 +61,11 @@
                                 </div>
 
                                 <button type="submit" class="btn btn-primary w-100 py-2 fs-5 mb-3 rounded-2">
-                                    Sign Up
+                                    Đăng kí
                                 </button>
                                 <div class="d-flex align-items-center justify-content-center">
                                     <p class="mb-0 fw-bold">Already have an Account?</p>
-                                    <a class="text-primary fw-bold ms-2" href="login">Sign In</a>
+                                    <a class="text-primary fw-bold ms-2" href="login"> Đăng nhập</a>
                                 </div>
                             </form>
                         </div>

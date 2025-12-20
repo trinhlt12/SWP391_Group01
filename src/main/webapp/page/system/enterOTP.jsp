@@ -56,18 +56,18 @@
                             </c:if>
 
                             <form action="validateOtp" method="post">
-                                <div class="mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">Nhập OTP</label>
-                                    <input type="text" name="otp" class="form-control" id="exampleInputEmail1"
-                                           aria-describedby="emailHelp">
+                                <div class="mb-3"><label for="otpInput" class="form-label">Nhập OTP</label> <input
+                                        type="text" name="otp" class="form-control" id="otpInput"
+                                        aria-describedby="otpHelp" pattern="[0-9]*" inputmode="numeric" required>
+                                    <div id="otpHelp" class="form-text">Chỉ nhập số (OTP gồm 6 chữ số).</div>
                                 </div>
                                 <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">
                                     <c:choose>
                                         <c:when test="${sessionScope.actionType eq 'forgotPassword'}">
-                                            Xác nhận mật khẩu
+                                            Xác nhận OTP mật khẩu
                                         </c:when>
                                         <c:when test="${sessionScope.actionType eq 'register'}">
-                                            Xác nhận đăng ký
+                                            Xác nhận OTP đăng ký
                                         </c:when>
                                         <c:otherwise>
                                             Nhập OTP

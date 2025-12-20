@@ -37,6 +37,19 @@ public class TransactionDAO {
         return -1;
     }
 
+
+    public void createTransaction(Connection conn, int userId, int orderId, double amount, String message) throws SQLException {
+        String sql = "INSERT INTO transactions (user_id, order_id, amount, type, status, message, created_at) VALUES (?, ?, ?, 'PURCHASE', 'SUCCESS', ?, NOW())";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.setInt(2, orderId);
+            ps.setDouble(3, -amount); // Lưu số âm: ví dụ -50000
+            ps.setString(4, message);
+            ps.executeUpdate();
+        }
+    }
+
     public Transactions getTransactionById(int id) {
         String sql = "SELECT * FROM transactions WHERE transaction_id = ?";
         try (Connection conn = DBContext.getInstance().getConnection();
@@ -60,6 +73,29 @@ public class TransactionDAO {
         return null;
     }
 
+    public Transactions getTransactionByOrderId(int orderId) {
+        String sql = "SELECT * FROM transactions WHERE order_id = ? AND type = 'PURCHASE'";
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, orderId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Transactions t = new Transactions();
+                    t.setTransactionId(rs.getInt("transaction_id"));
+                    t.setUserId(rs.getInt("user_id"));
+                    t.setAmount(rs.getDouble("amount"));
+                    t.setType(rs.getString("type"));
+                    t.setStatus(rs.getString("status"));
+                    t.setMessage(rs.getString("message"));
+                    t.setCreatedAt(rs.getTimestamp("created_at"));
+                    return t;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     public boolean updateTransactionStatus(int transactionId, String status, String message) {
         String sql = "UPDATE transactions SET status = ?, message = ? WHERE transaction_id = ?";
         try (Connection conn = DBContext.getInstance().getConnection();
@@ -74,15 +110,40 @@ public class TransactionDAO {
         }
     }
 
-    public List<Transactions> getRecentTransactions(int userId, int limit) {
+    public List<Transactions> getRecentTransactions(int userId, int pageIndex, int pageSize) {
+        return getRecentTransactions(userId, "ALL", pageIndex, pageSize);
+    }
+
+    public List<Transactions> getRecentTransactions(int userId, String filterValue, int pageIndex, int pageSize) {
         List<Transactions> list = new ArrayList<>();
-        String sql = "SELECT * FROM transactions WHERE user_id = ? ORDER BY created_at DESC LIMIT ?";
+        int offset = (pageIndex - 1) * pageSize;
+
+        StringBuilder sql = new StringBuilder("SELECT * FROM transactions WHERE user_id = ?");
+
+        boolean hasFilter = (filterValue != null && !filterValue.trim().isEmpty() && !filterValue.equals("ALL"));
+
+        if (hasFilter) {
+            if (filterValue.equals("DEPOSIT") || filterValue.equals("PURCHASE")) {
+                sql.append(" AND type = ?");   // Lọc theo cột TYPE
+            } else {
+                sql.append(" AND status = ?"); // Lọc theo cột STATUS
+            }
+        }
+
+        sql.append(" ORDER BY created_at DESC LIMIT ? OFFSET ?");
 
         try (Connection conn = DBContext.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
 
-            ps.setInt(1, userId);
-            ps.setInt(2, limit);
+            int paramIndex = 1;
+            ps.setInt(paramIndex++, userId);
+
+            if (hasFilter) {
+                ps.setString(paramIndex++, filterValue);
+            }
+
+            ps.setInt(paramIndex++, pageSize);
+            ps.setInt(paramIndex++, offset);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -90,12 +151,10 @@ public class TransactionDAO {
                     t.setTransactionId(rs.getInt("transaction_id"));
                     t.setUserId(rs.getInt("user_id"));
                     t.setAmount(rs.getDouble("amount"));
-                    t.setType(rs.getString("type"));     // DEPOSIT, PURCHASE...
-                    t.setStatus(rs.getString("status")); // SUCCESS, PENDING...
+                    t.setType(rs.getString("type"));
+                    t.setStatus(rs.getString("status"));
                     t.setMessage(rs.getString("message"));
                     t.setCreatedAt(rs.getTimestamp("created_at"));
-                    t.setOrderId(rs.getInt("order_id"));
-
                     list.add(t);
                 }
             }
@@ -103,5 +162,43 @@ public class TransactionDAO {
             e.printStackTrace();
         }
         return list;
+    }
+
+    public int countTransactionsByUserId(int userId) {
+        return countTransactionsByUserId(userId, "ALL");
+    }
+
+    public int countTransactionsByUserId(int userId, String filterValue) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM transactions WHERE user_id = ?");
+
+        boolean hasFilter = (filterValue != null && !filterValue.trim().isEmpty() && !filterValue.equals("ALL"));
+
+        if (hasFilter) {
+            if (filterValue.equals("DEPOSIT") || filterValue.equals("PURCHASE")) {
+                sql.append(" AND type = ?");
+            } else {
+                sql.append(" AND status = ?");
+            }
+        }
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            int paramIndex = 1;
+            ps.setInt(paramIndex++, userId);
+
+            if (hasFilter) {
+                ps.setString(paramIndex++, filterValue);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }
