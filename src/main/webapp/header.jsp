@@ -14,12 +14,13 @@
 
         <nav id="navmenu" class="navmenu">
             <ul>
-                <li><a href="${pageContext.request.contextPath}/home#hero" class="active">Home</a></li>
+                <li><a href="${pageContext.request.contextPath}/home#hero" >Home</a></li>
                 <li><a href="${pageContext.request.contextPath}/service">Dịch Vụ</a></li>
 
                 <c:if test="${not empty sessionScope.user}">
                     <li><a href="${pageContext.request.contextPath}/ewallet">Ewallet</a></li>
                     <li><a href="${pageContext.request.contextPath}/user-history">Thống Kê</a></li>
+                    <li><a href="${pageContext.request.contextPath}/sendSupport">Hỗ trợ</a></li>
 
                     <li class="dropdown">
                         <a href="#">
@@ -34,7 +35,6 @@
                         <ul>
                             <li><a href="${pageContext.request.contextPath}/userprofile">Thông tin cá nhân</a></li>
                             <li><a href="${pageContext.request.contextPath}/user-history">Lịch sử giao dịch</a></li>
-                            <li><a href="${pageContext.request.contextPath}/changePassword">Đổi Mật Khẩu</a></li>
                             <li><a href="#">Email: ${sessionScope.user.email}</a></li>
                             <li><a href="${pageContext.request.contextPath}/logout">Đăng xuất</a></li>
                         </ul>

@@ -16,7 +16,8 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
+          rel="stylesheet">
 
     <link href="${pageContext.request.contextPath}/assetsHome/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/assetsHome/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
@@ -47,13 +48,37 @@
             font-weight: 500;
             color: #333;
         }
+        /* Override background cho product icons */
+        .service-item .icon {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%) !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 140px;
+            transition: all 0.3s ease;
+        }
+
+        .service-item:hover .icon {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .service-item .icon img {
+            max-height: 90px;
+            max-width: 90px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); /* Thêm shadow cho logo */
+        }
 
     </style>
 </head>
 
 <body class="index-page">
 
-<jsp:include page="header.jsp" />
+<jsp:include page="header.jsp"/>
 
 <main class="main">
 
@@ -98,20 +123,68 @@
                         <div class="service-item position-relative">
 
                             <div class="icon">
-                                <img src="${pageContext.request.contextPath}/${not empty s.imageUrl ? s.imageUrl : 'image/default-card.png'}"
-                                     alt="${s.productName}"
-                                     class="img-fluid"
-                                     style="max-height: 100px; object-fit: contain;">
-                            </div>
+                                <c:choose>
+                                   <%-- &lt;%&ndash; Nếu có imageUrl trong database &ndash;%&gt;
+                                    <c:when test="${not empty s.imageUrl}">
+                                        <img src="${pageContext.request.contextPath}/${s.imageUrl}"
+                                             alt="${s.productName}"
+                                             class="img-fluid"
+                                             style="max-height: 100px; object-fit: contain;">
+                                    </c:when>--%>
 
-                            <a href="${not empty sessionScope.user ? 'product-details?id=' : 'login'}${not empty sessionScope.user ? s.productId : ''}" class="stretched-link">
-                                <h3>${s.productName}</h3>
-                            </a>
+                                    <%-- Fallback: Dùng logo theo providerName --%>
+                                    <c:when test="${fn:containsIgnoreCase(s.productName, 'Viettel')}">
+                                        <img src="${pageContext.request.contextPath}/image/viettel1.png"
+                                             alt="${s.productName}"
+                                             class="img-fluid"
+                                             style="max-height: 100px; object-fit: contain;">
+                                    </c:when>
+                                    <c:when test="${fn:containsIgnoreCase(s.productName, 'Mobifone')}">
+                                        <img src="${pageContext.request.contextPath}/image/mobi.png"
+                                             alt="${s.productName}"
+                                             class="img-fluid"
+                                             style="max-height: 100px; object-fit: contain;">
+                                    </c:when>
+                                    <c:when test="${fn:containsIgnoreCase(s.productName, 'Vinaphone')}">
+                                        <img src="${pageContext.request.contextPath}/image/vina.png"
+                                             alt="${s.productName}"
+                                             class="img-fluid"
+                                             style="max-height: 100px; object-fit: contain;">
+                                    </c:when>
+                                    <c:when test="${fn:containsIgnoreCase(s.productName, 'Vietnamobile') or fn:containsIgnoreCase(s.productName, 'Vietnam Mobile')}">
+                                        <img src="${pageContext.request.contextPath}/image/vietnammobile.png"
+                                             alt="${s.productName}"
+                                             class="img-fluid"
+                                             style="max-height: 100px; object-fit: contain;">
+                                    </c:when>
+                                    <c:when test="${fn:containsIgnoreCase(s.productName, 'Garena')}">
+                                        <img src="${pageContext.request.contextPath}/image/garena.png"
+                                             alt="${s.productName}"
+                                             class="img-fluid"
+                                             style="max-height: 100px; object-fit: contain;">
+                                    </c:when>
+                                    <c:when test="${fn:containsIgnoreCase(s.productName, 'Steam')}">
+                                        <img src="${pageContext.request.contextPath}/image/Steam_logo.png"
+                                             alt="${s.productName}"
+                                             class="img-fluid"
+                                             style="max-height: 100px; object-fit: contain;">
+                                    </c:when>
+
+                                    <%-- Default fallback --%>
+                                    <c:otherwise>
+                                        <img src="${pageContext.request.contextPath}/image/default-card.png"
+                                             alt="${s.productName}"
+                                             class="img-fluid"
+                                             style="max-height: 100px; object-fit: contain;">
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                            <h3 style="cursor: default;">${s.productName}</h3>
 
                             <div class="mt-2 mb-3">
                                 <p class="mb-2">
                                     <strong style="font-size: 1.3rem; color: #dc3545;">
-                                        <fmt:formatNumber value="${s.price}" type="number" groupingUsed="true" /> đ
+                                        <fmt:formatNumber value="${s.price}" type="number" groupingUsed="true"/> đ
                                     </strong>
                                 </p>
                                 <span class="${s.quantity > 0 ? 'badge bg-success' : 'badge bg-secondary'}">
@@ -266,7 +339,7 @@
                         </div>
                     </div>
                 </div>
-                            </div>
+            </div>
 
         </div>
 

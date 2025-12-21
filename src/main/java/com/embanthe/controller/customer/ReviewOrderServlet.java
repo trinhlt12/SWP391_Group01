@@ -50,10 +50,11 @@ public class ReviewOrderServlet extends HttpServlet {
                 session.setAttribute("PENDING_QUANTITY", quantityStr);
             }
 
-            String message = "Vui lòng đăng nhập để tiếp tục thanh toán";
+            String message = "";
             String encodedMessage = URLEncoder.encode(message, StandardCharsets.UTF_8.toString());
 
             resp.sendRedirect(req.getContextPath() + "/login?message=" + encodedMessage + "&redirect=review-order");
+
             return;
         }
 
