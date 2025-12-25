@@ -738,10 +738,13 @@
     }
 
     function handleInputQuantity(element) {
+        element.value = element.value.replace(/[^0-9]/g, '');
+
+        if (element.value === "") {return;}
+
         let val = parseInt(element.value);
 
         if (isNaN(val) || element.value === "") {
-            // Có thể set tạm total về 0 hoặc giữ nguyên
             return;
         }
 
